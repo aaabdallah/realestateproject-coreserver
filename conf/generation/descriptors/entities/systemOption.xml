@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<coreServerEntity xmlns="aaacs.coreserver/generation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="aaacs.coreserver/generation ../../schemas/csDocEntity.xsd">
+	
+	<table>
+		<comment type="SQL">
+		This table represents system access OPTIONS. It does NOT represent
+		the system's current parameters. In other words, this table holds
+		all possible states (options) of a particular system parameter. If
+		you want to set a system parameter to a particular value, then use
+		the table tSystemParameters. This table here is simply a readonly
+		repository of common options. Useful for validating system parameter
+		choices...
+		</comment>
+		<name>tSystemOptions</name>
+		<constraints>
+			<unique>category name</unique>
+		</constraints>
+	</table>
+
+	<cache/>
+
+	<class>
+		<comment type="JavaDoc">Core Server component for managing system options</comment>
+		<outputDirectory>src/aaacs/coreserver/ejb/entities</outputDirectory>
+		<resourcesFile>src/aaacs/coreserver/resources/entityNames.properties</resourcesFile>
+		<name>SystemOption</name>
+		<package>aaacs.coreserver.ejb.entities</package>
+		<import>aaacs.coreserver.ejb.entities.support.CacheManager</import>
+		<annotations>
+			<entity/>
+			<sqlResultSetMappings>
+				<standardMapping/>
+			</sqlResultSetMappings>
+		</annotations>
+	</class>
+
+	<attributes>
+		<includeAttributes>conf/generation/descriptors/standardAttributes.xml</includeAttributes>
+
+		<attribute>
+			<columnDescription name="category" type="VARCHAR(100)">
+				<comment type="SQL" indent="1">
+				the category of the property - this is useful for searching
+				for all options within a particular category. Note that the
+				category here corresponds to a *NAME* of a system parameter.
+				</comment>
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="category" type="String">
+				<comment type="Java" indent="1">
+				the category of the property - this is useful for searching
+				for all options within a particular category. Note that the
+				category here corresponds to a *NAME* of a system parameter.
+				</comment>
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>1</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="name" type="VARCHAR(100)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="name" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>1</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="value" type="VARCHAR(200)">
+				<comment type="SQL" indent="1">
+				This column's size should match the size of the same-named column 
+				in tSystemParameters.
+				</comment>
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="value" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>0</minLength>
+						<maxLength>200</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+	</attributes>
+
+	<populate>
+		<defaults>
+			<columnValues>
+			category 'string.Default'
+			name 'string.Default'
+			value 'string.Default'
+			</columnValues>
+		</defaults>
+		<insert>
+			<columnValues>
+			idk '1'
+			category 'string.Unset'
+			name 'string.Unset'
+			value 'string.Unset'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '101'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '102'
+			name 'string.Unknown'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '103'
+			name 'string.Nonexistent'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '901'
+			name 'string.MatchAll'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '902'
+			name 'string.MatchReserved'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '903'
+			name 'string.MatchUser'
+			</columnValues>
+		</insert>
+		<insert>
+			<comment type="SQL">System access level options</comment>
+			<columnValues>
+			category 'systemOption.SystemAccessLevel'
+			name 'systemOption.SystemAccessLevel.Open'
+			value 'systemOption.SystemAccessLevel.Open.Value'
+			</columnValues>
+			<store>systemOptionSystemAccessOpen</store>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'systemOption.SystemAccessLevel'
+			name 'systemOption.SystemAccessLevel.Blocked'
+			value 'systemOption.SystemAccessLevel.Blocked.Value'
+			</columnValues>
+		</insert>
+	</populate>
+
+</coreServerEntity>

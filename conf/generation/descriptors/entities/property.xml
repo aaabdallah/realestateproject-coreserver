@@ -1,0 +1,747 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<coreServerEntity xmlns="aaacs.coreserver/generation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="aaacs.coreserver/generation ../../schemas/csDocEntity.xsd">
+	
+	<table>
+		<name>tProperties</name>
+		<constraints>
+			<foreignKey>
+				<referringColumns>districtIdk</referringColumns>
+				<referredTable>tDistricts</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>cityIdk</referringColumns>
+				<referredTable>tCities</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>regionIdk</referringColumns>
+				<referredTable>tRegions</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>countryIdk</referringColumns>
+				<referredTable>tCountries</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>constructionTypeIdk</referringColumns>
+				<referredTable>tPropertyOptions</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>directionOfFrontIdk</referringColumns>
+				<referredTable>tPropertyOptions</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>generalConditionIdk</referringColumns>
+				<referredTable>tPropertyOptions</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>propertyTypeIdk</referringColumns>
+				<referredTable>tPropertyOptions</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>zoningTypeIdk</referringColumns>
+				<referredTable>tPropertyOptions</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>communityAmenitiesIdk</referringColumns>
+				<referredTable>tCommunityAmenities</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>walkingDistanceAmenitiesIdk</referringColumns>
+				<referredTable>tCommunityAmenities</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+		</constraints>
+	</table>
+
+	<class>
+		<name>Property</name>
+		<annotations>
+			<entity/>
+			<sqlResultSetMappings>
+				<standardMapping/>
+			</sqlResultSetMappings>
+		</annotations>
+	</class>
+
+	<attributes>
+		<includeAttributes>conf/generation/descriptors/standardAttributes.xml</includeAttributes>
+
+		<attribute>
+			<columnDescription name="propertyTypeIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="propertyTypeIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="PropertyOption" key="name"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<equals type="Long"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="constructionTypeIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="constructionTypeIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="PropertyOption" key="name"/>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="zoningTypeIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="zoningTypeIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="PropertyOption" key="name"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<options type="Long"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="streetAddress1" type="VARCHAR(100)">
+			</columnDescription>
+			<javaFieldDescription name="streetAddress1" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="streetAddress2" type="VARCHAR(100)">
+			</columnDescription>
+			<javaFieldDescription name="streetAddress2" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="districtIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="districtIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_HIGHEST_RESERVED + 1</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="District" key="name"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<options type="Long"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="cityIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="cityIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_HIGHEST_RESERVED + 1</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="City" key="name"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<options type="Long"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="regionIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="regionIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_HIGHEST_RESERVED + 1</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="Region" key="name"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<options type="Long"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="countryIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="countryIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_HIGHEST_RESERVED + 1</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="Country" key="name"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<options type="Long"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="postalCode" type="VARCHAR(50)">
+			</columnDescription>
+			<javaFieldDescription name="postalCode" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>50</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="gridN1" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="gridN1" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short/>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<equals type="Short"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="gridN2" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="gridN2" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short/>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<equals type="Short"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="gridN3" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="gridN3" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short/>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<equals type="Short"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="gridN4" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="gridN4" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short/>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<equals type="Short"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="gridN5" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="gridN5" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short/>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<equals type="Short"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="gridN6" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="gridN6" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short/>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<equals type="Short"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="gridN7" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="gridN7" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short/>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<equals type="Short"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="gridN8" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="gridN8" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short/>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<equals type="Short"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="gridW1" type="VARCHAR(50)">
+			</columnDescription>
+			<javaFieldDescription name="gridW1" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>50</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<substring/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="gridW2" type="VARCHAR(50)">
+			</columnDescription>
+			<javaFieldDescription name="gridW2" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>50</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<substring/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="gridW3" type="VARCHAR(50)">
+			</columnDescription>
+			<javaFieldDescription name="gridW3" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>50</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<substring/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="gridW4" type="VARCHAR(50)">
+			</columnDescription>
+			<javaFieldDescription name="gridW4" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>50</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<substring/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="gridW5" type="VARCHAR(50)">
+			</columnDescription>
+			<javaFieldDescription name="gridW5" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>50</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<substring/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="gridW6" type="VARCHAR(50)">
+			</columnDescription>
+			<javaFieldDescription name="gridW6" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>50</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<substring/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="gridW7" type="VARCHAR(50)">
+			</columnDescription>
+			<javaFieldDescription name="gridW7" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>50</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<substring/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="gridW8" type="VARCHAR(50)">
+			</columnDescription>
+			<javaFieldDescription name="gridW8" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>50</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<substring/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="directions" type="VARCHAR(300)">
+			</columnDescription>
+			<javaFieldDescription name="directions" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>300</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="nearestIntersection" type="VARCHAR(200)">
+			</columnDescription>
+			<javaFieldDescription name="nearestIntersection" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>200</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="directionOfFrontIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="directionOfFrontIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="PropertyOption" key="name"/>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="directlyNorth" type="VARCHAR(50)">
+			</columnDescription>
+			<javaFieldDescription name="directlyNorth" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>50</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="directlySouth" type="VARCHAR(50)">
+			</columnDescription>
+			<javaFieldDescription name="directlySouth" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>50</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="directlyEast" type="VARCHAR(50)">
+			</columnDescription>
+			<javaFieldDescription name="directlyEast" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>50</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="directlyWest" type="VARCHAR(50)">
+			</columnDescription>
+			<javaFieldDescription name="directlyWest" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>50</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="yearBuilt" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="yearBuilt" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>1900</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<min type="Short"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="occupied" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="occupied" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="generalConditionIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="generalConditionIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="PropertyOption" key="name"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<options type="Long"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="photosLocation" type="VARCHAR(300)">
+			</columnDescription>
+			<javaFieldDescription name="photosLocation" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>300</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="walkingDistanceAmenitiesIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="walkingDistanceAmenitiesIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="communityAmenitiesIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="communityAmenitiesIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+	</attributes>
+
+	<populate>
+		<defaults>
+			<columnValues>
+			propertyTypeIdk '1'
+			constructionTypeIdk '1'
+			zoningTypeIdk '1'
+			districtIdk '1'
+			cityIdk '1'
+			regionIdk '1'
+			countryIdk '1'
+			directionOfFrontIdk '1'
+			generalConditionIdk '1'
+			walkingDistanceAmenitiesIdk '1'
+			communityAmenitiesIdk '1'
+			</columnValues>
+		</defaults>
+		<insert>
+			<columnValues>
+			idk '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '101'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '102'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '103'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '901'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '902'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '903'
+			</columnValues>
+		</insert>
+	</populate>
+
+</coreServerEntity>

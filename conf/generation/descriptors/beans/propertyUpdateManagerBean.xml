@@ -1,0 +1,934 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<coreServerBean xmlns="aaacs.coreserver/generation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="aaacs.coreserver/generation ../../schemas/csDocBean.xsd">
+
+	<class>
+		<name>PropertyUpdateManagerBean</name>
+		<imports>
+			<import>aaacs.coreserver.ejb.entities.support.CacheManager</import>
+		</imports>
+		<annotations>
+			<beanType>Stateless</beanType>
+			<interfaces>
+				<interface name="PropertyUpdateManager" type="Local"/>
+			</interfaces>
+			<transactionManagement type="Container" ctrTxAttr="Required"/>
+		</annotations>
+	</class>
+
+	<methods>
+
+		<method>
+			<name enResource="Update an apartment (with all its associated information) for sale/rental">updateApartmentForRentalSale</name>
+			<tasks requiresLoggedInUser="true">
+				<task>
+					<authorizations>
+						<authorization>
+							<!--<objectTable>&quot;tProperties&quot;</objectTable>-->
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="UserIdk" enResource="User Idk" type="Long" varName="userIdk">
+							<validations>
+								<parameterValidator>setValidMinimum((double) PrimaryKeyHolder.KEY_HIGHEST_RESERVED + 1)</parameterValidator>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyFields" enResource="Property Fields"
+							varName="propertyFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Property" entityVarName="property">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="ExtendedPropertyFields" enResource="Apartment Fields"
+							varName="apartmentFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Apartment" entityVarName="apartment">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="ResidentialFeaturesFields" enResource="ResidentialFeatures Fields"
+							varName="residentialFeaturesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="ResidentialFeatures" entityVarName="residentialFeatures">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="CommunityAmenitiesFields" enResource="CommunityAmenities Fields"
+							varName="communityAmenitiesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="CommunityAmenities" entityVarName="communityAmenities">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyListingFields" enResource="PropertyListing Fields"
+							varName="propertyListingFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="PropertyListing" entityVarName="propertyListing">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="RentalFields" enResource="Rental Fields"
+							varName="rentalFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Rental" entityVarName="rental">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false" condition="rentalFields != null"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="SaleFields" enResource="Sale Fields"
+							varName="saleFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Sale" entityVarName="sale">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false" condition="saleFields != null"/>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<create>
+							<dataSource>
+								<singleEntity condition="rentalFields != null" entityName="rental" updateIfPossible="true"/>
+								<singleEntity condition="saleFields != null" entityName="sale" updateIfPossible="true"/>
+								<setEntityProperty name="communityAmenities" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="communityAmenities" updateIfPossible="true"/>
+								<setEntityProperty name="residentialFeatures" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="residentialFeatures" updateIfPossible="true" synchronize="true"/>
+								<setEntityProperty name="property" property="communityAmenitiesIdk" value="communityAmenities.getIdk()"/>
+								<singleEntity entityName="property" synchronize="true" updateIfPossible="true"/>
+								<setEntityProperty name="propertyListing" property="propertyIdk" value="property.getIdk()"/>
+								
+								<setEntityProperty condition="rentalFields == null" name="propertyListing" property="forRentIdk" value="BaseEntity.KEY_UNINITIALIZED"/>
+								<setEntityProperty condition="saleFields == null" name="propertyListing" property="forSaleIdk" value="BaseEntity.KEY_UNINITIALIZED"/>
+								<setEntityProperty condition="rentalFields != null" name="propertyListing" property="forRentIdk" value="rental.getIdk()"/>
+								<setEntityProperty condition="saleFields != null" name="propertyListing" property="forSaleIdk" value="sale.getIdk()"/>
+								
+								<singleEntity entityName="propertyListing" updateIfPossible="true"/>
+								<setEntityProperty name="apartment" property="propertyIdk" value="property.getIdk()"/>
+								<setEntityProperty name="apartment" property="residentialFeaturesIdk" value="residentialFeatures.getIdk()"/>
+								<singleEntity entityName="apartment" updateIfPossible="true"/>
+							</dataSource>
+						</create>
+					</execute>
+				</task>
+			</tasks>
+		</method>
+
+		<method>
+			<name enResource="Update an emptyLot (with all its associated information) for sale/rental">updateEmptyLotForRentalSale</name>
+			<tasks requiresLoggedInUser="true">
+				<task>
+					<authorizations>
+						<authorization>
+							<!--<objectTable>&quot;tProperties&quot;</objectTable>-->
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="UserIdk" enResource="User Idk" type="Long" varName="userIdk">
+							<validations>
+								<parameterValidator>setValidMinimum((double) PrimaryKeyHolder.KEY_HIGHEST_RESERVED + 1)</parameterValidator>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyFields" enResource="Property Fields"
+							varName="propertyFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Property" entityVarName="property">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="ExtendedPropertyFields" enResource="EmptyLot Fields"
+							varName="emptyLotFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="EmptyLot" entityVarName="emptyLot">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="CommunityAmenitiesFields" enResource="CommunityAmenities Fields"
+							varName="communityAmenitiesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="CommunityAmenities" entityVarName="communityAmenities">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyListingFields" enResource="PropertyListing Fields"
+							varName="propertyListingFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="PropertyListing" entityVarName="propertyListing">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="RentalFields" enResource="Rental Fields"
+							varName="rentalFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Rental" entityVarName="rental">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false" condition="rentalFields != null"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="SaleFields" enResource="Sale Fields"
+							varName="saleFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Sale" entityVarName="sale">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false" condition="saleFields != null"/>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<create>
+							<dataSource>
+								<singleEntity condition="rentalFields != null" entityName="rental" updateIfPossible="true"/>
+								<singleEntity condition="saleFields != null" entityName="sale" updateIfPossible="true"/>
+								<setEntityProperty name="communityAmenities" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="communityAmenities" updateIfPossible="true"/>
+								<setEntityProperty name="property" property="communityAmenitiesIdk" value="communityAmenities.getIdk()"/>
+								<singleEntity entityName="property" synchronize="true" updateIfPossible="true"/>
+								<setEntityProperty name="propertyListing" property="propertyIdk" value="property.getIdk()"/>
+								
+								<setEntityProperty condition="rentalFields == null" name="propertyListing" property="forRentIdk" value="BaseEntity.KEY_UNINITIALIZED"/>
+								<setEntityProperty condition="saleFields == null" name="propertyListing" property="forSaleIdk" value="BaseEntity.KEY_UNINITIALIZED"/>
+								<setEntityProperty condition="rentalFields != null" name="propertyListing" property="forRentIdk" value="rental.getIdk()"/>
+								<setEntityProperty condition="saleFields != null" name="propertyListing" property="forSaleIdk" value="sale.getIdk()"/>
+								
+								<singleEntity entityName="propertyListing" updateIfPossible="true"/>
+								<setEntityProperty name="emptyLot" property="propertyIdk" value="property.getIdk()"/>
+								<singleEntity entityName="emptyLot" updateIfPossible="true"/>
+							</dataSource>
+						</create>
+					</execute>
+				</task>
+			</tasks>
+		</method>
+
+		<method>
+			<name enResource="Update an farmLot (with all its associated information) for sale/rental">updateFarmLotForRentalSale</name>
+			<tasks requiresLoggedInUser="true">
+				<task>
+					<authorizations>
+						<authorization>
+							<!--<objectTable>&quot;tProperties&quot;</objectTable>-->
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="UserIdk" enResource="User Idk" type="Long" varName="userIdk">
+							<validations>
+								<parameterValidator>setValidMinimum((double) PrimaryKeyHolder.KEY_HIGHEST_RESERVED + 1)</parameterValidator>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyFields" enResource="Property Fields"
+							varName="propertyFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Property" entityVarName="property">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="ExtendedPropertyFields" enResource="FarmLot Fields"
+							varName="farmLotFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="FarmLot" entityVarName="farmLot">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="CommunityAmenitiesFields" enResource="CommunityAmenities Fields"
+							varName="communityAmenitiesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="CommunityAmenities" entityVarName="communityAmenities">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyListingFields" enResource="PropertyListing Fields"
+							varName="propertyListingFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="PropertyListing" entityVarName="propertyListing">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="RentalFields" enResource="Rental Fields"
+							varName="rentalFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Rental" entityVarName="rental">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false" condition="rentalFields != null"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="SaleFields" enResource="Sale Fields"
+							varName="saleFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Sale" entityVarName="sale">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false" condition="saleFields != null"/>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<create>
+							<dataSource>
+								<singleEntity condition="rentalFields != null" entityName="rental" updateIfPossible="true"/>
+								<singleEntity condition="saleFields != null" entityName="sale" updateIfPossible="true"/>
+								<setEntityProperty name="communityAmenities" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="communityAmenities" updateIfPossible="true"/>
+								<setEntityProperty name="property" property="communityAmenitiesIdk" value="communityAmenities.getIdk()"/>
+								<singleEntity entityName="property" synchronize="true" updateIfPossible="true"/>
+								<setEntityProperty name="propertyListing" property="propertyIdk" value="property.getIdk()"/>
+								
+								<setEntityProperty condition="rentalFields == null" name="propertyListing" property="forRentIdk" value="BaseEntity.KEY_UNINITIALIZED"/>
+								<setEntityProperty condition="saleFields == null" name="propertyListing" property="forSaleIdk" value="BaseEntity.KEY_UNINITIALIZED"/>
+								<setEntityProperty condition="rentalFields != null" name="propertyListing" property="forRentIdk" value="rental.getIdk()"/>
+								<setEntityProperty condition="saleFields != null" name="propertyListing" property="forSaleIdk" value="sale.getIdk()"/>
+								
+								<singleEntity entityName="propertyListing" updateIfPossible="true"/>
+								<setEntityProperty name="farmLot" property="propertyIdk" value="property.getIdk()"/>
+								<singleEntity entityName="farmLot" updateIfPossible="true"/>
+							</dataSource>
+						</create>
+					</execute>
+				</task>
+			</tasks>
+		</method>
+
+		<method>
+			<name enResource="Update an floorUnit (with all its associated information) for sale/rental">updateFloorUnitForRentalSale</name>
+			<tasks requiresLoggedInUser="true">
+				<task>
+					<authorizations>
+						<authorization>
+							<!--<objectTable>&quot;tProperties&quot;</objectTable>-->
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="UserIdk" enResource="User Idk" type="Long" varName="userIdk">
+							<validations>
+								<parameterValidator>setValidMinimum((double) PrimaryKeyHolder.KEY_HIGHEST_RESERVED + 1)</parameterValidator>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyFields" enResource="Property Fields"
+							varName="propertyFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Property" entityVarName="property">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="ExtendedPropertyFields" enResource="FloorUnit Fields"
+							varName="floorUnitFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="FloorUnit" entityVarName="floorUnit">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="ResidentialFeaturesFields" enResource="ResidentialFeatures Fields"
+							varName="residentialFeaturesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="ResidentialFeatures" entityVarName="residentialFeatures">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="CommunityAmenitiesFields" enResource="CommunityAmenities Fields"
+							varName="communityAmenitiesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="CommunityAmenities" entityVarName="communityAmenities">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyListingFields" enResource="PropertyListing Fields"
+							varName="propertyListingFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="PropertyListing" entityVarName="propertyListing">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="RentalFields" enResource="Rental Fields"
+							varName="rentalFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Rental" entityVarName="rental">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false" condition="rentalFields != null"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="SaleFields" enResource="Sale Fields"
+							varName="saleFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Sale" entityVarName="sale">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false" condition="saleFields != null"/>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<create>
+							<dataSource>
+								<singleEntity condition="rentalFields != null" entityName="rental" updateIfPossible="true"/>
+								<singleEntity condition="saleFields != null" entityName="sale" updateIfPossible="true"/>
+								<setEntityProperty name="communityAmenities" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="communityAmenities" updateIfPossible="true"/>
+								<setEntityProperty name="residentialFeatures" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="residentialFeatures" updateIfPossible="true" synchronize="true"/>
+								<setEntityProperty name="property" property="communityAmenitiesIdk" value="communityAmenities.getIdk()"/>
+								<singleEntity entityName="property" synchronize="true" updateIfPossible="true"/>
+								<setEntityProperty name="propertyListing" property="propertyIdk" value="property.getIdk()"/>
+								
+								<setEntityProperty condition="rentalFields == null" name="propertyListing" property="forRentIdk" value="BaseEntity.KEY_UNINITIALIZED"/>
+								<setEntityProperty condition="saleFields == null" name="propertyListing" property="forSaleIdk" value="BaseEntity.KEY_UNINITIALIZED"/>
+								<setEntityProperty condition="rentalFields != null" name="propertyListing" property="forRentIdk" value="rental.getIdk()"/>
+								<setEntityProperty condition="saleFields != null" name="propertyListing" property="forSaleIdk" value="sale.getIdk()"/>
+								
+								<singleEntity entityName="propertyListing" updateIfPossible="true"/>
+								<setEntityProperty name="floorUnit" property="propertyIdk" value="property.getIdk()"/>
+								<setEntityProperty name="floorUnit" property="residentialFeaturesIdk" value="residentialFeatures.getIdk()"/>
+								<singleEntity entityName="floorUnit" updateIfPossible="true"/>
+							</dataSource>
+						</create>
+					</execute>
+				</task>
+			</tasks>
+		</method>
+
+		<method>
+			<name enResource="Update an house (with all its associated information) for sale/rental">updateHouseForRentalSale</name>
+			<tasks requiresLoggedInUser="true">
+				<task>
+					<authorizations>
+						<authorization>
+							<!--<objectTable>&quot;tProperties&quot;</objectTable>-->
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="UserIdk" enResource="User Idk" type="Long" varName="userIdk">
+							<validations>
+								<parameterValidator>setValidMinimum((double) PrimaryKeyHolder.KEY_HIGHEST_RESERVED + 1)</parameterValidator>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyFields" enResource="Property Fields"
+							varName="propertyFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Property" entityVarName="property">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="ExtendedPropertyFields" enResource="House Fields"
+							varName="houseFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="House" entityVarName="house">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="ResidentialFeaturesFields" enResource="ResidentialFeatures Fields"
+							varName="residentialFeaturesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="ResidentialFeatures" entityVarName="residentialFeatures">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="CommunityAmenitiesFields" enResource="CommunityAmenities Fields"
+							varName="communityAmenitiesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="CommunityAmenities" entityVarName="communityAmenities">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyListingFields" enResource="PropertyListing Fields"
+							varName="propertyListingFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="PropertyListing" entityVarName="propertyListing">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="RentalFields" enResource="Rental Fields"
+							varName="rentalFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Rental" entityVarName="rental">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false" condition="rentalFields != null"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="SaleFields" enResource="Sale Fields"
+							varName="saleFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Sale" entityVarName="sale">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false" condition="saleFields != null"/>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<create>
+							<dataSource>
+								<singleEntity condition="rentalFields != null" entityName="rental" updateIfPossible="true"/>
+								<singleEntity condition="saleFields != null" entityName="sale" updateIfPossible="true"/>
+								<setEntityProperty name="communityAmenities" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="communityAmenities" updateIfPossible="true"/>
+								<setEntityProperty name="residentialFeatures" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="residentialFeatures" updateIfPossible="true" synchronize="true"/>
+								<setEntityProperty name="property" property="communityAmenitiesIdk" value="communityAmenities.getIdk()"/>
+								<singleEntity entityName="property" synchronize="true" updateIfPossible="true"/>
+								<setEntityProperty name="propertyListing" property="propertyIdk" value="property.getIdk()"/>
+								
+								<setEntityProperty condition="rentalFields == null" name="propertyListing" property="forRentIdk" value="BaseEntity.KEY_UNINITIALIZED"/>
+								<setEntityProperty condition="saleFields == null" name="propertyListing" property="forSaleIdk" value="BaseEntity.KEY_UNINITIALIZED"/>
+								<setEntityProperty condition="rentalFields != null" name="propertyListing" property="forRentIdk" value="rental.getIdk()"/>
+								<setEntityProperty condition="saleFields != null" name="propertyListing" property="forSaleIdk" value="sale.getIdk()"/>
+								
+								<singleEntity entityName="propertyListing" updateIfPossible="true"/>
+								<setEntityProperty name="house" property="propertyIdk" value="property.getIdk()"/>
+								<setEntityProperty name="house" property="residentialFeaturesIdk" value="residentialFeatures.getIdk()"/>
+								<singleEntity entityName="house" updateIfPossible="true"/>
+							</dataSource>
+						</create>
+					</execute>
+				</task>
+			</tasks>
+		</method>
+
+		<method>
+			<name enResource="Update an multiUnitBuilding (with all its associated information) for sale/rental">updateMultiUnitBuildingForRentalSale</name>
+			<tasks requiresLoggedInUser="true">
+				<task>
+					<authorizations>
+						<authorization>
+							<!--<objectTable>&quot;tProperties&quot;</objectTable>-->
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="UserIdk" enResource="User Idk" type="Long" varName="userIdk">
+							<validations>
+								<parameterValidator>setValidMinimum((double) PrimaryKeyHolder.KEY_HIGHEST_RESERVED + 1)</parameterValidator>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyFields" enResource="Property Fields"
+							varName="propertyFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Property" entityVarName="property">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="ExtendedPropertyFields" enResource="MultiUnitBuilding Fields"
+							varName="multiUnitBuildingFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="MultiUnitBuilding" entityVarName="multiUnitBuilding">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="ResidentialFeaturesFields" enResource="ResidentialFeatures Fields"
+							varName="residentialFeaturesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="ResidentialFeatures" entityVarName="residentialFeatures">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="CommercialFeaturesFields" enResource="CommercialFeatures Fields"
+							varName="commercialFeaturesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="CommercialFeatures" entityVarName="commercialFeatures">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="CommunityAmenitiesFields" enResource="CommunityAmenities Fields"
+							varName="communityAmenitiesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="CommunityAmenities" entityVarName="communityAmenities">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyListingFields" enResource="PropertyListing Fields"
+							varName="propertyListingFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="PropertyListing" entityVarName="propertyListing">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="RentalFields" enResource="Rental Fields"
+							varName="rentalFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Rental" entityVarName="rental">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false" condition="rentalFields != null"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="SaleFields" enResource="Sale Fields"
+							varName="saleFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Sale" entityVarName="sale">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false" condition="saleFields != null"/>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<create>
+							<dataSource>
+								<singleEntity condition="rentalFields != null" entityName="rental" updateIfPossible="true"/>
+								<singleEntity condition="saleFields != null" entityName="sale" updateIfPossible="true"/>
+								<setEntityProperty name="communityAmenities" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="communityAmenities" updateIfPossible="true"/>
+								<setEntityProperty name="residentialFeatures" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="residentialFeatures" updateIfPossible="true" synchronize="true"/>
+								<setEntityProperty name="commercialFeatures" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="commercialFeatures" updateIfPossible="true" synchronize="true"/>
+								<setEntityProperty name="property" property="communityAmenitiesIdk" value="communityAmenities.getIdk()"/>
+								<singleEntity entityName="property" synchronize="true" updateIfPossible="true"/>
+								<setEntityProperty name="propertyListing" property="propertyIdk" value="property.getIdk()"/>
+								
+								<setEntityProperty condition="rentalFields == null" name="propertyListing" property="forRentIdk" value="BaseEntity.KEY_UNINITIALIZED"/>
+								<setEntityProperty condition="saleFields == null" name="propertyListing" property="forSaleIdk" value="BaseEntity.KEY_UNINITIALIZED"/>
+								<setEntityProperty condition="rentalFields != null" name="propertyListing" property="forRentIdk" value="rental.getIdk()"/>
+								<setEntityProperty condition="saleFields != null" name="propertyListing" property="forSaleIdk" value="sale.getIdk()"/>
+								
+								<singleEntity entityName="propertyListing" updateIfPossible="true"/>
+								<setEntityProperty name="multiUnitBuilding" property="propertyIdk" value="property.getIdk()"/>
+								<setEntityProperty name="multiUnitBuilding" property="unitResidentialFeaturesIdk" value="residentialFeatures.getIdk()"/>
+								<setEntityProperty name="multiUnitBuilding" property="unitCommercialFeaturesIdk" value="commercialFeatures.getIdk()"/>
+								<singleEntity entityName="multiUnitBuilding" updateIfPossible="true"/>
+							</dataSource>
+						</create>
+					</execute>
+				</task>
+			</tasks>
+		</method>
+
+		<method>
+			<name enResource="Update an multiUnitCompound (with all its associated information) for sale/rental">updateMultiUnitCompoundForRentalSale</name>
+			<tasks requiresLoggedInUser="true">
+				<task>
+					<authorizations>
+						<authorization>
+							<!--<objectTable>&quot;tProperties&quot;</objectTable>-->
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="UserIdk" enResource="User Idk" type="Long" varName="userIdk">
+							<validations>
+								<parameterValidator>setValidMinimum((double) PrimaryKeyHolder.KEY_HIGHEST_RESERVED + 1)</parameterValidator>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyFields" enResource="Property Fields"
+							varName="propertyFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Property" entityVarName="property">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="ExtendedPropertyFields" enResource="MultiUnitCompound Fields"
+							varName="multiUnitCompoundFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="MultiUnitCompound" entityVarName="multiUnitCompound">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="ResidentialFeaturesFields" enResource="ResidentialFeatures Fields"
+							varName="residentialFeaturesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="ResidentialFeatures" entityVarName="residentialFeatures">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="CommercialFeaturesFields" enResource="CommercialFeatures Fields"
+							varName="commercialFeaturesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="CommercialFeatures" entityVarName="commercialFeatures">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="CommunityAmenitiesFields" enResource="CommunityAmenities Fields"
+							varName="communityAmenitiesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="CommunityAmenities" entityVarName="communityAmenities">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyListingFields" enResource="PropertyListing Fields"
+							varName="propertyListingFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="PropertyListing" entityVarName="propertyListing">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="RentalFields" enResource="Rental Fields"
+							varName="rentalFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Rental" entityVarName="rental">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false" condition="rentalFields != null"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="SaleFields" enResource="Sale Fields"
+							varName="saleFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Sale" entityVarName="sale">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false" condition="saleFields != null"/>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<create>
+							<dataSource>
+								<singleEntity condition="rentalFields != null" entityName="rental" updateIfPossible="true"/>
+								<singleEntity condition="saleFields != null" entityName="sale" updateIfPossible="true"/>
+								<setEntityProperty name="communityAmenities" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="communityAmenities" updateIfPossible="true"/>
+								<setEntityProperty name="residentialFeatures" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="residentialFeatures" updateIfPossible="true" synchronize="true"/>
+								<setEntityProperty name="commercialFeatures" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="commercialFeatures" updateIfPossible="true" synchronize="true"/>
+								<setEntityProperty name="property" property="communityAmenitiesIdk" value="communityAmenities.getIdk()"/>
+								<singleEntity entityName="property" synchronize="true" updateIfPossible="true"/>
+								<setEntityProperty name="propertyListing" property="propertyIdk" value="property.getIdk()"/>
+								
+								<setEntityProperty condition="rentalFields == null" name="propertyListing" property="forRentIdk" value="BaseEntity.KEY_UNINITIALIZED"/>
+								<setEntityProperty condition="saleFields == null" name="propertyListing" property="forSaleIdk" value="BaseEntity.KEY_UNINITIALIZED"/>
+								<setEntityProperty condition="rentalFields != null" name="propertyListing" property="forRentIdk" value="rental.getIdk()"/>
+								<setEntityProperty condition="saleFields != null" name="propertyListing" property="forSaleIdk" value="sale.getIdk()"/>
+								
+								<singleEntity entityName="propertyListing" updateIfPossible="true"/>
+								<setEntityProperty name="multiUnitCompound" property="propertyIdk" value="property.getIdk()"/>
+								<setEntityProperty name="multiUnitCompound" property="unitResidentialFeaturesIdk" value="residentialFeatures.getIdk()"/>
+								<setEntityProperty name="multiUnitCompound" property="unitCommercialFeaturesIdk" value="commercialFeatures.getIdk()"/>
+								<singleEntity entityName="multiUnitCompound" updateIfPossible="true"/>
+							</dataSource>
+						</create>
+					</execute>
+				</task>
+			</tasks>
+		</method>
+
+		<method>
+			<name enResource="Update an office (with all its associated information) for sale/rental">updateOfficeForRentalSale</name>
+			<tasks requiresLoggedInUser="true">
+				<task>
+					<authorizations>
+						<authorization>
+							<!--<objectTable>&quot;tProperties&quot;</objectTable>-->
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="UserIdk" enResource="User Idk" type="Long" varName="userIdk">
+							<validations>
+								<parameterValidator>setValidMinimum((double) PrimaryKeyHolder.KEY_HIGHEST_RESERVED + 1)</parameterValidator>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyFields" enResource="Property Fields"
+							varName="propertyFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Property" entityVarName="property">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="ExtendedPropertyFields" enResource="Office Fields"
+							varName="officeFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Office" entityVarName="office">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="CommercialFeaturesFields" enResource="CommercialFeatures Fields"
+							varName="commercialFeaturesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="CommercialFeatures" entityVarName="commercialFeatures">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="CommunityAmenitiesFields" enResource="CommunityAmenities Fields"
+							varName="communityAmenitiesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="CommunityAmenities" entityVarName="communityAmenities">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyListingFields" enResource="PropertyListing Fields"
+							varName="propertyListingFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="PropertyListing" entityVarName="propertyListing">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="RentalFields" enResource="Rental Fields"
+							varName="rentalFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Rental" entityVarName="rental">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false" condition="rentalFields != null"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="SaleFields" enResource="Sale Fields"
+							varName="saleFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Sale" entityVarName="sale">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false" condition="saleFields != null"/>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<create>
+							<dataSource>
+								<singleEntity condition="rentalFields != null" entityName="rental" updateIfPossible="true"/>
+								<singleEntity condition="saleFields != null" entityName="sale" updateIfPossible="true"/>
+								<setEntityProperty name="communityAmenities" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="communityAmenities" updateIfPossible="true"/>
+								<setEntityProperty name="commercialFeatures" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="commercialFeatures" updateIfPossible="true" synchronize="true"/>
+								<setEntityProperty name="property" property="communityAmenitiesIdk" value="communityAmenities.getIdk()"/>
+								<singleEntity entityName="property" synchronize="true" updateIfPossible="true"/>
+								<setEntityProperty name="propertyListing" property="propertyIdk" value="property.getIdk()"/>
+								
+								<setEntityProperty condition="rentalFields == null" name="propertyListing" property="forRentIdk" value="BaseEntity.KEY_UNINITIALIZED"/>
+								<setEntityProperty condition="saleFields == null" name="propertyListing" property="forSaleIdk" value="BaseEntity.KEY_UNINITIALIZED"/>
+								<setEntityProperty condition="rentalFields != null" name="propertyListing" property="forRentIdk" value="rental.getIdk()"/>
+								<setEntityProperty condition="saleFields != null" name="propertyListing" property="forSaleIdk" value="sale.getIdk()"/>
+								
+								<singleEntity entityName="propertyListing" updateIfPossible="true"/>
+								<setEntityProperty name="office" property="propertyIdk" value="property.getIdk()"/>
+								<setEntityProperty name="office" property="commercialFeaturesIdk" value="commercialFeatures.getIdk()"/>
+								<singleEntity entityName="office" updateIfPossible="true"/>
+							</dataSource>
+						</create>
+					</execute>
+				</task>
+			</tasks>
+		</method>
+
+		<method>
+			<name enResource="Update an store (with all its associated information) for sale/rental">updateStoreForRentalSale</name>
+			<tasks requiresLoggedInUser="true">
+				<task>
+					<authorizations>
+						<authorization>
+							<!--<objectTable>&quot;tProperties&quot;</objectTable>-->
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="UserIdk" enResource="User Idk" type="Long" varName="userIdk">
+							<validations>
+								<parameterValidator>setValidMinimum((double) PrimaryKeyHolder.KEY_HIGHEST_RESERVED + 1)</parameterValidator>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyFields" enResource="Property Fields"
+							varName="propertyFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Property" entityVarName="property">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="ExtendedPropertyFields" enResource="Store Fields"
+							varName="storeFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Store" entityVarName="store">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="CommercialFeaturesFields" enResource="CommercialFeatures Fields"
+							varName="commercialFeaturesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="CommercialFeatures" entityVarName="commercialFeatures">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="CommunityAmenitiesFields" enResource="CommunityAmenities Fields"
+							varName="communityAmenitiesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="CommunityAmenities" entityVarName="communityAmenities">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyListingFields" enResource="PropertyListing Fields"
+							varName="propertyListingFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="PropertyListing" entityVarName="propertyListing">
+							<validations>
+								<staticEntityValidator/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="RentalFields" enResource="Rental Fields"
+							varName="rentalFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Rental" entityVarName="rental">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false" condition="rentalFields != null"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="SaleFields" enResource="Sale Fields"
+							varName="saleFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Sale" entityVarName="sale">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false" condition="saleFields != null"/>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<create>
+							<dataSource>
+								<singleEntity condition="rentalFields != null" entityName="rental" updateIfPossible="true"/>
+								<singleEntity condition="saleFields != null" entityName="sale" updateIfPossible="true"/>
+								<setEntityProperty name="communityAmenities" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="communityAmenities" updateIfPossible="true"/>
+								<setEntityProperty name="commercialFeatures" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="commercialFeatures" updateIfPossible="true" synchronize="true"/>
+								<setEntityProperty name="property" property="communityAmenitiesIdk" value="communityAmenities.getIdk()"/>
+								<singleEntity entityName="property" synchronize="true" updateIfPossible="true"/>
+								<setEntityProperty name="propertyListing" property="propertyIdk" value="property.getIdk()"/>
+								
+								<setEntityProperty condition="rentalFields == null" name="propertyListing" property="forRentIdk" value="BaseEntity.KEY_UNINITIALIZED"/>
+								<setEntityProperty condition="saleFields == null" name="propertyListing" property="forSaleIdk" value="BaseEntity.KEY_UNINITIALIZED"/>
+								<setEntityProperty condition="rentalFields != null" name="propertyListing" property="forRentIdk" value="rental.getIdk()"/>
+								<setEntityProperty condition="saleFields != null" name="propertyListing" property="forSaleIdk" value="sale.getIdk()"/>
+								
+								<singleEntity entityName="propertyListing" updateIfPossible="true"/>
+								<setEntityProperty name="store" property="propertyIdk" value="property.getIdk()"/>
+								<setEntityProperty name="store" property="commercialFeaturesIdk" value="commercialFeatures.getIdk()"/>
+								<singleEntity entityName="store" updateIfPossible="true"/>
+							</dataSource>
+						</create>
+					</execute>
+				</task>
+			</tasks>
+		</method>
+
+	</methods>
+	
+</coreServerBean>

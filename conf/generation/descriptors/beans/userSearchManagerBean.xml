@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<coreServerBean xmlns="aaacs.coreserver/generation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="aaacs.coreserver/generation ../../schemas/csDocBean.xsd">
+
+	<class>
+		<name>UserSearchManagerBean</name>
+		<imports>
+			<import>aaacs.coreserver.ejb.entities.support.CacheManager</import>
+		</imports>
+		<annotations>
+			<beanType>Stateless</beanType>
+			<interfaces>
+				<interface name="UserSearchManager" type="Local"/>
+			</interfaces>
+			<transactionManagement type="Container" ctrTxAttr="Required"/>
+		</annotations>
+	</class>
+
+	<methods>
+
+		<method>
+			<name enResource="Search for users matching input parameters">searchUsers</name>
+			<tasks requiresLoggedInUser="true">
+				<task>
+					<authorizations>
+						<authorization/>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="SortOrder" enResource="Sort Order" type="String" varName="sortOrder">
+							<validations/>
+						</inputParameter>
+						<inputParameter displayName="UserSearchFields" enResource="User Search Fields"
+							varName="userSearchFields" type="Map&lt;String, Object&gt;" methodSuffix="Map"
+							keyClasses="String" valueClasses="Object">
+							<validations>
+								<parameterValidator condition="userSearchFields != null"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="UserProfileSearchFields" enResource="User profile Search Fields"
+							varName="userProfileSearchFields" type="Map&lt;String, Object&gt;" methodSuffix="Map"
+							keyClasses="String" valueClasses="Object">
+							<validations>
+								<parameterValidator condition="userProfileSearchFields != null"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="UserRankFields" enResource="User Rank Fields"
+							varName="userRankSearchFields" type="Map&lt;String, Object&gt;" methodSuffix="Map"
+							keyClasses="String" valueClasses="Object">
+							<validations>
+								<parameterValidator condition="userRankSearchFields != null"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="UserRoleFields" enResource="User Role Fields"
+							varName="userRoleSearchFields" type="Map&lt;String, Object&gt;" methodSuffix="Map"
+							keyClasses="String" valueClasses="Object">
+							<validations>
+								<parameterValidator condition="userRoleSearchFields != null"/>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<customCode>
+							<codeFragmentReference baseIndent="3">cfr.msmb.searchUsers.search</codeFragmentReference>
+						</customCode>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="Users" enResource="Users"
+							type="Map" varName="userRows" keyClasses="Long String" 
+							valueClasses="Map Object" condition="userRows != null &amp;&amp; userRows.size() &gt; 0"/>
+						<outputParameter displayName="UserProfiles" enResource="User Profiles"
+							type="Map" varName="userProfileRows" keyClasses="Long String" 
+							valueClasses="Map Object" condition="userProfileRows != null &amp;&amp; userProfileRows.size() &gt; 0"/>
+						<outputParameter displayName="UserRanks" enResource="User Ranks"
+							type="Map" varName="userRankRows" keyClasses="Long String" 
+							valueClasses="Map Object" condition="userRankRows != null &amp;&amp; userRankRows.size() &gt; 0"/>
+						<outputParameter displayName="UserRoles" enResource="User Roles"
+							type="Map" varName="userRolesRows" keyClasses="Long Long String" 
+							valueClasses="Map Map Object" condition="userRolesRows != null &amp;&amp; userRolesRows.size() &gt; 0"/>
+					</outputParameters>
+				</task>
+			</tasks>
+			<codeFragments>
+				<codeFragment name="cfr.msmb.searchUsers.search" location="generic" visibility="sessionBean"><![CDATA[
+			SelectBuilder sbUsers = new SelectBuilder();
+			List userResults = null;
+
+			sbUsers.addSelect("\"tUsers\".\"timeCreated\" AS \"userTimeCreated\", \"tUsers\".\"timeLastModified\" AS \"userTimeLastModified\"");
+			sbUsers.addSelect("\"tUsers\".idk AS \"userIdk\", username, password, status, \"rankIdk\", notes, \"systemKey\", \"testUser\"");
+			sbUsers.addFrom("\"tUsers\"");
+			if (userSearchFields != null)
+				User.applySearchFields(userSearchFields, sbUsers);
+			sbUsers.addWhere("(\"tUsers\".\"metaFlags\" & 1) = 0", true);
+			
+			sbUsers.addSelect("\"tUserProfiles\".idk AS \"userProfileIdk\"");
+			sbUsers.addSelect("\"titleIdk\", \"firstName\", \"secondName\", \"thirdName\", \"fourthName\", \"dateOfBirth\"");
+			sbUsers.addSelect("\"streetAddress1\", \"streetAddress2\", \"districtIdk\", \"cityIdk\", \"regionIdk\", \"countryIdk\"");
+			sbUsers.addSelect("\"postalCode\", \"postOfficeBox\", \"telephone\", \"mobile\", \"fax\", \"email\"");
+			sbUsers.addSelect("\"occupationIdk\", \"organization\", \"organizationPosition\", \"displayCustomLogo\", \"displayCustomOrganization\"");
+			sbUsers.addFrom("\"tUserProfiles\"");
+			if (userProfileSearchFields != null)
+				UserProfile.applySearchFields(userProfileSearchFields, sbUsers);
+			sbUsers.addWhere("\"tUsers\".idk > 999 AND \"tUsers\".idk = \"tUserProfiles\".\"userIdk\"", true);
+
+			// rank, roles
+			sbUsers.addSelect("\"tRanks\".name AS \"rankName\", \"tRanks\".description AS \"rankDescription\", priority");
+			sbUsers.addFrom("\"tRanks\"");
+			if (userRankSearchFields != null)
+				Rank.applySearchFields(userRankSearchFields, sbUsers);
+			sbUsers.addWhere("\"tUsers\".\"rankIdk\" = \"tRanks\".\"idk\"", true);
+
+			sbUsers.addSelect("\"tUsersRoles\".\"roleIdk\" AS \"roleIdk\", \"tRoles\".name AS \"roleName\", \"tRoles\".description AS \"roleDescription\"");
+			sbUsers.addFrom("\"tRoles\", \"tUsersRoles\"");
+			if (userRoleSearchFields != null)
+				Role.applySearchFields(userRoleSearchFields, sbUsers);
+			sbUsers.addWhere("\"tUsers\".idk = \"tUsersRoles\".\"userIdk\" AND \"tRoles\".idk = \"tUsersRoles\".\"roleIdk\"", true);
+
+			if (sortOrder == null || sortOrder.equalsIgnoreCase("tlmdes"))
+				sbUsers.addOrder("\"userTimeLastModified\" DESC");
+			else if (sortOrder.equalsIgnoreCase("tlmasc"))
+				sbUsers.addOrder("\"userTimeLastModified\" ASC");
+			else if (sortOrder.equalsIgnoreCase("tcdes"))
+				sbUsers.addOrder("\"userTimeCreated\" DESC");
+			else if (sortOrder.equalsIgnoreCase("tcasc"))
+				sbUsers.addOrder("\"userTimeCreated\" ASC");
+
+			System.out.println("\n\n\n" + sbUsers.toString() + "\n\n\n\n");
+			
+			userResults = BaseEntity.findByQuery(false, manager, sbUsers, null, null);
+
+			Map<Long, Map<String,Object>> userRows = new LinkedHashMap<Long, Map<String,Object>>();
+			Map<Long, Map<String,Object>> userProfileRows = new LinkedHashMap<Long, Map<String,Object>>();
+			Map<Long, Map<String,Object>> userRankRows = new LinkedHashMap<Long, Map<String,Object>>();
+			Map<Long, Map<Long, Map<String,Object>>> userRolesRows = new LinkedHashMap<Long, Map<Long, Map<String,Object>>>();
+			if (userResults != null && userResults.size() > 0)
+			{
+				List<String> columnNames = null;
+				columnNames = sbUsers.getColumnNames(true);
+
+				for (Object entry : userResults)
+				{
+					List rowValues = (List) entry;
+					Long rowKey = null;
+					
+					if (rowValues.size() != columnNames.size())
+						throw new java.lang.IndexOutOfBoundsException("Row size does not match column names size");
+					
+					LinkedHashMap<String, Object> rowMap = new LinkedHashMap<String, Object>();
+					for (int i=0; i<columnNames.size(); i++)
+					{
+						if (columnNames.get(i).equals("userIdk"))
+							rowKey = (Long) rowValues.get(i);
+						rowMap.put(columnNames.get(i), rowValues.get(i));
+					}
+
+					// Pull out the role first
+					Map<String,Object> userRoleRow = (new Role(rowMap)).getAllFields();
+					userRoleRow.put("idk", rowMap.get("roleIdk"));
+					userRoleRow.put("name", rowMap.get("roleName"));
+					userRoleRow.put("description", rowMap.get("roleDescription"));
+
+					// Has this user has already been seen (in a different role)?
+					if (userRows.containsKey(rowKey))
+					{
+						// Then just add the new role
+						Map<Long, Map<String, Object>> existingRoles = userRolesRows.get(rowKey);
+						existingRoles.put((Long) rowMap.get("roleIdk"), userRoleRow);
+					}
+					else
+					{
+						// Otherwise add the new user, user profile, rank, and (first) role (of possibly many)
+						Map<String,Object> userRow = (new User(rowMap)).getAllFields();
+						userRow.put("idk", rowMap.get("userIdk"));
+						userRow.put("timeCreated", rowMap.get("userTimeCreated"));
+						userRow.put("timeLastModified", rowMap.get("userTimeLastModified"));
+						
+						Map<String,Object> userProfileRow = (new UserProfile(rowMap)).getAllFields();
+						userProfileRow.put("idk", rowMap.get("userProfileIdk"));
+						
+						Map<String,Object> userRankRow = new LinkedHashMap<String, Object>();
+						userRankRow.put("idk", rowMap.get("rankIdk"));
+						userRankRow.put("name", rowMap.get("rankName"));
+						userRankRow.put("description", rowMap.get("rankDescription"));
+						userRankRow.put("priority", ((Number) rowMap.get("priority")).shortValue());
+						
+						userRows.put(rowKey, userRow);
+						userProfileRows.put(rowKey, userProfileRow);
+						userRankRows.put(rowKey, userRankRow);
+						
+						Map<Long, Map<String, Object>> newRoles = new LinkedHashMap<Long, Map<String,Object>>();
+						newRoles.put((Long) rowMap.get("roleIdk"), userRoleRow);
+						userRolesRows.put(rowKey, newRoles);
+					}
+				}
+			}
+
+			if (userRows != null)
+			{
+				for (Long key : userRows.keySet())
+				{
+					StringBuffer values = new StringBuffer("");
+					values.append("\n\nUser: " + key + "\n");
+					Map<String, Object> row = userRows.get(key);
+					
+					for (String name : row.keySet())
+						values.append("\t" + name + " = " + row.get(name) + "\n");
+					System.out.println(values.toString() + "\n\n\n\n");
+				}
+			}
+				]]></codeFragment>
+			</codeFragments>
+		</method>
+
+	</methods>
+	
+	<codeFragments>
+		<codeFragment name="cfr.msmb.retrieveProperty.code" location="generic" visibility="sessionBean"><![CDATA[
+		
+		// Nothing for now
+		
+		]]></codeFragment>
+	</codeFragments>
+	
+</coreServerBean>

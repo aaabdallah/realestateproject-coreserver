@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<coreServerBean xmlns="aaacs.coreserver/generation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="aaacs.coreserver/generation ../../schemas/csDocBean.xsd">
+
+	<class>
+		<name>CoreServerBridgeBean</name>
+		<imports>
+			<import>aaacs.coreserver.ejb.entities.support.CacheManager</import>
+		</imports>
+		<annotations>
+			<beanType>Stateless</beanType>
+			<interfaces>
+				<interface name="CoreServerBridge" type="Local"/>
+				<!--<interface name="CoreServerBridgeR" type="Remote"/>-->
+			</interfaces>
+			<transactionManagement type="Container" ctrTxAttr="Required"/>
+		</annotations>
+	</class>
+
+	<methods>
+	
+		<method>
+			<name enResource="Lookup a cached table">lookupTableFromCache</name>
+			<tasks requiresLoggedInUser="false">
+				<task>
+					<authorizations>
+						<authorization/>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="TableName" enResource="Table Name"
+							varName="tableName" type="String">
+							<validations>
+								<parameterValidator>setValidMinimum((double) 1)</parameterValidator>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="SearchParameters" enResource="Search Parameters"
+							varName="searchParameters" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object">
+							<validations>
+								<parameterValidator>setAllowNullStructure(true)</parameterValidator>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+				</task>
+				<task>
+					<execute>
+						<customCode>
+							<codeFragmentReference baseIndent="3">cfr.LookupTableFromCache.Lookup</codeFragmentReference>
+						</customCode>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="Table" enResource="Table of data" type="Map" 
+							keyClasses="Long String" valueClasses="Map Object" varName="results"/>
+					</outputParameters>
+				</task>
+			</tasks>
+			
+			<codeFragments>
+				<codeFragment name="cfr.LookupTableFromCache.Lookup" location="generic" visibility="sessionBean"><![CDATA[
+				Map<Long, Map<String, Object>> results = CacheManager.findByFields(tableName, searchParameters, 0);
+				]]></codeFragment>
+			</codeFragments>
+
+		</method>
+
+		<method>
+			<name enResource="Lookup a cached table column">lookupTableColumnFromCache</name>
+			<tasks requiresLoggedInUser="false">
+				<task>
+					<authorizations>
+						<authorization/>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="TableName" enResource="Table Name"
+							varName="tableName" type="String">
+							<validations>
+								<parameterValidator>setValidMinimum((double) 1)</parameterValidator>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="ColumnName" enResource="Column Name"
+							varName="columnName" type="String">
+							<validations>
+								<parameterValidator>setValidMinimum((double) 1)</parameterValidator>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="SearchParameters" enResource="Search Parameters"
+							varName="searchParameters" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object">
+							<validations>
+								<parameterValidator>setAllowNullStructure(true)</parameterValidator>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+				</task>
+				<task>
+					<execute>
+						<customCode>
+							<codeFragmentReference baseIndent="3">cfr.LookupTableColumnFromCache.Lookup</codeFragmentReference>
+						</customCode>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="Column" enResource="Column of data" type="Array" 
+							keyClasses="null" valueClasses="Object" varName="results"/>
+					</outputParameters>
+				</task>
+			</tasks>
+			
+			<codeFragments>
+				<codeFragment name="cfr.LookupTableColumnFromCache.Lookup" location="generic" visibility="sessionBean"><![CDATA[
+				Object[] results = CacheManager.getColumn(tableName, columnName, searchParameters);
+				]]></codeFragment>
+			</codeFragments>
+
+		</method>
+
+	</methods>
+	
+</coreServerBean>

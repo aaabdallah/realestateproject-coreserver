@@ -1,0 +1,719 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<coreServerBean xmlns="aaacs.coreserver/generation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="aaacs.coreserver/generation ../../schemas/csDocBean.xsd">
+
+	<class>
+		<name>AccessManagerBean</name>
+		<imports>
+			<import>java.util.Calendar</import>
+		</imports>
+		<annotations>
+			<beanType>Stateless</beanType>
+			<interfaces>
+				<interface name="AccessManager" type="Local"/>
+			</interfaces>
+			<transactionManagement type="Container" ctrTxAttr="Required"/>
+		</annotations>
+	</class>
+
+	<methods>
+	
+		<method>
+			<name enResource="Add user with (one) role and profile">addUser</name>
+			<tasks>
+				<task>
+					<authorizations>
+						<authorization>
+							<objectTable>&quot;tUsers&quot;</objectTable>
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="UserFields" enResource="User Fields"
+							varName="userFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="User" entityVarName="user">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="UserRoleFields" enResource="User Role Fields"
+							varName="userRoleFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="UserRole" entityVarName="userRole">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="UserProfileFields" enResource="User Profile Fields"
+							varName="userProfileFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="UserProfile" entityVarName="userProfile">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<create>
+							<dataSource>
+								<singleEntity entityName="user" synchronize="true"/>
+								<setEntityProperty name="userRole" property="userIdk" value="user.getIdk()"/>
+								<singleEntity entityName="userRole"/>
+								<setEntityProperty name="userProfile" property="userIdk" value="user.getIdk()"/>
+								<singleEntity entityName="userProfile"/>
+							</dataSource>
+						</create>
+					</execute>
+				</task>
+				<task>
+					<execute>
+						<customCode>
+							<codeFragmentReference baseIndent="3">cfr.GenerateUserSystemKey</codeFragmentReference>
+						</customCode>
+					</execute>
+				</task>
+				<task>
+					<execute>
+						<update>
+							<dataSource>
+								<singleEntity entityName="user"/>
+							</dataSource>
+						</update>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="User" enResource="User"
+							type="Map" varName="user.getAllFields()" keyClasses="String" 
+							valueClasses="Object"/>
+						<outputParameter displayName="UserRole" enResource="User Role"
+							type="Map" varName="userRole.getAllFields()" keyClasses="String" 
+							valueClasses="Object"/>
+						<outputParameter displayName="UserProfile" enResource="User Profile"
+							type="Map" varName="userProfile.getAllFields()" keyClasses="String" 
+							valueClasses="Object"/>
+					</outputParameters>
+				</task>
+			</tasks>
+			
+			<codeFragments>
+				<codeFragment name="cfr.GenerateUserSystemKey" location="generic" visibility="sessionBean"><![CDATA[
+				Calendar calendar = Calendar.getInstance();
+				calendar.set(2008, 0, 1, 0, 0, 0);
+				calendar.set(Calendar.MILLISECOND, 0);
+				user.setSystemKey( Long.toString(user.getIdk(), Character.MAX_RADIX).toUpperCase() +
+					Long.toString(System.currentTimeMillis() - calendar.getTimeInMillis(), Character.MAX_RADIX).toUpperCase() );
+				]]></codeFragment>
+			</codeFragments>
+		</method>
+
+		<method>
+			<name enResource="Create one user">createUser</name>
+			<tasks>
+				<task>
+					<authorizations>
+						<authorization>
+							<objectTable>&quot;tUsers&quot;</objectTable>
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="UserFields" enResource="User Fields"
+							varName="userFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="User" entityVarName="user">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<create>
+							<dataSource>
+								<singleEntity entityName="user"/>
+							</dataSource>
+						</create>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="User" enResource="User"
+							type="Map" varName="user.getAllFields()" keyClasses="String" 
+							valueClasses="Object"/>
+					</outputParameters>
+				</task>
+			</tasks>
+		</method>
+		
+		<method>
+			<name enResource="Create many users">createUsers</name>
+			<tasks>
+				<task>
+					<authorizations>
+						<authorization>
+							<objectTable>&quot;tUsers&quot;</objectTable>
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="UsersFields" enResource="Users' Fields"
+							varName="usersFields" type="List&lt;Map&lt;String, Object&gt;&gt;" 
+							keyClasses="null String" valueClasses="Map Object"
+							entityType="User" entityVarName="userList">
+							<validations>
+								<staticEntityListValidator checkIfUserSuppliedIdk="false"></staticEntityListValidator>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<create>
+							<dataSource>
+								<multipleEntities entityListName="userList"/>
+							</dataSource>
+						</create>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="Users" enResource="Users"
+							type="Map" varName="entitiesToMaps(userList)" keyClasses="Long String" 
+							valueClasses="Map Object"/>
+					</outputParameters>
+				</task>
+			</tasks>
+		</method>
+		
+		<method>
+			<name enResource="Delete many users">deleteUsers</name>
+			<tasks>
+				<task>
+					<authorizations>
+						<authorization>
+							<objectTable>&quot;tUsers&quot;</objectTable>
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="UsersFields" enResource="Users Fields"
+							varName="usersFields" type="List&lt;Map&lt;String, Object&gt;&gt;"
+							keyClasses="null String" valueClasses="Map Object" 
+							entityType="User" entityVarName="userList">
+							<validations>
+								<staticEntityListValidator checkIfUserSuppliedIdk="true"/>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<delete>
+							<dataSource>
+								<multipleEntities entityListName="userList"/>
+							</dataSource>
+						</delete>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="DeletedUsers" enResource="Count of deleted users"
+							type="Integer" varName="affectedEntitiesCounter1"/>
+					</outputParameters>
+				</task>
+			</tasks>
+		</method>
+
+		<method>
+			<name enResource="Bulk delete many users, searching by field set">deleteUsersByFieldSet</name>
+			<tasks>
+				<task>
+					<authorizations>
+						<authorization>
+							<objectTable>&quot;tUsers&quot;</objectTable>
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="UserFields" enResource="User Fields"
+							varName="userFields" type="Map&lt;String, Object&gt;"
+							keyClasses="String" valueClasses="Object"
+							entityType="User" entityVarName="user">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="SearchFields" enResource="Search Fields"
+							varName="searchFields" type="Map&lt;String, Object&gt;"
+							keyClasses="String" valueClasses="Object">
+							<validations>
+								<parameterValidator/>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<delete>
+							<dataSource>
+								<bulkFromFieldSet fieldsName="userFields" entityType="User">searchFields</bulkFromFieldSet>
+							</dataSource>
+							<errorChecks>
+								<sizeCheck>
+									<specific>userFields.size()</specific>
+									<error usage="addToErrors" userVar="errors" source="DATARESULTS"
+										type="action.DeletedLessThanExpected" useInternalTypePrefix="false" request="request"/>
+								</sizeCheck>
+							</errorChecks>
+						</delete>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="DeletedUsers" enResource="Count of deleted users"
+							type="Integer" varName="affectedEntitiesCounter1"/>
+					</outputParameters>
+				</task>
+			</tasks>
+		</method>
+
+		<method>
+			<name enResource="Find all profile-supported districts arranged by country, region, and city">findAllProfileDistricts</name>
+			<tasks requiresLoggedInUser="false">
+				<task>
+					<authorizations>
+						<authorization/>
+					</authorizations>
+					<execute>
+						<customCode>
+							<codeFragmentReference baseIndent="3">cfr.findAllProfileDistricts.Find</codeFragmentReference>
+						</customCode>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="Districts" enResource="Districts by country, region, city"
+							type="List" varName="list" keyClasses="null" 
+							valueClasses="Object" condition="list.size() &gt; 0"/>
+					</outputParameters>
+				</task>
+			</tasks>
+			
+			<codeFragments>
+				<codeFragment name="cfr.findAllProfileDistricts.Find" location="generic" visibility="sessionBean"><![CDATA[
+				List list = Country.findAllDistricts(manager, Country.Status.BLOCKEDFROMPROFILES.value, null);
+				]]></codeFragment>
+			</codeFragments>
+		</method>
+
+		<method>
+			<name enResource="Find user profiles by user identification keys">findUserProfilesByUserIdks</name>
+			<tasks>
+				<task>
+					<authorizations>
+						<authorization>
+							<objectTable>&quot;tUserProfiles&quot;</objectTable>
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="UserIdks" enResource="User Idk's"
+							type="Long[]" varName="userIdks">
+							<validations>
+								<parameterValidator>setValidMinimum((double) PrimaryKeyHolder.KEY_HIGHEST_RESERVED + 1)</parameterValidator>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<read>
+							<findMechanism>
+								<fields findMethod="UserProfile.findUserProfileByFields" listVarName="userProfilesList">
+									<field><name>\"userIdk\"</name><value>userIdks</value></field>
+								</fields>
+							</findMechanism>
+						</read>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="UserProfiles" enResource="User profiles"
+							type="Map" varName="entitiesToMaps(userProfilesList)" keyClasses="Long String" 
+							valueClasses="Map Object" condition="userProfilesList.size() &gt; 0"/>
+					</outputParameters>
+				</task>
+			</tasks>
+		</method>
+		
+		<method>
+			<name enResource="Find users using identification keys">findUsersByIdks</name>
+			<tasks>
+				<task>
+					<authorizations>
+						<authorization>
+							<objectTable>&quot;tUsers&quot;</objectTable>
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="Idks" enResource="User idk's"
+							type="Long[]" varName="idks">
+							<validations>
+								<parameterValidator>setValidMinimum((double) PrimaryKeyHolder.KEY_HIGHEST_RESERVED + 1)</parameterValidator>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<read>
+							<findMechanism>
+								<fields findMethod="User.findUserByFields" listVarName="usersList">
+									<field><name>idk</name><value>idks</value></field>
+								</fields>
+							</findMechanism>
+						</read>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="Users" enResource="Users"
+							type="Map" varName="entitiesToMaps(usersList)" keyClasses="Long String" 
+							valueClasses="Map Object" condition="usersList.size() &gt; 0"/>
+					</outputParameters>
+				</task>
+			</tasks>
+		</method>
+		
+		<method>
+			<name enResource="Login">login</name>
+			<tasks requiresLoggedInUser="false">
+				<task>
+					<authorizations>
+						<authorization/>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="Username" enResource="Username"
+							type="String" varName="username">
+							<validations>
+								<staticFieldValidator>User.validateUsername</staticFieldValidator>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="Password" enResource="Password"
+							type="String" varName="password">
+							<validations>
+								<staticFieldValidator>User.validatePassword</staticFieldValidator>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<read>
+							<findMechanism>
+								<condition findMethod="User.findUserByCondition" listVarName="userList"><![CDATA[
+								" WHERE lower(username) = '" + username + "' AND password = '" + password + "'"					
+								]]></condition>
+							</findMechanism>
+							<errorChecks>
+								<sizeCheck>
+									<specific>1</specific>
+									<error usage="addToErrors" userVar="errors" source="DATARESULTS" 
+										type="InvalidUsernamePassword" request="request">
+										<item><arg>&quot;action.Login.Username&quot;</arg><arg>username</arg></item>
+										<item><arg>&quot;action.Login.Password&quot;</arg><arg>password</arg></item>
+									</error>
+								</sizeCheck>
+								<customCheck>
+									<codeFragmentReference baseIndent="3">cfr.Login.CheckUserBlocked</codeFragmentReference>
+								</customCheck>
+							</errorChecks>
+						</read>
+					</execute>
+				</task>
+
+				<task>
+					<execute>
+						<read>
+							<findMechanism>
+								<condition findMethod="UserRole.findUserRoleByCondition" listVarName="userRoleList"><![CDATA[
+								" WHERE \"userIdk\" = '" + user.getIdk() + "'"
+								]]></condition>
+							</findMechanism>
+							<errorChecks>
+								<sizeCheck>
+									<minimum>1</minimum>
+									<error usage="addToErrors" userVar="errors" source="DATARESULTS"
+										type="UserHasNoRoles" request="request"/>
+								</sizeCheck>
+							</errorChecks>
+						</read>
+					</execute>
+				</task>
+				
+				<task>
+					<execute>
+						<read>
+							<findMechanism>
+								<fields findMethod="UserProfile.findUserProfileByFields" listVarName="userProfilesList">
+									<field><name>\"userIdk\"</name><value>user.getIdk()</value></field>
+								</fields>
+							</findMechanism>
+						</read>
+					</execute>
+				</task>
+
+				<task>
+					<execute>
+						<customCode>
+							<codeFragmentReference baseIndent="3">cfr.Login.PreReturn</codeFragmentReference>
+						</customCode>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="User" enResource="User" type="Map" 
+							varName="user.getAllFields()" keyClasses="String" valueClasses="Object"/>
+						<outputParameter displayName="UserRoles" enResource="User roles" type="Map"
+							varName="entitiesToMaps(userRoleList)" keyClasses="Long String" valueClasses="Map Object"/>
+						<outputParameter displayName="UserProfile" enResource="User profile"
+							type="Map" varName="entitiesToMaps(userProfilesList).values().iterator().next()" keyClasses="String" 
+							valueClasses="Object" condition="userProfilesList.size() &gt; 0"/>
+					</outputParameters>
+				</task>
+			</tasks>
+			
+			<codeFragments>
+				<codeFragment name="cfr.Login.PreReturn" location="generic" visibility="sessionBean">
+				response.setLoginToken( new LoginToken(user.getIdk()) );
+				// in the future, perhaps we will need to load the user's permissions if 
+				// the client's user interface is very fine-grained and dependent on
+				// those permissions
+		
+				UserManager.addUser(user);
+				</codeFragment>
+				<codeFragment name="cfr.Login.CheckUserBlocked" location="generic" visibility="sessionBean"><![CDATA[
+				User user = null;
+				if (userList != null && userList.size() > 0)
+				{
+					user = (User) userList.get(0);
+
+					// check if the user is blocked
+					if ((user.getStatus() & User.Status.BLOCKED.value) > 0)
+						errors.add(new ErrorReport("error.System.CoreServer", ErrorReport.Source.DATARESULTS, 
+							"action.Login.UserBlocked", request));
+				}
+				]]></codeFragment>
+			</codeFragments>
+		</method>
+
+		<method>
+			<name enResource="Logout">logout</name>
+			<tasks>
+				<task>
+					<authorizations>
+						<authorization/>
+					</authorizations>
+					<execute>
+						<customCode>
+							<codeFragmentReference baseIndent="3">cfr.Logout.Operation</codeFragmentReference>
+						</customCode>
+					</execute>
+				</task>
+			</tasks>
+			
+			<codeFragments>
+				<codeFragment name="cfr.Logout.Operation" location="generic" visibility="sessionBean"><![CDATA[
+				UserManager.removeUser( request.getLoginToken().getUserIdk() );
+				response.setLoginToken( new LoginToken() );
+				]]></codeFragment>
+			</codeFragments>
+		</method>
+
+		<method>
+			<name enResource="Update one user">updateUser</name>
+			<tasks>
+				<task>
+					<authorizations>
+						<authorization>
+							<objectTable>&quot;tUsers&quot;</objectTable>
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="UserFields" enResource="User Fields"
+							varName="userFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="User" entityVarName="user">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="true"/>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<update>
+							<dataSource>
+								<singleEntity entityName="user"/>
+							</dataSource>
+						</update>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="User" enResource="User"
+							type="Map" varName="user.getAllFields()" keyClasses="String" 
+							valueClasses="Object"/>
+					</outputParameters>
+				</task>
+			</tasks>
+		</method>
+		
+		<method>
+			<name enResource="Update many user profiles">updateUserProfiles</name>
+			<tasks>
+				<task>
+					<authorizations>
+						<authorization>
+							<objectTable>&quot;tUserProfiles&quot;</objectTable>
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="UserProfilesFields" enResource="User Profiles Fields"
+							varName="userProfilesFields" type="List&lt;Map&lt;String, Object&gt;&gt;"
+							keyClasses="null String" valueClasses="Map Object" 
+							entityType="UserProfile" entityVarName="userProfileList">
+							<validations>
+								<staticEntityListValidator checkIfUserSuppliedIdk="true"/>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<update>
+							<dataSource>
+								<multipleEntities entityListName="userProfileList"/>
+							</dataSource>
+						</update>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="UserProfiles" enResource="User Profiles"
+							type="Map" varName="entitiesToMaps(userProfileList)" keyClasses="Long String" 
+							valueClasses="Map Object"/>
+					</outputParameters>
+				</task>
+			</tasks>
+		</method>
+
+		<method>
+			<name enResource="Update many users">updateUsers</name>
+			<tasks>
+				<task>
+					<authorizations>
+						<authorization>
+							<objectTable>&quot;tUsers&quot;</objectTable>
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="UsersFields" enResource="Users Fields"
+							varName="usersFields" type="List&lt;Map&lt;String, Object&gt;&gt;"
+							keyClasses="null String" valueClasses="Map Object" 
+							entityType="User" entityVarName="userList">
+							<validations>
+								<staticEntityListValidator checkIfUserSuppliedIdk="true"/>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<update>
+							<dataSource>
+								<multipleEntities entityListName="userList"/>
+							</dataSource>
+						</update>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="Users" enResource="Users"
+							type="Map" varName="entitiesToMaps(userList)" keyClasses="Long String" 
+							valueClasses="Map Object"/>
+					</outputParameters>
+				</task>
+			</tasks>
+		</method>
+
+		<method>
+			<name enResource="Bulk update many users, searching by field set">updateUsersByFieldSet</name>
+			<tasks>
+				<task>
+					<authorizations>
+						<authorization>
+							<objectTable>&quot;tUsers&quot;</objectTable>
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="UserFields" enResource="User Fields"
+							varName="userFields" type="Map&lt;String, Object&gt;"
+							keyClasses="String" valueClasses="Object"
+							entityType="User" entityVarName="user">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="SearchFields" enResource="Search Fields"
+							varName="searchFields" type="Map&lt;String, Object&gt;"
+							keyClasses="String" valueClasses="Object">
+							<validations>
+								<parameterValidator/>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<update>
+							<dataSource>
+								<bulkFromFieldSet fieldsName="userFields" entityType="User">searchFields</bulkFromFieldSet>
+							</dataSource>
+							<errorChecks>
+								<sizeCheck>
+									<specific>userFields.size()</specific>
+									<error usage="addToErrors" userVar="errors" source="DATARESULTS"
+										type="action.UpdatedLessThanExpected" useInternalTypePrefix="false" request="request"/>
+								</sizeCheck>
+							</errorChecks>
+						</update>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="UpdatedUsers" enResource="Count of updated users"
+							type="Integer" varName="affectedEntitiesCounter1"/>
+					</outputParameters>
+				</task>
+			</tasks>
+		</method>
+
+		<method>
+			<name enResource="Update one user including the extended profile">updateUserWithProfile</name>
+			<tasks>
+				<task>
+					<authorizations>
+						<authorization>
+							<objectTable>&quot;tUsers&quot;</objectTable>
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="UserFields" enResource="User Fields"
+							varName="userFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="User" entityVarName="user">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="true"/>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<update>
+							<dataSource>
+								<singleEntity entityName="user"/>
+							</dataSource>
+						</update>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="User" enResource="User"
+							type="Map" varName="user.getAllFields()" keyClasses="String" 
+							valueClasses="Object"/>
+					</outputParameters>
+				</task>
+				<task>
+					<authorizations>
+						<authorization>
+							<objectTable>&quot;tUserProfiles&quot;</objectTable>
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="UserProfileFields" enResource="User Profile Fields"
+							varName="userProfileFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="UserProfile" entityVarName="userProfile">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="true"/>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<update>
+							<dataSource>
+								<singleEntity entityName="userProfile"/>
+							</dataSource>
+						</update>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="UserProfile" enResource="User Profile"
+							type="Map" varName="userProfile.getAllFields()" keyClasses="String" 
+							valueClasses="Object"/>
+					</outputParameters>
+				</task>
+			</tasks>
+		</method>
+
+	</methods>
+	
+</coreServerBean>

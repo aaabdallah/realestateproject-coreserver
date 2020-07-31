@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<coreServerEntity xmlns="aaacs.coreserver/generation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="aaacs.coreserver/generation ../../schemas/csDocEntity.xsd">
+	
+	<table>
+		<name>tSales</name>
+		<constraints>
+			<foreignKey>
+				<referringColumns>priceTypeIdk</referringColumns>
+				<referredTable>tPropertyOptions</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>bidTypeIdk</referringColumns>
+				<referredTable>tPropertyOptions</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>pricePerTypeIdk</referringColumns>
+				<referredTable>tPropertyOptions</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>currencyIdk</referringColumns>
+				<referredTable>tCurrencies</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+		</constraints>
+	</table>
+
+	<class>
+		<name>Sale</name>
+		<annotations>
+			<entity/>
+			<sqlResultSetMappings>
+				<standardMapping/>
+			</sqlResultSetMappings>
+		</annotations>
+	</class>
+
+	<attributes>
+		<includeAttributes>conf/generation/descriptors/standardAttributes.xml</includeAttributes>
+
+		<attribute>
+			<columnDescription name="priceTypeIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="priceTypeIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="PropertyOption" key="name"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<equals type="Long"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="bidTypeIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="bidTypeIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="PropertyOption" key="name"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<equals type="Long"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="cashPrice" type="REAL">
+			</columnDescription>
+			<javaFieldDescription name="cashPrice" type="Float">
+				<annotations><basic/></annotations>
+				<validation>
+					<Float>
+						<!-- <allowNull>false</allowNull> -->
+						<maxFracLength>2</maxFracLength>
+					</Float>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<minmax type="Float" customSearchConstraint="cfr.cashPrice.ignore"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="bid" type="REAL">
+			</columnDescription>
+			<javaFieldDescription name="bid" type="Float">
+				<annotations><basic/></annotations>
+				<validation>
+					<Float>
+						<!-- <allowNull>false</allowNull> -->
+						<maxFracLength>2</maxFracLength>
+					</Float>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<minmax type="Float" customSearchConstraint="cfr.cashPrice.ignore"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="pricePerTypeIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="pricePerTypeIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="PropertyOption" key="name"/>
+				<dto defaultValue='UtilitiesDelegate.getPropertyOption("pricePerType", "pricePerType.Property")'/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<equals type="Long" customSearchConstraint="cfr.pricePerTypeIdk.ignore"
+					defaultValue='UtilitiesDelegate.getPropertyOption("pricePerType", "pricePerType.Property")'/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="installmentsAcceptable" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="installmentsAcceptable" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="installmentsPrice" type="REAL">
+			</columnDescription>
+			<javaFieldDescription name="installmentsPrice" type="Float">
+				<annotations><basic/></annotations>
+				<validation>
+					<Float>
+						<maxFracLength>2</maxFracLength>
+					</Float>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="downPayment" type="REAL">
+			</columnDescription>
+			<javaFieldDescription name="downPayment" type="Float">
+				<annotations><basic/></annotations>
+				<validation>
+					<Float>
+						<maxFracLength>2</maxFracLength>
+					</Float>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="currencyIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="currencyIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_HIGHEST_RESERVED + 1</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="Currency" key="name"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<equals type="Long"/>
+			</searchCriteria>
+		</attribute>
+
+	</attributes>
+
+	<populate>
+		<defaults>
+			<columnValues>
+			priceTypeIdk '1'
+			bidTypeIdk '1'
+			currencyIdk '1'
+			pricePerTypeIdk '1'
+			</columnValues>
+		</defaults>
+		<insert>
+			<columnValues>
+			idk '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '101'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '102'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '103'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '901'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '902'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '903'
+			</columnValues>
+		</insert>
+	</populate>
+
+	<codeFragments>
+		<codeFragment name="cfr.pricePerTypeIdk.ignore" location="generic" baseIndent="2">
+		// Don't check pricePerTypeIdk: needs to be done in conjunction with cashPrice.
+		</codeFragment>
+		<codeFragment name="cfr.cashPrice.ignore" location="generic" baseIndent="2">
+		// Don't check pricePerTypeIdk: needs to be done in conjunction with cashPrice.
+		</codeFragment>
+		<codeFragment name="cfr.cashPrice.onlyForProperty" location="generic" baseIndent="2"><![CDATA[
+		Long pricePerTypeIdk = (Long) searchFields.get("pricePerTypeIdk");
+		if (pricePerTypeIdk != null)
+		{
+			Map<String, Object> searchFields1 = new LinkedHashMap<String, Object>();
+			searchFields1.put("idk", pricePerTypeIdk);
+
+			Map<Long, Map<String, Object>> propertyOptionsMap = PropertyOption.cacheLookup(searchFields1);
+			String pricePerType = (String) propertyOptionsMap.get(pricePerTypeIdk).get("name");
+
+			if (pricePerType.equals("pricePerType.Property"))
+			{
+				if (searchFields.get("cashPriceMinimum") != null && searchFields.get("cashPriceMinimum").toString().length() > 0)
+					selectBuilder.addWhere(entityTableName + ".\"cashPrice\" >= " + searchFields.get("cashPriceMinimum"), true);
+				if (searchFields.get("cashPriceMaximum") != null && searchFields.get("cashPriceMaximum").toString().length() > 0)
+					selectBuilder.addWhere(entityTableName + ".\"cashPrice\" <= " + searchFields.get("cashPriceMaximum"), true);
+			}
+			// else (pricePerType.equals("pricePerType.SquareMeter"))
+			// ...
+			// (leave this for outside where they have access to size of property)
+		}
+		]]></codeFragment>
+	</codeFragments>
+</coreServerEntity>

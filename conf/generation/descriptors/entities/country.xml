@@ -1,0 +1,1440 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<coreServerEntity xmlns="aaacs.coreserver/generation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="aaacs.coreserver/generation ../../schemas/csDocEntity.xsd">
+	
+	<table>
+		<name>tCountries</name>
+		<constraints>
+			<unique>name</unique>
+		</constraints>
+	</table>
+
+	<cache/>
+
+	<class>
+		<name>Country</name>
+		<import>aaacs.coreserver.ejb.entities.support.CacheManager</import>
+		<import>javax.persistence.ColumnResult</import>
+		<annotations>
+			<entity/>
+			<sqlResultSetMappings>
+				<standardMapping/>
+				<sqlResultSetMapping name="List&lt;CountryRegionCityDistrict&gt;">
+					<columns>
+						<column name="countryIdk"/>
+						<column name="countryName"/>
+						<column name="regionIdk"/>
+						<column name="regionName"/>
+						<column name="cityIdk"/>
+						<column name="cityName"/>
+						<column name="districtIdk"/>
+						<column name="districtName"/>
+					</columns>
+				</sqlResultSetMapping>
+			</sqlResultSetMappings>
+		</annotations>
+		<enums>
+			<enum name="Status" type="Short" bitMask="true">
+				<comment type="Java" indent="1">
+				The different statuses a location may have.
+				</comment>
+				<constant name="BLOCKEDFROMPROPERTIES" value="0x1"/>
+				<constant name="BLOCKEDFROMPROFILES" value="0x2"/>
+			</enum>
+		</enums>
+	</class>
+
+	<attributes>
+		<includeAttributes>conf/generation/descriptors/standardAttributes.xml</includeAttributes>
+
+		<attribute>
+			<columnDescription name="name" type="VARCHAR(100)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="name" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>1</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+				<dto cacheLookup="true"/>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="status" type="INT2">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="status" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<allowNull>false</allowNull>
+						<validChoices useChoicesAs="bitMasks">
+							<static>(Object[]) Status.allValues</static>
+						</validChoices>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+	</attributes>
+	
+	<populate>
+		<defaults> <!-- NOTICE: ALL COUNTRIES BUT SAUDI ARABIA ARE BLOCKED FOR NOW -->
+			<columnValues>
+			name 'string.Default'
+			status '3'
+			</columnValues>
+		</defaults>
+		<insert>
+			<columnValues>
+			idk '1'
+			name 'string.Unset'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '101'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '102'
+			name 'string.Unknown'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '103'
+			name 'string.Nonexistent'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '901'
+			name 'string.MatchAll'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '902'
+			name 'string.MatchReserved'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '903'
+			name 'string.MatchUser'
+			</columnValues>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Afghanistan'
+			</columnValues>
+			<store>countryAfghanistan</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Albania'
+			</columnValues>
+			<store>countryAlbania</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Algeria'
+			</columnValues>
+			<store>countryAlgeria</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Andorra'
+			</columnValues>
+			<store>countryAndorra</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Angola'
+			</columnValues>
+			<store>countryAngola</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Argentina'
+			</columnValues>
+			<store>countryArgentina</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Armenia'
+			</columnValues>
+			<store>countryArmenia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Australia'
+			</columnValues>
+			<store>countryAustralia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Austria'
+			</columnValues>
+			<store>countryAustria</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Azerbaijan'
+			</columnValues>
+			<store>countryAzerbaijan</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Bahrain'
+			</columnValues>
+			<store>countryBahrain</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Bangladesh'
+			</columnValues>
+			<store>countryBangladesh</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Barbados'
+			</columnValues>
+			<store>countryBarbados</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Belarus'
+			</columnValues>
+			<store>countryBelarus</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Belgium'
+			</columnValues>
+			<store>countryBelgium</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Belize'
+			</columnValues>
+			<store>countryBelize</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Benin'
+			</columnValues>
+			<store>countryBenin</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Bhutan'
+			</columnValues>
+			<store>countryBhutan</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Bosnia'
+			</columnValues>
+			<store>countryBosnia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Botswana'
+			</columnValues>
+			<store>countryBotswana</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Brazil'
+			</columnValues>
+			<store>countryBrazil</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Brunei'
+			</columnValues>
+			<store>countryBrunei</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Bulgaria'
+			</columnValues>
+			<store>countryBulgaria</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.BurkinaFaso'
+			</columnValues>
+			<store>countryBurkinaFaso</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Burundi'
+			</columnValues>
+			<store>countryBurundi</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Cambodia'
+			</columnValues>
+			<store>countryCambodia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Cameroon'
+			</columnValues>
+			<store>countryCameroon</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Canada'
+			</columnValues>
+			<store>countryCanada</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.CapeVerde'
+			</columnValues>
+			<store>countryCapeVerde</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Chad'
+			</columnValues>
+			<store>countryChad</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Chile'
+			</columnValues>
+			<store>countryChile</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.China'
+			</columnValues>
+			<store>countryChina</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Colombia'
+			</columnValues>
+			<store>countryColombia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Comoros'
+			</columnValues>
+			<store>countryComoros</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.CostaRica'
+			</columnValues>
+			<store>countryCostaRica</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Croatia'
+			</columnValues>
+			<store>countryCroatia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Cuba'
+			</columnValues>
+			<store>countryCuba</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Cyprus'
+			</columnValues>
+			<store>countryCyprus</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.CzechRepublic'
+			</columnValues>
+			<store>countryCzechRepublic</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Denmark'
+			</columnValues>
+			<store>countryDenmark</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Djibouti'
+			</columnValues>
+			<store>countryDjibouti</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Dominica'
+			</columnValues>
+			<store>countryDominica</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.DominicanRepublic'
+			</columnValues>
+			<store>countryDominicanRepublic</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Ecuador'
+			</columnValues>
+			<store>countryEcuador</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Egypt'
+			</columnValues>
+			<store>countryEgypt</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.ElSalvador'
+			</columnValues>
+			<store>countryElSalvador</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.EquatorialGuinea'
+			</columnValues>
+			<store>countryEquatorialGuinea</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Eritrea'
+			</columnValues>
+			<store>countryEritrea</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Estonia'
+			</columnValues>
+			<store>countryEstonia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Ethiopia'
+			</columnValues>
+			<store>countryEthiopia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Fiji'
+			</columnValues>
+			<store>countryFiji</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Finland'
+			</columnValues>
+			<store>countryFinland</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.France'
+			</columnValues>
+			<store>countryFrance</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Gabon'
+			</columnValues>
+			<store>countryGabon</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Gambia'
+			</columnValues>
+			<store>countryGambia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Georgia'
+			</columnValues>
+			<store>countryGeorgia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Germany'
+			</columnValues>
+			<store>countryGermany</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Ghana'
+			</columnValues>
+			<store>countryGhana</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Greece'
+			</columnValues>
+			<store>countryGreece</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Grenada'
+			</columnValues>
+			<store>countryGrenada</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Guatemala'
+			</columnValues>
+			<store>countryGuatemala</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Guinea'
+			</columnValues>
+			<store>countryGuinea</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Guyana'
+			</columnValues>
+			<store>countryGuyana</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Haiti'
+			</columnValues>
+			<store>countryHaiti</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Honduras'
+			</columnValues>
+			<store>countryHonduras</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Hungary'
+			</columnValues>
+			<store>countryHungary</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Iceland'
+			</columnValues>
+			<store>countryIceland</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.India'
+			</columnValues>
+			<store>countryIndia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Indonesia'
+			</columnValues>
+			<store>countryIndonesia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Iran'
+			</columnValues>
+			<store>countryIran</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Iraq'
+			</columnValues>
+			<store>countryIraq</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Ireland'
+			</columnValues>
+			<store>countryIreland</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Israel'
+			</columnValues>
+			<store>countryIsrael</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Italy'
+			</columnValues>
+			<store>countryItaly</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Jamaica'
+			</columnValues>
+			<store>countryJamaica</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Japan'
+			</columnValues>
+			<store>countryJapan</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Jordan'
+			</columnValues>
+			<store>countryJordan</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Kazakhstan'
+			</columnValues>
+			<store>countryKazakhstan</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Kenya'
+			</columnValues>
+			<store>countryKenya</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Kiribati'
+			</columnValues>
+			<store>countryKiribati</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Korea'
+			</columnValues>
+			<store>countryKorea</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Kuwait'
+			</columnValues>
+			<store>countryKuwait</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Kyrgyzstan'
+			</columnValues>
+			<store>countryKyrgyzstan</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Laos'
+			</columnValues>
+			<store>countryLaos</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Latvia'
+			</columnValues>
+			<store>countryLatvia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Lebanon'
+			</columnValues>
+			<store>countryLebanon</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Lesotho'
+			</columnValues>
+			<store>countryLesotho</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Liberia'
+			</columnValues>
+			<store>countryLiberia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Libya'
+			</columnValues>
+			<store>countryLibya</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Liechtenstein'
+			</columnValues>
+			<store>countryLiechtenstein</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Lithuania'
+			</columnValues>
+			<store>countryLithuania</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Luxembourg'
+			</columnValues>
+			<store>countryLuxembourg</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Macedonia'
+			</columnValues>
+			<store>countryMacedonia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Madagascar'
+			</columnValues>
+			<store>countryMadagascar</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Malawi'
+			</columnValues>
+			<store>countryMalawi</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Malaysia'
+			</columnValues>
+			<store>countryMalaysia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Maldives'
+			</columnValues>
+			<store>countryMaldives</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Mali'
+			</columnValues>
+			<store>countryMali</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Malta'
+			</columnValues>
+			<store>countryMalta</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Mauritania'
+			</columnValues>
+			<store>countryMauritania</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Mauritius'
+			</columnValues>
+			<store>countryMauritius</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Mexico'
+			</columnValues>
+			<store>countryMexico</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Moldova'
+			</columnValues>
+			<store>countryMoldova</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Monaco'
+			</columnValues>
+			<store>countryMonaco</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Mongolia'
+			</columnValues>
+			<store>countryMongolia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Morocco'
+			</columnValues>
+			<store>countryMorocco</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Mozambique'
+			</columnValues>
+			<store>countryMozambique</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Myanmar'
+			</columnValues>
+			<store>countryMyanmar</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Namibia'
+			</columnValues>
+			<store>countryNamibia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Nauru'
+			</columnValues>
+			<store>countryNauru</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Nepal'
+			</columnValues>
+			<store>countryNepal</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Netherlands'
+			</columnValues>
+			<store>countryNetherlands</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.NewZealand'
+			</columnValues>
+			<store>countryNewZealand</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Nicaragua'
+			</columnValues>
+			<store>countryNicaragua</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Niger'
+			</columnValues>
+			<store>countryNiger</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Nigeria'
+			</columnValues>
+			<store>countryNigeria</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Norway'
+			</columnValues>
+			<store>countryNorway</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Oman'
+			</columnValues>
+			<store>countryOman</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Pakistan'
+			</columnValues>
+			<store>countryPakistan</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Palau'
+			</columnValues>
+			<store>countryPalau</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Panama'
+			</columnValues>
+			<store>countryPanama</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Paraguay'
+			</columnValues>
+			<store>countryParaguay</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Peru'
+			</columnValues>
+			<store>countryPeru</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Philippines'
+			</columnValues>
+			<store>countryPhilippines</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Poland'
+			</columnValues>
+			<store>countryPoland</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Portugal'
+			</columnValues>
+			<store>countryPortugal</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Qatar'
+			</columnValues>
+			<store>countryQatar</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Romania'
+			</columnValues>
+			<store>countryRomania</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Russia'
+			</columnValues>
+			<store>countryRussia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Rwanda'
+			</columnValues>
+			<store>countryRwanda</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.SaintLucia'
+			</columnValues>
+			<store>countrySaintLucia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Samoa'
+			</columnValues>
+			<store>countrySamoa</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.SanMarino'
+			</columnValues>
+			<store>countrySanMarino</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.SaudiArabia'
+			status '0'
+			</columnValues>
+			<store>countrySaudiArabia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Senegal'
+			</columnValues>
+			<store>countrySenegal</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Seychelles'
+			</columnValues>
+			<store>countrySeychelles</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.SierraLeone'
+			</columnValues>
+			<store>countrySierraLeone</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Singapore'
+			</columnValues>
+			<store>countrySingapore</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Slovakia'
+			</columnValues>
+			<store>countrySlovakia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Slovenia'
+			</columnValues>
+			<store>countrySlovenia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.SolomonIslands'
+			</columnValues>
+			<store>countrySolomonIslands</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Somalia'
+			</columnValues>
+			<store>countrySomalia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.SouthAfrica'
+			</columnValues>
+			<store>countrySouthAfrica</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Spain'
+			</columnValues>
+			<store>countrySpain</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.SriLanka'
+			</columnValues>
+			<store>countrySriLanka</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Sudan'
+			</columnValues>
+			<store>countrySudan</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Suriname'
+			</columnValues>
+			<store>countrySuriname</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Swaziland'
+			</columnValues>
+			<store>countrySwaziland</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Sweden'
+			</columnValues>
+			<store>countrySweden</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Switzerland'
+			</columnValues>
+			<store>countrySwitzerland</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Syria'
+			</columnValues>
+			<store>countrySyria</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Tajikistan'
+			</columnValues>
+			<store>countryTajikistan</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Tanzania'
+			</columnValues>
+			<store>countryTanzania</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Thailand'
+			</columnValues>
+			<store>countryThailand</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Togo'
+			</columnValues>
+			<store>countryTogo</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Tunisia'
+			</columnValues>
+			<store>countryTunisia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Turkey'
+			</columnValues>
+			<store>countryTurkey</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Turkmenistan'
+			</columnValues>
+			<store>countryTurkmenistan</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Tuvalu'
+			</columnValues>
+			<store>countryTuvalu</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Uganda'
+			</columnValues>
+			<store>countryUganda</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Ukraine'
+			</columnValues>
+			<store>countryUkraine</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.UnitedArabEmirates'
+			</columnValues>
+			<store>countryUnitedArabEmirates</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.UnitedKingdom'
+			</columnValues>
+			<store>countryUnitedKingdom</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.UnitedStates'
+			</columnValues>
+			<store>countryUnitedStates</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Uruguay'
+			</columnValues>
+			<store>countryUruguay</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Uzbekistan'
+			</columnValues>
+			<store>countryUzbekistan</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Vanuatu'
+			</columnValues>
+			<store>countryVanuatu</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Venezuela'
+			</columnValues>
+			<store>countryVenezuela</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Vietnam'
+			</columnValues>
+			<store>countryVietnam</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Yemen'
+			</columnValues>
+			<store>countryYemen</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Zambia'
+			</columnValues>
+			<store>countryZambia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'country.Zimbabwe'
+			</columnValues>
+			<store>countryZimbabwe</store>
+		</insert>
+	</populate>
+	
+	<codeFragments>
+
+		<codeFragment name="findAllDistricts" location="staticMethod" baseIndent="1"><![CDATA[
+	static public List findAllDistricts(EntityManager manager, Short excludeMask, Short includeMask)
+	{
+		String[] tables = { "\"tCountries\"", "\"tRegions\"", "\"tCities\"", "\"tDistricts\"" };
+		String[] columnNames = 
+			{ "\"tCountries\".idk AS \"countryIdk\"", "\"tCountries\".name AS \"countryName\"", 
+			"\"tRegions\".idk AS \"regionIdk\"", "\"tRegions\".name AS \"regionName\"", 
+			"\"tCities\".idk AS \"cityIdk\"", "\"tCities\".name AS \"cityName\"", 
+			"\"tDistricts\".idk AS \"districtIdk\"", "\"tDistricts\".name AS \"districtName\"" };
+		String condition = 
+			"\"tCountries\".idk > 999 and \"tRegions\".idk > 999 and " +
+			"\"tCities\".idk > 999 and \"tDistricts\".idk > 999 and " + 
+			(excludeMask != null 
+				? 
+				"(\"tCountries\".status & " + excludeMask + ") = 0 and " +
+				"(\"tRegions\".status & " + excludeMask + ") = 0 and " +
+				"(\"tCountries\".status & " + excludeMask + ") = 0 and " +
+				"(\"tRegions\".status & " + excludeMask + ") = 0 and " 
+				: 
+				" ") +
+			(includeMask != null 
+				?
+				"(\"tCountries\".status & " + includeMask + ") = " + includeMask + " and " +
+				"(\"tRegions\".status & " + includeMask + ") = " + includeMask + " and " +
+				"(\"tCities\".status & " + includeMask + ") = " + includeMask + " and " +
+				"(\"tDistricts\".status & " + includeMask + ") = " + includeMask + " and "
+				: 
+				" ") +
+			"\"tRegions\".\"countryIdk\" = \"tCountries\".idk and " +
+			"\"tCities\".\"regionIdk\" = \"tRegions\".idk and " +
+			"\"tDistricts\".\"cityIdk\" = \"tCities\".idk";
+		return BaseEntity.findByCondition(false, manager, tables, columnNames, 
+			condition, null, "List<CountryRegionCityDistrict>");
+	}
+		]]></codeFragment>		
+	
+		<codeFragment name="findDistricts" location="staticMethod" baseIndent="1"><![CDATA[
+	static public List findDistricts(EntityManager manager, Short excludeMask, Short includeMask,
+		String country, String region, String city, String district)
+	{
+		String[] tables = { "\"tCountries\"", "\"tRegions\"", "\"tCities\"", "\"tDistricts\"" };
+		String[] columnNames = 
+			{ "\"tCountries\".idk AS \"countryIdk\"", "\"tCountries\".name AS \"countryName\"", 
+			"\"tRegions\".idk AS \"regionIdk\"", "\"tRegions\".name AS \"regionName\"", 
+			"\"tCities\".idk AS \"cityIdk\"", "\"tCities\".name AS \"cityName\"", 
+			"\"tDistricts\".idk AS \"districtIdk\"", "\"tDistricts\".name AS \"districtName\"" };
+		String condition = 
+			"\"tCountries\".idk > 999 and \"tRegions\".idk > 999 and " +
+			"\"tCities\".idk > 999 and \"tDistricts\".idk > 999 and " + 
+			(excludeMask != null 
+				? 
+				"(\"tCountries\".status & " + excludeMask + ") = 0 and " +
+				"(\"tRegions\".status & " + excludeMask + ") = 0 and " +
+				"(\"tCountries\".status & " + excludeMask + ") = 0 and " +
+				"(\"tRegions\".status & " + excludeMask + ") = 0 and " 
+				: 
+				" ") +
+			(includeMask != null 
+				?
+				"(\"tCountries\".status & " + includeMask + ") = " + includeMask + " and " +
+				"(\"tRegions\".status & " + includeMask + ") = " + includeMask + " and " +
+				"(\"tCities\".status & " + includeMask + ") = " + includeMask + " and " +
+				"(\"tDistricts\".status & " + includeMask + ") = " + includeMask + " and "
+				: 
+				" ") +
+			(country != null
+				?
+				"\"tCountries\".name = '" + country + "' and "
+				:
+				" ") +
+			(region != null
+				?
+				"\"tRegions\".name = '" + region + "' and "
+				:
+				" ") +
+			(city != null
+				?
+				"\"tCities\".name = '" + city + "' and "
+				:
+				" ") +
+			(district != null
+				?
+				"\"tDistricts\".name = '" + district + "' and "
+				:
+				" ") +
+			"\"tRegions\".\"countryIdk\" = \"tCountries\".idk and " +
+			"\"tCities\".\"regionIdk\" = \"tRegions\".idk and " +
+			"\"tDistricts\".\"cityIdk\" = \"tCities\".idk";
+		return BaseEntity.findByCondition(false, manager, tables, columnNames, 
+			condition, null, "List<CountryRegionCityDistrict>");
+	}
+		]]></codeFragment>		
+
+	</codeFragments>
+
+</coreServerEntity>

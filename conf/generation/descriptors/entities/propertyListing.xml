@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<coreServerEntity xmlns="aaacs.coreserver/generation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="aaacs.coreserver/generation ../../schemas/csDocEntity.xsd">
+	
+	<table>
+		<name>tPropertyListings</name>
+		<constraints>
+			<unique>systemKey</unique>
+			<foreignKey>
+				<referringColumns>propertyIdk</referringColumns>
+				<referredTable>tProperties</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>forSaleIdk</referringColumns>
+				<referredTable>tSales</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>forRentIdk</referringColumns>
+				<referredTable>tRentals</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+		</constraints>
+	</table>
+
+	<class>
+		<name>PropertyListing</name>
+		<import>java.sql.Timestamp</import>
+		<annotations>
+			<entity/>
+			<sqlResultSetMappings>
+				<standardMapping/>
+			</sqlResultSetMappings>
+		</annotations>
+	</class>
+
+	<attributes>
+		<includeAttributes>conf/generation/descriptors/standardAttributes.xml</includeAttributes>
+
+		<attribute>
+			<columnDescription name="summary" type="VARCHAR(1000)">
+			</columnDescription>
+			<javaFieldDescription name="summary" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>1</minLength>
+						<maxLength>1000</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<substring/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="userKey" type="VARCHAR(100)">
+			</columnDescription>
+			<javaFieldDescription name="userKey" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<substring/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="systemKey" type="VARCHAR(100)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="systemKey" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<substring/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="propertyIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="propertyIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="timePublicAccessStarts" type="TIMESTAMP">
+			</columnDescription>
+			<javaFieldDescription name="timePublicAccessStarts" type="Timestamp">
+				<annotations><basic/></annotations>
+				<validation>
+					<Timestamp>
+						<allowNull>false</allowNull>
+					</Timestamp>
+				</validation>
+				<dto defaultValue="new Timestamp(System.currentTimeMillis())"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<minmax type="Timestamp" customSearchConstraint="cfr.Search.timePublicAccessStarts"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="timePublicAccessEnds" type="TIMESTAMP">
+			</columnDescription>
+			<javaFieldDescription name="timePublicAccessEnds" type="Timestamp">
+				<annotations><basic/></annotations>
+				<validation>
+					<Timestamp>
+						<allowNull>false</allowNull>
+					</Timestamp>
+				</validation>
+				<dto defaultValue="new Timestamp(System.currentTimeMillis() + (86400L * 30L * 1000L))"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<minmax type="Timestamp" customSearchConstraint="cfr.Search.timePublicAccessEnds"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="forSaleIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="forSaleIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="forRentIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="forRentIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="direct" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="direct" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean/> <!-- falsemeaning="ignore" -->
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="numberOfViews" type="INT4">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="numberOfViews" type="Integer">
+				<annotations><basic/></annotations>
+				<validation>
+					<Integer>
+						<allowNull>false</allowNull>
+						<min>0</min>
+					</Integer>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="includedNotIncludedItems" type="VARCHAR(500)">
+			</columnDescription>
+			<javaFieldDescription name="includedNotIncludedItems" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>500</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="status" type="INT2">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="status" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<allowNull>false</allowNull>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="listerNotes" type="VARCHAR(500)">
+			</columnDescription>
+			<javaFieldDescription name="listerNotes" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>500</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="systemNotes" type="VARCHAR(500)">
+			</columnDescription>
+			<javaFieldDescription name="systemNotes" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>500</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+	</attributes>
+
+	<populate>
+		<defaults>
+			<columnValues>
+			propertyIdk '1'
+			forSaleIdk '1'
+			forRentIdk '1'
+			numberOfViews '0'
+			status '0'
+			</columnValues>
+		</defaults>
+		<insert>
+			<columnValues>
+			idk '1'
+			systemKey '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '101'
+			systemKey '101'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '102'
+			systemKey '102'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '103'
+			systemKey '103'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '901'
+			systemKey '901'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '902'
+			systemKey '902'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '903'
+			systemKey '903'
+			</columnValues>
+		</insert>
+	</populate>
+
+	<codeFragments>
+		<codeFragment name="cfr.Search.timePublicAccessStarts" location="generic" baseIndent="2"><![CDATA[
+		if (searchFields.get("timePublicAccessStartsMinimum") != null && searchFields.get("timePublicAccessStartsMinimum").toString().length() > 0)
+			selectBuilder.addWhere("CAST (" + entityTableName + ".\"timePublicAccessStarts\" AS DATE) >= " + 
+				"DATE '" + searchFields.get("timePublicAccessStartsMinimum") + "'", true);
+		if (searchFields.get("timePublicAccessStartsMaximum") != null && searchFields.get("timePublicAccessStartsMaximum").toString().length() > 0)
+			selectBuilder.addWhere("CAST (" + entityTableName + ".\"timePublicAccessStarts\" AS DATE) <= " + 
+				"DATE '" + searchFields.get("timePublicAccessStartsMaximum") + "'", true);
+		]]></codeFragment>
+		<codeFragment name="cfr.Search.timePublicAccessEnds" location="generic" baseIndent="2"><![CDATA[
+		if (searchFields.get("timePublicAccessEndsMinimum") != null && searchFields.get("timePublicAccessEndsMinimum").toString().length() > 0)
+			selectBuilder.addWhere("CAST (" + entityTableName + ".\"timePublicAccessEnds\" AS DATE) >= " + 
+				"DATE '" + searchFields.get("timePublicAccessEndsMinimum") + "'", true);
+		if (searchFields.get("timePublicAccessEndsMaximum") != null && searchFields.get("timePublicAccessEndsMaximum").toString().length() > 0)
+			selectBuilder.addWhere("CAST (" + entityTableName + ".\"timePublicAccessEnds\" AS DATE) <= " + 
+				"DATE '" + searchFields.get("timePublicAccessEndsMaximum") + "'", true);
+		]]></codeFragment>
+	</codeFragments>
+</coreServerEntity>

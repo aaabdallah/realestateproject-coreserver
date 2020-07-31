@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<coreServerEntity xmlns="aaacs.coreserver/generation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="aaacs.coreserver/generation ../../schemas/csDocEntity.xsd">
+	
+	<table>
+		<name>tApartments</name>
+		<constraints>
+			<foreignKey>
+				<referringColumns>propertyIdk</referringColumns>
+				<referredTable>tProperties</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>apartmentAreaUnitTypeIdk</referringColumns>
+				<referredTable>tPropertyOptions</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>interiorPrimaryColorIdk</referringColumns>
+				<referredTable>tPropertyOptions</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>interiorSecondaryColorIdk</referringColumns>
+				<referredTable>tPropertyOptions</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>residentialFeaturesIdk</referringColumns>
+				<referredTable>tResidentialFeatures</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+		</constraints>
+	</table>
+
+	<class>
+		<name>Apartment</name>
+		<annotations>
+			<entity/>
+			<sqlResultSetMappings>
+				<standardMapping/>
+			</sqlResultSetMappings>
+		</annotations>
+	</class>
+
+	<attributes>
+		<includeAttributes>conf/generation/descriptors/standardAttributes.xml</includeAttributes>
+
+		<attribute>
+			<columnDescription name="propertyIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="propertyIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="apartmentSize" type="INT4">
+			</columnDescription>
+			<javaFieldDescription name="apartmentSize" type="Integer">
+				<annotations><basic/></annotations>
+				<validation>
+					<Integer>
+						<allowNull>false</allowNull>
+						<min>0</min>
+					</Integer>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<minmax type="Integer"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="apartmentAreaUnitTypeIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="apartmentAreaUnitTypeIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="PropertyOption" key="name"/>
+				<dto/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<equals type="Long" customSearchConstraint="cfr.apartmentAreaUnitTypeIdk.ignore" defaultValue='UtilitiesDelegate.getPropertyOption("areaUnitType", "areaUnitType.SquareMeter")'/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="apartmentSizeApproximated" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="apartmentSizeApproximated" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+						<allowNull>false</allowNull>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="apartmentNumber" type="VARCHAR(50)">
+			</columnDescription>
+			<javaFieldDescription name="apartmentNumber" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>50</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="apartmentFloor" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="apartmentFloor" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<minmax type="Short"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="totalFloorsInBuilding" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="totalFloorsInBuilding" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<max type="Short"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="totalApartmentsInFloor" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="totalApartmentsInFloor" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="totalApartmentsInBuilding" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="totalApartmentsInBuilding" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<max type="Short"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="interiorPrimaryColorIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="interiorPrimaryColorIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="PropertyOption" key="name"/>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="interiorSecondaryColorIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="interiorSecondaryColorIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="PropertyOption" key="name"/>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="description" type="VARCHAR(2000)">
+			</columnDescription>
+			<javaFieldDescription name="description" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>2000</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="residentialFeaturesIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="residentialFeaturesIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+	</attributes>
+
+	<populate>
+		<defaults>
+			<columnValues>
+			propertyIdk '1'
+			apartmentAreaUnitTypeIdk '1'
+			interiorPrimaryColorIdk '1'
+			interiorSecondaryColorIdk '1'
+			residentialFeaturesIdk '1'
+			</columnValues>
+		</defaults>
+		<insert>
+			<columnValues>
+			idk '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '101'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '102'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '103'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '901'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '902'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '903'
+			</columnValues>
+		</insert>
+	</populate>
+
+	<codeFragments>
+		<codeFragment name="cfr.apartmentAreaUnitTypeIdk.ignore" location="generic" baseIndent="2">
+			// Don't check apartmentAreaUnitTypeIdk by itself; only use it with apartmentSize
+		</codeFragment>
+	</codeFragments>
+</coreServerEntity>

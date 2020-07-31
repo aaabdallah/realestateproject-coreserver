@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="1.0">
+	<persistence-unit name="CoreServer">
+		<!-- <provider>
+			oracle.toplink.essentials.PersistenceProvider
+		</provider> -->
+		<jta-data-source>jdbc/PostgreSQL</jta-data-source>
+		<properties>
+			<property name="protocolVersion" value="2" />
+			<property name="toplink.logging.level" value="INFO"/>
+		</properties>
+	</persistence-unit>
+</persistence>
+
+<!--
+	
+	<persistence>
+	<persistence-unit name="OrderManagement">
+	<description>
+	This unit manages orders and customers.
+	It does not rely on any vendor-specific features and can
+	therefore be deployed to any persistence provider.
+	</description>
+	<jta-data-source>jdbc/MyOrderDB</jta-data-source>
+	<mapping-file>ormap.xml</mapping-file>
+	<jar-file>MyOrderApp.jar</jar-file>
+	<class>com.widgets.Order</class>
+	<class>com.widgets.Customer</class>
+	</persistence-unit>
+	</persistence>
+	
+-->

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<coreServerEntity xmlns="aaacs.coreserver/generation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="aaacs.coreserver/generation ../../schemas/csDocEntity.xsd">
+	
+	<table>
+		<name>tRentals</name>
+		<constraints>
+			<foreignKey>
+				<referringColumns>currencyIdk</referringColumns>
+				<referredTable>tCurrencies</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+		</constraints>
+	</table>
+
+	<class>
+		<name>Rental</name>
+		<annotations>
+			<entity/>
+			<sqlResultSetMappings>
+				<standardMapping/>
+			</sqlResultSetMappings>
+		</annotations>
+	</class>
+
+	<attributes>
+		<includeAttributes>conf/generation/descriptors/standardAttributes.xml</includeAttributes>
+
+		<attribute>
+			<columnDescription name="periodMonths" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="periodMonths" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<allowNull>false</allowNull>
+						<min>1</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<equals type="Short" customSearchConstraint="cfr.periodMonths.ignore"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="rentForPeriod" type="REAL">
+			</columnDescription>
+			<javaFieldDescription name="rentForPeriod" type="Float">
+				<annotations><basic/></annotations>
+				<validation>
+					<Float>
+						<!-- <allowNull>false</allowNull> -->
+						<maxFracLength>2</maxFracLength>
+					</Float>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<minmax type="Float" customSearchConstraint="cfr.rentForPeriod.normalize"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="minimumRenewalTermMonths" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="minimumRenewalTermMonths" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>1</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="securityDeposit" type="REAL">
+			</columnDescription>
+			<javaFieldDescription name="securityDeposit" type="Float">
+				<annotations><basic/></annotations>
+				<validation>
+					<Float>
+						<maxFracLength>2</maxFracLength>
+					</Float>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="currencyIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="currencyIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_HIGHEST_RESERVED + 1</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="Currency" key="name"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<equals type="Long"/>
+			</searchCriteria>
+		</attribute>
+
+	</attributes>
+
+	<populate>
+		<defaults>
+			<columnValues>
+			currencyIdk '1'
+			</columnValues>
+		</defaults>
+		<insert>
+			<columnValues>
+			idk '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '101'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '102'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '103'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '901'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '902'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '903'
+			</columnValues>
+		</insert>
+	</populate>
+
+	<codeFragments>
+		<codeFragment name="cfr.periodMonths.ignore" location="generic" baseIndent="2">
+		// Don't check periodMonths by itself; only use it with rentForPeriod
+		</codeFragment>
+		<codeFragment name="cfr.rentForPeriod.normalize" location="generic" baseIndent="2"><![CDATA[
+		if (searchFields.get("periodMonths") != null && searchFields.get("periodMonths").toString().length() > 0)
+		{
+			// multiply by 0.95 to allow for floating point rounding errors
+			if (searchFields.get("rentForPeriodMinimum") != null && searchFields.get("rentForPeriodMinimum").toString().length() > 0)
+				selectBuilder.addWhere(
+					"((" + searchFields.get("rentForPeriodMinimum") + "/" + searchFields.get("periodMonths") + ") * 0.95) " +
+					"<= (" + entityTableName + ".\"rentForPeriod\" / " + entityTableName + ".\"periodMonths\")", true); 
+			// multiply by 1.05 to allow for floating point rounding errors
+			if (searchFields.get("rentForPeriodMaximum") != null && searchFields.get("rentForPeriodMaximum").toString().length() > 0)
+				selectBuilder.addWhere(
+					"(" + entityTableName + ".\"rentForPeriod\" / " + entityTableName + ".\"periodMonths\") " +
+					"<= ((" + searchFields.get("rentForPeriodMaximum") + "/" + searchFields.get("periodMonths") + ") * 1.05)", true);
+		}
+		]]></codeFragment>
+	</codeFragments>
+</coreServerEntity>

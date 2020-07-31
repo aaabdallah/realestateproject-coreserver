@@ -1,0 +1,1492 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<coreServerEntity xmlns="aaacs.coreserver/generation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="aaacs.coreserver/generation ../../schemas/csDocEntity.xsd">
+	
+	<table>
+		<name>tPermissions</name>
+		<constraints>
+			<foreignKey>
+				<referringColumns>actionName actionVersion</referringColumns>
+				<referredTable>tActions</referredTable>
+				<referredColumns>name actionVersion</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>assigneeIdk</referringColumns>
+				<referredTable>tUsers</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>assigneeRankIdk</referringColumns>
+				<referredTable>tRanks</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>assigneeRoleIdk</referringColumns>
+				<referredTable>tRoles</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>assignerIdk</referringColumns>
+				<referredTable>tUsers</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>assignerRankIdk</referringColumns>
+				<referredTable>tRanks</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>dependsUponIdk</referringColumns>
+				<referredTable>tPermissions</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>objectGroupIdk</referringColumns>
+				<referredTable>tGroups</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+		</constraints>
+	</table>
+
+	<class>
+		<comment type="JavaDoc">Core Server component for managing access permissions</comment>
+		<outputDirectory>src/aaacs/coreserver/ejb/entities</outputDirectory>
+		<resourcesFile>src/aaacs/coreserver/resources/entityNames.properties</resourcesFile>
+		<name>Permission</name>
+		<package>aaacs.coreserver.ejb.entities</package>
+		<import>java.sql.Timestamp</import>
+		<import>aaacs.coreserver.database.PrimaryKeyHolder</import>
+		<annotations>
+			<entity/>
+			<sqlResultSetMappings>
+				<standardMapping/>
+			</sqlResultSetMappings>
+		</annotations>
+		<enums>
+			<enum name="Status" type="Short">
+				<comment type="Java" indent="1">
+				----- Permission statuses ----------------------------------------------
+				The precedence hierarchy is as follows: DENIED > GRANTED
+				where precedence means which is stronger in case there is a
+				permissions conflict (all other things being equal).
+				</comment>
+				<constant name="GRANTED" value="0"/>
+				<constant name="DENIED" value="1"/>
+			</enum>
+			<enum name="TableName" type="String">
+				<comment type="Java" indent="1">
+				a simple marker to represent a 'wild-card' object table name
+				</comment>
+				<constant name="MATCH_ALL_TABLE_NAMES" value="&quot;*&quot;"/>
+			</enum>
+		</enums>
+	</class>
+
+	<attributes>
+		<includeAttributes>conf/generation/descriptors/standardAttributes.xml</includeAttributes>
+
+		<attribute>
+			<columnDescription name="actionName" type="VARCHAR(100)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="actionName" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>1</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="actionVersion" type="INT2">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="actionVersion" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<allowNull>false</allowNull>
+						<min>(short) Action.ActionVersion.MATCH_ALL_ACTION_VERSIONS.value</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="assignerIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="assignerIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_HIGHEST_RESERVED + 1</min>
+					</Long>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="assignerRankIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="assignerRankIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_HIGHEST_RESERVED + 1</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="Rank" key="name"/>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="assigneeIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="assigneeIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="assigneeRankIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="assigneeRankIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="Rank" key="name"/>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="assigneeRoleIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="assigneeRoleIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="Role" key="name"/>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="objectTableName" type="VARCHAR(100)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="objectTableName" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>0</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="objectGroupIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="objectGroupIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="objectIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="objectIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="objectConstraint" type="VARCHAR(300)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="objectConstraint" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>0</minLength>
+						<maxLength>300</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="status" type="INT2">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="status" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<allowNull>false</allowNull>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="dependsUponIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="dependsUponIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="description" type="VARCHAR(200)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="description" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>0</minLength>
+						<maxLength>200</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="strength" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="strength" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+					</Long>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="validityStartTime" type="TIMESTAMP">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="validityStartTime" type="Timestamp">
+				<annotations><basic/></annotations>
+				<validation>
+					<Timestamp>
+						<allowNull>false</allowNull>
+					</Timestamp>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="validityStopTime" type="TIMESTAMP">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="validityStopTime" type="Timestamp">
+				<annotations><basic/></annotations>
+				<validation>
+					<Timestamp>
+						<allowNull>false</allowNull>
+					</Timestamp>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+	</attributes>
+
+	<populate>
+		<defaults>
+			<columnValues>
+			actionName 'string.Default'
+			actionVersion '1'
+			assignerIdk '1'
+			assignerRankIdk '1'
+			assigneeIdk '1'
+			assigneeRankIdk '1'
+			assigneeRoleIdk '1'
+			objectTableName 'string.Default'
+			objectGroupIdk '1'
+			objectIdk '1'
+			objectConstraint ''
+			status '1'
+			dependsUponIdk '1'
+			description 'string.Default'
+			strength '1000'
+			validityStartTime '1000-01-01 00:00:00'
+			validityStopTime '1000-01-01 00:00:00'
+			</columnValues>
+		</defaults>
+		<insert>
+			<columnValues>
+			idk '1'
+			actionName 'string.Unset'
+			objectTableName 'string.Unset'
+			objectConstraint ''
+			description 'string.Unset'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '101'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '102'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '103'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '901'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '902'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '903'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.AddUser'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk 'FKREF:userAdministrator'
+			assigneeRankIdk 'FKREF:rankUnrestricted'
+			assigneeRoleIdk 'FKREF:roleAdministrator'
+			objectTableName 'tUsers'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'Only the administrator may add a user with role/profile to the system'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.CreateApartmentForRentalSale'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk 'FKREF:roleRegisteredUser'
+			objectTableName '*'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All registered users may create apartment for sale listings'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.CreateEmptyLotForRentalSale'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk 'FKREF:roleRegisteredUser'
+			objectTableName '*'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All registered users may create empty lot for sale listings'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.CreateFarmLotForRentalSale'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk 'FKREF:roleRegisteredUser'
+			objectTableName '*'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All registered users may create farm lot for sale listings'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.CreateHouseForRentalSale'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk 'FKREF:roleRegisteredUser'
+			objectTableName '*'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All registered users may create house for sale listings'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.CreateMultiUnitBuildingForRentalSale'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk 'FKREF:roleRegisteredUser'
+			objectTableName '*'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All registered users may create multi-unit building for sale listings'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.CreateMultiUnitCompoundForRentalSale'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk 'FKREF:roleRegisteredUser'
+			objectTableName '*'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All registered users may create multi-unit compound for sale listings'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.CreateOfficeForRentalSale'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk 'FKREF:roleRegisteredUser'
+			objectTableName '*'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All registered users may create office for sale listings'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.CreateFloorUnitForRentalSale'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk 'FKREF:roleRegisteredUser'
+			objectTableName '*'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All registered users may create floor unit for sale listings'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.CreateStoreForRentalSale'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk 'FKREF:roleRegisteredUser'
+			objectTableName '*'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All registered users may create store for sale listings'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.CreatePropertiesForRentalSale'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk 'FKREF:roleRegisteredUser'
+			objectTableName '*'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All registered users may create multiple properties for sale/rental listings'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.DeactivateListing'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk 'FKREF:roleRegisteredUser'
+			objectTableName '*'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All registered users may deactivate property listings'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.FindAllProfileDistricts'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk '903'
+			objectTableName '*'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All users may get profile district listings'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.FindAllPropertyDistricts'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk '903'
+			objectTableName '*'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All users may get property district listings'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.FindCommercialFeaturesByCreator'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk '903'
+			objectTableName 'tCommercialFeatures'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All users may retrieve commercial features by creator'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.FindCommunityAmenitiesByCreator'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk '903'
+			objectTableName 'tCommunityAmenities'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All users may retrieve community amenities by creator'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.FindPropertyDistricts'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk '903'
+			objectTableName '*'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All users may search for property districts'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.FindPropertyOptionByCategoryName'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk '903'
+			objectTableName 'tPropertyOptions'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All users may search for property options by category and name'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.FindPropertyOptionsByCategory'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk '903'
+			objectTableName 'tPropertyOptions'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All users may search for property options by category'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.FindResidentialFeaturesByCreator'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk '903'
+			objectTableName 'tResidentialFeatures'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All users may retrieve residential features by creator'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.FindUserProfilesByUserIdks'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk '903'
+			objectTableName 'tUserProfiles'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All users may find user profiles using their idks'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.GetUserProfiles'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk '903'
+			objectTableName 'tUserProfiles'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All users may retrieve user profiles'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.Login'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk '903'
+			objectTableName '*'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All users may login'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.Logout'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk '903'
+			objectTableName '*'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All users may logout'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.LookupTableFromCache'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk '903'
+			objectTableName '*'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All users may look up cached tables'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.LookupTableColumnFromCache'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk '903'
+			objectTableName '*'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All users may look up cached table columns'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.RetrieveProperty'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk '903'
+			objectTableName '*'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All users may retrieve properties'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.SearchProperties'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk '903'
+			objectTableName '*'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All users may search properties'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.SearchUsers'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk '903'
+			objectTableName '*'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All users may search users'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.UpdateApartmentForRentalSale'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk 'FKREF:roleRegisteredUser'
+			objectTableName '*'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All registered users may update apartment for sale listings'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.UpdateEmptyLotForRentalSale'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk 'FKREF:roleRegisteredUser'
+			objectTableName '*'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All registered users may update emptyLot for sale listings'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.UpdateFarmLotForRentalSale'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk 'FKREF:roleRegisteredUser'
+			objectTableName '*'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All registered users may update farmLot for sale listings'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.UpdateFloorUnitForRentalSale'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk 'FKREF:roleRegisteredUser'
+			objectTableName '*'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All registered users may update floorUnit for sale listings'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.UpdateHouseForRentalSale'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk 'FKREF:roleRegisteredUser'
+			objectTableName '*'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All registered users may update house for sale listings'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.UpdateMultiUnitBuildingForRentalSale'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk 'FKREF:roleRegisteredUser'
+			objectTableName '*'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All registered users may update multiUnitBuilding for sale listings'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.UpdateMultiUnitCompoundForRentalSale'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk 'FKREF:roleRegisteredUser'
+			objectTableName '*'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All registered users may update multiUnitCompound for sale listings'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.UpdateOfficeForRentalSale'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk 'FKREF:roleRegisteredUser'
+			objectTableName '*'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All registered users may update office for sale listings'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.UpdateStoreForRentalSale'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk 'FKREF:roleRegisteredUser'
+			objectTableName '*'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All registered users may update store for sale listings'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.UpdateUser'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk '903'
+			objectTableName 'tUsers'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All users may update user information'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.UpdateUserProfiles'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk '903'
+			objectTableName 'tUserProfiles'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All users may update user profile(S) information'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName 'action.UpdateUserWithProfile'
+			actionVersion '1'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk '903'
+			assigneeRoleIdk '903'
+			objectTableName 'tUsers'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'All users may update user information along with associated profile'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			actionName '*'
+			actionVersion '0'
+			assignerIdk 'FKREF:userAdministrator'
+			assignerRankIdk 'FKREF:rankUnrestricted'
+			assigneeIdk '903'
+			assigneeRankIdk 'FKREF:rankUnrestricted'
+			assigneeRoleIdk '903'
+			objectTableName '*'
+			objectGroupIdk '903'
+			objectIdk '903'
+			objectConstraint ''
+			status '0'
+			dependsUponIdk '1'
+			description 'Any user with the unrestricted access rank may perform any action'
+			strength '1000'
+			validityStartTime '2006-01-01 00:00:00'
+			validityStopTime '2100-01-01 00:00:00'
+			</columnValues>
+		</insert>
+	</populate>
+
+	<codeFragments>
+		<codeFragment name="onModify1" location="onModify" baseIndent="2">
+		strength = computeStrength();
+		</codeFragment>
+		<codeFragment name="computeStrength" location="method" baseIndent="1"><![CDATA[
+	public long computeStrength()
+	{
+		// The strength is a convenient shorthand that indicates how strong a
+		// particular permission is compared to other permissions. The strength
+		// is computed as follows. We look at each of the following attributes
+		// and assign it a number, then sum them up but in different positions
+		// within a single number (i.e. the units, the tens, the hundreds, etc.).
+		// The most important component of a permission is its assigner's rank.
+		// The rest of the attributes follow, and their order is obviously significant.
+		// The choice of this particular order is intuitive! Arguments can be made
+		// for other orders. If the order is changed, all permissions in the database
+		// need to be updated to reflect the new order.
+		// There are a total of nine attributes that contribute to the strength
+		// of a permission: 
+		//
+		// Category: Assigner Properties
+		// 1. assigner rank: short
+
+		// Category: Assignee Properties
+		// 2. assignee: specific beats match all-uninit
+		// 3. assignee rank: specific beats match all-uninit
+		// 4. assignee role: specific beats match all-uninit
+
+		// Category: Action Properties
+		// 5. action: specific beats not (based on name and version)
+
+		// Category: Object Properties
+		// 6. object: specific beats match all-uninit
+		// 7. table: specific beats not
+		// 8. object group: specific beats match all-uninit (note that groups may cross tables)
+
+		// Category: Access Properties
+		// 9. status: DENIED beats GRANTED
+	
+		long l = 0;
+		try
+		{
+			if (System.currentTimeMillis() < validityStartTime.getTime() ||
+				System.currentTimeMillis() > validityStopTime.getTime())
+				return 0;
+
+			l = ((Short) Rank.cacheLookup(assignerRankIdk).get("priority")) * 100000000L;
+	
+			if (isUserSuppliedPrimaryKey(assigneeIdk))
+				l = l + 10000000L;
+	
+			if (isUserSuppliedPrimaryKey(assigneeRankIdk))
+				l = l + 1000000L;
+	
+			if (isUserSuppliedPrimaryKey(assigneeRoleIdk))
+				l = l + 100000L;
+	
+			if (!actionName.equals(Action.ActionName.MATCH_ALL_ACTION_NAMES.value) &&
+				actionVersion != Action.ActionVersion.MATCH_ALL_ACTION_VERSIONS.value)
+				l = l + 40000L;
+			else if (!actionName.equals(Action.ActionName.MATCH_ALL_ACTION_NAMES.value) && 
+				actionVersion == Action.ActionVersion.MATCH_ALL_ACTION_VERSIONS.value)
+				l = l + 30000L;
+			else if (actionName.equals(Action.ActionName.MATCH_ALL_ACTION_NAMES.value) && 
+				actionVersion != Action.ActionVersion.MATCH_ALL_ACTION_VERSIONS.value)
+				l = l + 20000L;
+	
+			if ( isUserSuppliedPrimaryKey(objectIdk) )
+				l = l + 1000L;
+	
+			if ( !objectTableName.equals(Permission.TableName.MATCH_ALL_TABLE_NAMES.value) )
+				l = l + 100L;
+	
+			if ( isUserSuppliedPrimaryKey(objectGroupIdk) )
+				l = l + 10L;
+	
+			if ( status == Status.DENIED.value )
+				l = l + 1L;
+
+			return l;
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return 0;
+		}
+	}
+		]]></codeFragment>		
+		<codeFragment name="findByRelevantFields" location="staticMethod" baseIndent="1"><![CDATA[
+	static public List findByRelevantFields(EntityManager manager,
+		long inAssigneeIdk, long inAssigneeRankIdk, 
+		Vector<Long> inAssigneeRoleIdks, String inActionName, short inActionVersion) 
+		throws CoreServerException
+	{
+		return findByRelevantFields(manager, inAssigneeIdk, inAssigneeRankIdk,
+			inAssigneeRoleIdks, inActionName, inActionVersion,
+			PrimaryKeyHolder.KEY_MATCHES_USER_KEYS,
+			Permission.TableName.MATCH_ALL_TABLE_NAMES.value,
+			PrimaryKeyHolder.KEY_MATCHES_USER_KEYS);
+	}
+	
+	/**
+	 * Finds permissions using the fields that are used to determine the applicability
+	 * of a permission. See the {@link #computeStrength()} method to understand
+	 * what fields are used.
+	 * In theory we could fill in all the parameters with default arguments (except
+	 * the entity manager). However, we force the user to explicitly identify the
+	 * assignee, assignee rank, action name, and action version since these are more
+	 * important than the other parameters. It is allowed to send in null for the
+	 * other parameters - they will be filled in with defaults - however, it is best
+	 * to be careful with that.
+	 * 
+	 * @param manager the entity manager to use for persistence [required]
+	 * @param inAssigneeIdk the user to check against [required]
+	 * @param inAssigneeRankIdk the user's rank [required]
+	 * @param inAssigneeRoleIdks the user's roles [optional]
+	 * @param inActionName the action name [required]
+	 * @param inActionVersion the action version [required]
+	 * @param inObjectTableName the object's table name [optional]
+	 * @param inObjectIdk the object's Idk [optional]
+	 * @param inObjectGroup the object's group [optional]
+	 */
+	static public List findByRelevantFields(EntityManager manager,
+		Long inAssigneeIdk, Long inAssigneeRankIdk, 
+		Vector<Long> inAssigneeRoleIdks, String inActionName, Short inActionVersion, 
+		Long inObjectGroupIdk, String inObjectTableName, Long inObjectIdk) 
+		throws CoreServerException
+	{
+		if ((inAssigneeIdk == null ||
+			inAssigneeIdk < PrimaryKeyHolder.KEY_LOWEST_RESERVED) ||
+			(inAssigneeRankIdk == null ||
+			inAssigneeRankIdk < PrimaryKeyHolder.KEY_LOWEST_RESERVED) ||
+			inActionName == null || (inActionVersion == null || inActionVersion < 1))
+			throw new CoreServerException("permission.MissingRelevantFields");
+
+		if (inObjectTableName == null)
+			inObjectTableName = Permission.TableName.MATCH_ALL_TABLE_NAMES.value;
+		if (inObjectGroupIdk == null || inObjectGroupIdk < PrimaryKeyHolder.KEY_LOWEST_RESERVED)
+			inObjectGroupIdk = PrimaryKeyHolder.KEY_MATCHES_USER_KEYS;
+		if (inObjectIdk == null || inObjectIdk < PrimaryKeyHolder.KEY_LOWEST_RESERVED)
+			inObjectIdk = PrimaryKeyHolder.KEY_MATCHES_USER_KEYS;
+
+		Vector<Object> parameters = new Vector<Object>();
+		String condition = "where (\"assigneeIdk\" = " + _PMPP_ + " OR \"assigneeIdk\" = " + _PMPP_ + ") and " +
+			"(\"assigneeRankIdk\" = " + _PMPP_ + " OR \"assigneeRankIdk\" = " + _PMPP_ + ") and " +
+			"(\"actionName\" = " + _PMPP_ + " OR \"actionName\" = " + _PMPP_ + ") and " +
+			"(\"actionVersion\" = " + _PMPP_ + " OR \"actionVersion\" = " + _PMPP_ + ") and " +
+			"(\"objectTableName\" = " + _PMPP_ + " OR \"objectTableName\" = " + _PMPP_ + ") and " +
+			"(\"objectIdk\" = " + _PMPP_ + " OR \"objectIdk\" = " + _PMPP_ + ") and " +
+			"(\"objectGroupIdk\" = " + _PMPP_ + " OR \"objectGroupIdk\" = " + _PMPP_ + ") ";
+
+		parameters.add(inAssigneeIdk);		
+		parameters.add(PrimaryKeyHolder.KEY_MATCHES_USER_KEYS);
+
+		parameters.add(inAssigneeRankIdk);		
+		parameters.add(PrimaryKeyHolder.KEY_MATCHES_USER_KEYS);
+
+		parameters.add(inActionName);
+		parameters.add(Action.ActionName.MATCH_ALL_ACTION_NAMES.value);
+		parameters.add(new Short(inActionVersion));
+		parameters.add(new Short(Action.ActionVersion.MATCH_ALL_ACTION_VERSIONS.value));
+
+		parameters.add(inObjectTableName);
+		parameters.add(Permission.TableName.MATCH_ALL_TABLE_NAMES.value);
+
+		parameters.add(inObjectIdk);
+		parameters.add(PrimaryKeyHolder.KEY_MATCHES_USER_KEYS);
+		
+		parameters.add(inObjectGroupIdk);
+		parameters.add(PrimaryKeyHolder.KEY_MATCHES_USER_KEYS);
+
+		condition += "and (";
+		if (inAssigneeRoleIdks != null && inAssigneeRoleIdks.size() > 0)
+		{
+			condition += "\"assigneeRoleIdk\" IN (";
+
+			boolean processedOne = false;
+			for (Long roleIdk : inAssigneeRoleIdks)
+			{
+				if (processedOne)
+					condition = condition + ",";
+				condition = condition + " " + _PMPP_;
+				parameters.add(roleIdk);
+				processedOne = true;
+			}
+			condition += ") OR ";
+		}
+
+		condition = condition + " \"assigneeRoleIdk\" = " + _PMPP_ + ")";
+		parameters.add(PrimaryKeyHolder.KEY_MATCHES_USER_KEYS);
+		
+		condition = condition + " ORDER BY strength DESC";
+
+		return findPermissionByCondition(manager, condition, parameters);
+	}
+		]]></codeFragment>		
+	</codeFragments>
+</coreServerEntity>

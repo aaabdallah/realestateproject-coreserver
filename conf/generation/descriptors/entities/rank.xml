@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<coreServerEntity xmlns="aaacs.coreserver/generation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="aaacs.coreserver/generation ../../schemas/csDocEntity.xsd">
+	
+	<table>
+		<name>tRanks</name>
+		<constraints>
+			<unique>name</unique>
+			<unique>priority</unique>
+		</constraints>
+	</table>
+
+	<cache/>
+
+	<class>
+		<comment type="JavaDoc">Core Server component for managing ranks</comment>
+		<outputDirectory>src/aaacs/coreserver/ejb/entities</outputDirectory>
+		<resourcesFile>src/aaacs/coreserver/resources/entityNames.properties</resourcesFile>
+		<name>Rank</name>
+		<package>aaacs.coreserver.ejb.entities</package>
+		<import>aaacs.coreserver.ejb.entities.support.CacheManager</import>
+		<annotations>
+			<entity/>
+			<sqlResultSetMappings>
+				<standardMapping/>
+			</sqlResultSetMappings>
+		</annotations>
+	</class>
+
+	<attributes>
+		<includeAttributes>conf/generation/descriptors/standardAttributes.xml</includeAttributes>
+
+		<attribute>
+			<columnDescription name="name" type="VARCHAR(100)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="name" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>1</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+				<dto cacheLookup="true"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<equals type="String"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="description" type="VARCHAR(100)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="description" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>1</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<substring/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="priority" type="INT2">
+				<comment type="SQL" indent="1">
+				IMPORTANT: priorities should always be some number between 1000 and 9999: out of 
+				this range, and the system may FAIL. Try to avoid using numbers close to the 
+				endpoints to give flexibility in the future.
+				</comment>
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="priority" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<allowNull>false</allowNull>
+						<min>1000</min>
+						<max>9999</max>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+	</attributes>
+
+	<populate>
+		<defaults>
+			<columnValues>
+			name 'string.Default'
+			description 'string.Default'
+			</columnValues>
+		</defaults>
+		<insert>
+			<columnValues>
+			idk '1'
+			name 'string.Unset'
+			description 'string.Unset'
+			priority '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '101'
+			priority '101'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '102'
+			name 'string.Unknown'
+			priority '102'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '103'
+			name 'string.Nonexistent'
+			priority '103'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '901'
+			name 'string.MatchAll'
+			priority '901'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '902'
+			name 'string.MatchReserved'
+			priority '902'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '903'
+			name 'string.MatchUser'
+			priority '903'
+			</columnValues>
+		</insert>
+		<insert>
+			<comment type="SQL">
+			IMPORTANT: priorities should always be some number between 1000 and 9999: out of 
+			this range, and the system may FAIL. Try to avoid using numbers close to the 
+			endpoints to give flexibility in the future.
+			</comment>
+			<columnValues>
+			name 'rank.UnrestrictedAccess.Name'
+			description 'rank.UnrestrictedAccess.Description'
+			priority '8000'
+			</columnValues>
+			<store>rankUnrestricted</store>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'rank.LimitedAccess.Name'
+			description 'rank.LimitedAccess.Description'
+			priority '5000'
+			</columnValues>
+			<store>rankLimitedAccess</store>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'rank.NoAccess.Name'
+			description 'rank.NoAccess.Description'
+			priority '2500'
+			</columnValues>
+			<store>rankNoAccess</store>
+		</insert>
+	</populate>
+
+</coreServerEntity>

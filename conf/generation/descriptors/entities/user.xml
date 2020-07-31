@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<coreServerEntity xmlns="aaacs.coreserver/generation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="aaacs.coreserver/generation ../../schemas/csDocEntity.xsd">
+	
+	<table>
+		<name>tUsers</name>
+		<constraints>
+			<unique>username</unique>
+			<foreignKey>
+				<referringColumns>rankIdk</referringColumns>
+				<referredTable>tRanks</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+		</constraints>
+	</table>
+
+	<class>
+		<comment type="JavaDoc">Core Server component for managing basic
+		user information. Extra attributes beyond those here should be
+		added to a separate domain-specific table (e.g. tUserProfiles).</comment>
+		<outputDirectory>src/aaacs/coreserver/ejb/entities</outputDirectory>
+		<resourcesFile>src/aaacs/coreserver/resources/entityNames.properties</resourcesFile>
+		<name>User</name>
+		<package>aaacs.coreserver.ejb.entities</package>
+		<annotations>
+			<entity/>
+			<sqlResultSetMappings>
+				<standardMapping/>
+			</sqlResultSetMappings>
+		</annotations>
+		<enums>
+			<enum name="Status" type="Short" bitMask="true">
+				<comment type="Java" indent="1">
+				The different statuses a user may have.
+				</comment>
+				<constant name="BLOCKED" value="0x1"/>
+				<constant name="HIDDEN" value="0x2"/>
+			</enum>
+			<enum name="UPRegex" type="String">
+				<comment type="Java" indent="1">
+				Regular expressions for usernames and passwords (need constants because
+				these regular expressions are referenced in other parts of the system,
+				especially validation)
+				</comment>
+				<constant name="USERNAME" value="&quot;^[\\w\\.%+-]+$|^[\\w\\.%+-]+@[\\w\\.]+\\.(com|COM|gov|GOV|net|NET|org|ORG|info|INFO|biz|BIZ)(\\.[a-zA-Z][a-zA-Z])?$&quot;"/>
+				<constant name="PASSWORD" value="&quot;^[\\w\\.@\\$%#+-]+$&quot;"/>
+			</enum>
+		</enums>
+	</class>
+
+	<attributes>
+		<includeAttributes>conf/generation/descriptors/standardAttributes.xml</includeAttributes>
+
+		<attribute>
+			<columnDescription name="testUser" type="BOOLEAN">
+				<comment indent="1" type="SQL">This should not be part of the user's status, since it is faster
+				to check against a boolean than do a bit comparison.</comment>
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="testUser" type="Boolean">
+				<comment indent="1" type="JavaDoc">This should not be part of the user's status, since it is faster
+				to check against a boolean than do a bit comparison.</comment>
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+						<allowNull>false</allowNull>
+					</Boolean>
+				</validation>
+				<dto defaultValue="false"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean defaultValue="false"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="username" type="VARCHAR(100)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="username" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>8</minLength> <!-- aa@b.com -->
+						<maxLength>100</maxLength>
+						<regex>UPRegex.USERNAME.value</regex>
+					</String>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<substring/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="password" type="VARCHAR(100)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="password" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>8</minLength>
+						<maxLength>100</maxLength>
+						<regex>UPRegex.PASSWORD.value</regex>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="rankIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="rankIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="Rank" key="name"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<options type="Long"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="status" type="INT2">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="status" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<allowNull>false</allowNull>
+						<validChoices useChoicesAs="bitMasks">
+							<static>(Object[]) Status.allValues</static>
+						</validChoices>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<options type="Short"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="notes" type="VARCHAR(200)">
+			</columnDescription>
+			<javaFieldDescription name="notes" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>200</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<substring/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="systemKey" type="VARCHAR(100)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="systemKey" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<substring/>
+			</searchCriteria>
+		</attribute>
+
+	</attributes>
+
+	<populate>
+		<defaults>
+			<columnValues>
+			username 'string.Default'
+			password 'string.Default'
+			rankIdk '1'
+			status '0'
+			testUser 'false'
+			</columnValues>
+		</defaults>
+		<insert>
+			<columnValues>
+			idk '1'
+			username 'string.Unset'
+			password 'string.Unset'
+			systemKey '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '101'
+			systemKey '101'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '102'
+			username 'string.Unknown'
+			systemKey '102'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '103'
+			username 'string.Nonexistent'
+			systemKey '103'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '901'
+			username 'string.MatchAll'
+			systemKey '901'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '902'
+			username 'string.MatchReserved'
+			systemKey '902'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '903'
+			username 'string.MatchUser'
+			systemKey '903'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			username 'administrator'
+			password '4dm1n1str4t0r'
+			rankIdk 'FKREF:rankUnrestricted'
+			status '0'
+			notes ''
+			systemKey '1001'
+			</columnValues>
+			<store>userAdministrator</store>
+		</insert>
+		<insert>
+			<columnValues>
+			username 'aaabdallah@gmail.com'
+			password 'tempo999'
+			rankIdk 'FKREF:rankLimitedAccess'
+			status '0'
+			notes ''
+			systemKey '1002'
+			testUser 'true'
+			</columnValues>
+			<store>userAaabdallah_gmail.com</store>
+		</insert>
+		<insert>
+			<columnValues>
+			username 'demo@demo.com'
+			password 'demo1234'
+			rankIdk 'FKREF:rankLimitedAccess'
+			status '0'
+			notes ''
+			systemKey '5000'
+			testUser 'true'
+			</columnValues>
+			<store>userDemo_demo.com</store>
+		</insert>
+	</populate>
+
+</coreServerEntity>

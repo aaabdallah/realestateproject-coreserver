@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Core Server code generation configuration file</comment>
+
+<!--========================================================================-->
+<!--== General directory/File locations ====================================-->
+<!--========================================================================-->
+
+<entry key="xmlSchemasDirectory">conf/generation/schemas</entry>
+<entry key="initialFilesToDelete">
+src/aaacs/coreserver/resources/entityNames.properties
+src/aaacs/rex/resources/entityNames.properties
+</entry>
+
+<!--========================================================================-->
+<!--== Database configuration ==============================================-->
+<!--========================================================================-->
+
+<entry key="generateDatabase">true</entry>
+
+<!-- <entry key="outputDatabaseDirectory">conf/generation/output/sql</entry> -->
+<entry key="outputDatabaseDirectory">sql</entry>
+<entry key="outputCreateDatabaseFile">createDatabase.sql</entry>
+<entry key="databaseMainDescriptor">conf/generation/descriptors/database/databaseMain.xml</entry>
+
+<!--========================================================================-->
+<!--== Entity configuration ================================================-->
+<!--========================================================================-->
+
+<entry key="generateEntities">true</entry>
+
+<entry key="xmlEntitiesDirectory">conf/generation/descriptors/entities</entry>
+<!--<entry key="outputJavaEntitiesDirectory">conf/generation/output/java/aaacs/coreserver/entities</entry>-->
+<entry key="outputJavaEntitiesDirectory">src/aaacs/rex/ejb/entities</entry>
+
+<entry key="xmlEntityFiles">
+	systemOption.xml systemParameter.xml systemStatus.xml 
+	group.xml action.xml
+	rank.xml role.xml 
+	user.xml userRole.xml permission.xml
+
+	title.xml occupation.xml country.xml
+	region.xml city.xml district.xml
+	userProfile.xml 
+	currency.xml
+	propertyOption.xml 
+	sale.xml rental.xml
+	communityAmenities.xml
+	residentialFeatures.xml commercialFeatures.xml
+	property.xml propertyListing.xml propertyLister.xml
+	wantedListing.xml
+	apartment.xml house.xml floorUnit.xml farmLot.xml
+	emptyLot.xml office.xml store.xml
+	multiUnitBuilding.xml multiUnitCompound.xml
+</entry>
+<entry key="entityStartingCounter">10</entry>
+<entry key="entityCounterIncrement">10</entry>
+
+<entry key="javaEntityDefaultResourcesFile">src/aaacs/rex/resources/entitynames.properties</entry>
+<entry key="javaEntityDefaultPackage">aaacs.rex.ejb.entities</entry>
+<entry key="javaEntityDefaultImports">
+import java.io.Serializable;
+import java.text.DateFormat;
+import java.util.Hashtable;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityResult;
+import javax.persistence.FieldResult;
+import javax.persistence.SqlResultSetMapping;
+import javax.persistence.SqlResultSetMappings;
+import javax.persistence.Table;
+
+import aaacs.coreserver.database.SelectBuilder;
+import aaacs.coreserver.ejb.entities.BaseEntity;
+import aaacs.coreserver.commons.exceptions.CoreServerException;
+
+import aaacs.coreserver.commons.utilities.ArrayHelper;
+
+import aaacs.coreserver.commons.validation.FieldValidator;
+import aaacs.coreserver.commons.validation.MsgArgsPair;
+</entry>
+
+<!--========================================================================-->
+<!--== Bean configuration ==================================================-->
+<!--========================================================================-->
+
+<entry key="generateBeans">true</entry>
+
+<entry key="xmlBeansDirectory">conf/generation/descriptors/beans</entry>
+<!--<entry key="outputJavaBeansDirectory">conf/generation/output/java/aaacs/coreserver/beans</entry>-->
+<entry key="outputJavaBeansDirectory">src/aaacs/rex/ejb/beans/stateless</entry>
+<entry key="dispatcherClassFile">src/aaacs/rex/ejb/beans/stateless/DispatcherBean.java</entry>
+<entry key="dispatcherPackage">aaacs.rex.ejb.beans.stateless</entry>
+<entry key="actionPropertiesFile">src/aaacs/rex/resources/action.properties</entry>
+
+<entry key="xmlBeanFiles">
+	coreServerBridgeBean.xml 
+	accessManagerBean.xml 
+	propertyManagerBean.xml
+	propertySearchManagerBean.xml
+	propertyUpdateManagerBean.xml
+	userSearchManagerBean.xml
+</entry>
+<entry key="javaBeanDefaultPackage">aaacs.rex.ejb.beans.stateless</entry>
+<entry key="javaBeanDefaultImports">
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
+import javax.ejb.EJB;
+import javax.ejb.EJBs;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionManagement;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import aaacs.coreserver.administration.UserManager;
+import aaacs.coreserver.database.PrimaryKeyHolder;
+import aaacs.coreserver.database.SelectBuilder;
+import aaacs.coreserver.ejb.beans.BaseSessionBean;
+import aaacs.coreserver.commons.communication.ActionRequest;
+import aaacs.coreserver.commons.communication.ActionResponse;
+import aaacs.coreserver.commons.communication.ErrorReport;
+import aaacs.coreserver.commons.communication.LoginToken;
+import aaacs.coreserver.commons.communication.Parameters;
+import aaacs.coreserver.commons.exceptions.CSWrapperException;
+
+import aaacs.coreserver.ejb.entities.*;
+import aaacs.rex.ejb.entities.*;
+
+import aaacs.coreserver.commons.validation.MsgArgsPair;
+</entry>
+
+<!--========================================================================-->
+<!--== DTO configuration ===================================================-->
+<!--========================================================================-->
+
+<!-- Keep in mind that generateEntities needs to be true for DTOs also -->
+<entry key="generateDTOs">true</entry>
+<!--<entry key="outputJavaDTOsDirectory">../RealEstateExchangeWebInterface/conf/generation/output/java/aaacs/dtos</entry>-->
+<entry key="outputJavaDTOsDirectory">../RealEstateExchangeWebInterface/src/aaacs/rex/wi/beans/dtos</entry>
+<entry key="permanentDTOFiles">
+BaseDTO.java MultipleDTO.java BaseSearchDTO.java 
+BooleanDTO.java
+ByteDTO.java ShortDTO.java IntegerDTO.java LongDTO.java
+FloatDTO.java DoubleDTO.java
+StringArrayDTO.java
+</entry>
+<entry key="javaDTODefaultPackage">aaacs.rex.wi.beans.dtos</entry>
+<entry key="javaDTODefaultImports">
+import java.io.Serializable;
+import java.sql.*;
+import java.text.*;
+import java.util.Hashtable;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
+import javax.faces.context.FacesContext;
+
+import aaacs.coreserver.commons.generation.Utilities;
+import aaacs.coreserver.commons.validation.FieldValidator;
+import aaacs.coreserver.commons.validation.MsgArgsPair;
+
+import aaacs.rex.wi.beans.delegates.UtilitiesDelegate;
+</entry>
+
+<!--========================================================================-->
+<!--== Search DTO configuration ============================================-->
+<!--========================================================================-->
+
+<!-- Keep in mind that generateEntities needs to be true for Search Criteria DTOs also -->
+<entry key="generateSearchDTOs">true</entry>
+<entry key="outputJavaSearchDTOsDirectory">../RealEstateExchangeWebInterface/src/aaacs/rex/wi/beans/dtos/search</entry>
+<entry key="permanentSearchDTOFiles">
+BaseSearchDTO.java
+</entry>
+<entry key="javaSearchDTODefaultPackage">aaacs.rex.wi.beans.dtos.search</entry>
+<entry key="javaSearchDTODefaultImports">
+import java.io.Serializable;
+import java.sql.*;
+import java.text.*;
+import java.util.Hashtable;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
+import javax.faces.context.FacesContext;
+
+import aaacs.coreserver.commons.generation.Utilities;
+import aaacs.coreserver.commons.validation.FieldValidator;
+import aaacs.coreserver.commons.validation.MsgArgsPair;
+
+import aaacs.rex.wi.beans.dtos.*;
+import aaacs.rex.wi.beans.delegates.UtilitiesDelegate;
+</entry>
+
+</properties>

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:coreServer="aaacs.coreserver/generation"
+	targetNamespace="aaacs.coreserver/generation"
+	elementFormDefault="qualified" 
+	attributeFormDefault="unqualified">
+
+	<!-- Global Types, Elements, and Groups -->
+	<xs:complexType name="emptyType">
+	</xs:complexType>
+
+	<xs:simpleType name="nameList">
+		<xs:list itemType="xs:Name"/>
+	</xs:simpleType>
+
+	<xs:simpleType name="stringList">
+		<xs:list itemType="xs:string"/>
+	</xs:simpleType>
+
+	<xs:simpleType name="boolean">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="true"/>
+			<xs:enumeration value="false"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="codeFragmentVisibility">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="hidden"/>
+			<xs:enumeration value="entity"/>
+			<xs:enumeration value="DTO"/>
+			<xs:enumeration value="sessionBean"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="codeFragmentVisibilityList">
+		<xs:list itemType="coreServer:codeFragmentVisibility"/>
+	</xs:simpleType>
+
+	<xs:element name="comment">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+
+					<xs:attribute name="name" type="xs:Name" default="unnamed"/>
+					<xs:attribute name="type" use="required">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="SQL"/>
+								<xs:enumeration value="Java"/>
+								<xs:enumeration value="JavaDoc"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+					<xs:attribute name="indent" type="xs:integer" default="0"/>
+
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="comments">
+		<xs:complexType>
+			<xs:sequence minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="coreServer:comment"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:complexType name="fieldsType">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="field">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="name" type="xs:string"/>
+						<xs:element name="value" type="xs:string"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="codeFragmentType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="name" type="xs:Name" use="required"/>
+				<xs:attribute name="visibility" type="coreServer:codeFragmentVisibilityList" default="entity"/>
+				<xs:attribute name="location" type="xs:Name" use="required"/>
+				<xs:attribute name="baseIndent" type="xs:nonNegativeInteger" default="1"/>
+				<xs:attribute name="keepExtraIndents" type="coreServer:boolean" default="true"/>
+				<xs:attribute name="startComment" type="xs:string" default="// --- BEGIN CUSTOM CODE ---"/>
+				<xs:attribute name="endComment" type="xs:string" default="// --- END CUSTOM CODE ---"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>								
+
+	<xs:complexType name="codeFragmentsType">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="codeFragment" type="coreServer:codeFragmentType"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="codeFragmentReferencesType">
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="codeFragmentReference">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string"> <!--attributes to override codeFragmentType-->
+							<xs:attribute name="baseIndent" type="xs:nonNegativeInteger"/>
+							<xs:attribute name="keepExtraIndents" type="coreServer:boolean"/>
+							<xs:attribute name="startComment" type="xs:string"/>
+							<xs:attribute name="endComment" type="xs:string"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="errorReportType">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="item">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="arg" type="xs:string"/>
+						<xs:element name="arg" type="xs:string" minOccurs="0"/>
+						<xs:element name="arg" type="xs:string" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="usage" default="addToErrors">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="addToErrors"/>
+					<xs:enumeration value="assign"/>
+					<xs:enumeration value="return"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="userVar" type="xs:string" default="errors"/>
+		<xs:attribute name="system" default="CoreServer">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="CoreServer"/>
+					<xs:enumeration value="WebInterface"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="source" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="ACTIONFORMAT"/>
+					<xs:enumeration value="DATABASE"/>
+					<xs:enumeration value="DATARESULTS"/>
+					<xs:enumeration value="INTERNAL"/>
+					<xs:enumeration value="PARAMETER"/>
+					<xs:enumeration value="TIMEOUT"/>
+					<xs:enumeration value="UNSPECIFIED"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="type" type="xs:string" use="required"/>
+		<xs:attribute name="useInternalTypePrefix" type="coreServer:boolean" default="true"/>
+		<xs:attribute name="request" type="xs:string" use="optional"/>
+		<xs:attribute name="userIdk" type="xs:string" use="optional"/>
+		<xs:attribute name="actionName" type="xs:string" use="optional"/>
+		<xs:attribute name="actionVersion" type="xs:string" use="optional"/>
+		<xs:attribute name="actionTime" type="xs:string" use="optional"/>
+	</xs:complexType>
+</xs:schema>

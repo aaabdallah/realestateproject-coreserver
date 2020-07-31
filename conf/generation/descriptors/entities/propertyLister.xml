@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<coreServerEntity xmlns="aaacs.coreserver/generation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="aaacs.coreserver/generation ../../schemas/csDocEntity.xsd">
+	
+	<table>
+		<name>tPropertyListers</name>
+		<constraints>
+			<unique>listerIdk listingIdk</unique>
+			<foreignKey>
+				<referringColumns>listingIdk</referringColumns>
+				<referredTable>tPropertyListings</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>listerIdk</referringColumns>
+				<referredTable>tUsers</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>listerTypeIdk</referringColumns>
+				<referredTable>tPropertyOptions</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>commissionTypeIdk</referringColumns>
+				<referredTable>tPropertyOptions</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+
+		</constraints>
+	</table>
+
+	<class>
+		<name>PropertyLister</name>
+		<annotations>
+			<entity/>
+			<sqlResultSetMappings>
+				<standardMapping/>
+			</sqlResultSetMappings>
+		</annotations>
+	</class>
+
+	<attributes>
+		<includeAttributes>conf/generation/descriptors/standardAttributes.xml</includeAttributes>
+
+		<attribute>
+			<columnDescription name="listingIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="listingIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="listerIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="listerIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_HIGHEST_RESERVED + 1</min>
+					</Long>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="listerTypeIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="listerTypeIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_HIGHEST_RESERVED + 1</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="PropertyOption" key="name"/>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="commissionTypeIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="commissionTypeIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="PropertyOption" key="name"/>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="commissionAmount" type="REAL">
+			</columnDescription>
+			<javaFieldDescription name="commissionAmount" type="Float">
+				<annotations><basic/></annotations>
+				<validation>
+					<Float>
+						<min>0</min>
+					</Float>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="listerNotes" type="VARCHAR(200)">
+			</columnDescription>
+			<javaFieldDescription name="listerNotes" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>200</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="systemNotes" type="VARCHAR(200)">
+			</columnDescription>
+			<javaFieldDescription name="systemNotes" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>200</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+	</attributes>
+
+	<populate>
+		<defaults>
+			<columnValues>
+			listingIdk '1'
+			listerIdk '1'
+			listerTypeIdk '1'
+			commissionTypeIdk '1'
+			</columnValues>
+		</defaults>
+		<insert>
+			<columnValues>
+			idk '1'
+			listerIdk '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '101'
+			listerIdk '101'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '102'
+			listerIdk '102'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '103'
+			listerIdk '103'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '901'
+			listerIdk '901'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '902'
+			listerIdk '902'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '903'
+			listerIdk '903'
+			</columnValues>
+		</insert>
+	</populate>
+
+</coreServerEntity>

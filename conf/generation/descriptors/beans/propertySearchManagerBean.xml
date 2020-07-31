@@ -1,0 +1,1032 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<coreServerBean xmlns="aaacs.coreserver/generation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="aaacs.coreserver/generation ../../schemas/csDocBean.xsd">
+
+	<class>
+		<name>PropertySearchManagerBean</name>
+		<imports>
+			<import>aaacs.coreserver.ejb.entities.support.CacheManager</import>
+		</imports>
+		<annotations>
+			<beanType>Stateless</beanType>
+			<interfaces>
+				<interface name="PropertySearchManager" type="Local"/>
+			</interfaces>
+			<transactionManagement type="Container" ctrTxAttr="Required"/>
+		</annotations>
+	</class>
+
+	<methods>
+	
+		<method>
+			<name enResource="Helper method for applying constraints when searching properties">applySearchPropertiesConstraints</name>
+			<signature>
+				<returns>void</returns>
+				<parameters>
+					<type>SelectBuilder</type><name>selectBuilder</name>
+					<type>Map&lt;String, Object&gt;</type><name>propertySearchFields</name> 
+					<type>Map&lt;String, Object&gt;</type><name>communityAmenitiesSearchFields</name>
+					<type>Map&lt;String, Object&gt;</type><name>propertyTypeSearchFields</name>
+					<type>Map&lt;String, Object&gt;</type><name>residentialFeaturesSearchFields</name>
+					<type>Map&lt;String, Object&gt;</type><name>commercialFeaturesSearchFields</name>
+				</parameters>
+			</signature>
+			<tasks requiresLoggedInUser="true">
+				<task>
+					<execute>
+						<customCode>
+							<codeFragmentReference baseIndent="3">cfr.applySearchPropertiesConstraints.body</codeFragmentReference>
+						</customCode>
+					</execute>
+				</task>
+			</tasks>
+
+			<codeFragments>
+				<codeFragment name="cfr.applySearchPropertiesConstraints.body" location="generic" visibility="sessionBean"><![CDATA[
+				selectBuilder.addSelect("\"tProperties\".idk AS \"propertyIdk\", \"propertyTypeIdk\"");
+				selectBuilder.addSelect("\"tProperties\".\"countryIdk\" AS \"countryIdk\", \"tProperties\".\"regionIdk\" AS \"regionIdk\", " + 
+					"\"tProperties\".\"cityIdk\" AS \"cityIdk\", \"tProperties\".\"districtIdk\" AS \"districtIdk\"");
+				selectBuilder.addSelect("\"yearBuilt\", \"generalConditionIdk\", \"communityAmenitiesIdk\"");
+				selectBuilder.addSelect("\"directlyNorth\", \"directlySouth\", \"directlyEast\", \"directlyWest\"");
+				selectBuilder.addFrom("\"tProperties\"");
+				selectBuilder.addWhere("\"tProperties\".idk = \"tPropertyListings\".\"propertyIdk\"", true);
+				if (propertySearchFields != null)
+					Property.applySearchFields(propertySearchFields, selectBuilder);
+		
+				selectBuilder.addSelect("\"communityName\", \"managedCommunity\"");
+				selectBuilder.addFrom("\"tCommunityAmenities\"");
+				selectBuilder.addWhere("\"tCommunityAmenities\".idk = \"tProperties\".\"communityAmenitiesIdk\"", true);
+				if (communityAmenitiesSearchFields != null)
+					CommunityAmenities.applySearchFields(communityAmenitiesSearchFields, selectBuilder);
+
+				if (propertySearchFields != null)
+				{
+					Long propertyTypeIdk = (Long) propertySearchFields.get("propertyTypeIdk");
+					if (propertyTypeIdk != null)
+					{
+						Map<String, Object> searchFields1 = new LinkedHashMap<String, Object>();
+						searchFields1.put("category", "propertyType");
+
+						List propertyOptionsList = PropertyOption.findPropertyOptionByFields(manager, searchFields1);
+						String propertyType = "";
+						for (Object option : propertyOptionsList)
+						{
+							PropertyOption propertyOption = (PropertyOption) option;
+							if (propertyOption.getIdk().equals(propertyTypeIdk))
+							{
+								propertyType = propertyOption.getName();
+								break;
+							}
+						}
+						
+						if (propertyType.equals(""))
+						{
+							// throw new IllegalArgumentException("Unrecognized property type");
+						}
+						else if (propertyType.equals("propertyType.Apartment"))
+						{
+							selectBuilder.addSelect("\"tApartments\".idk AS \"apartmentIdk\", \"apartmentSize\", \"apartmentAreaUnitTypeIdk\", \"apartmentFloor\"");
+							selectBuilder.addFrom("\"tApartments\"");
+							selectBuilder.addWhere("\"tApartments\".\"propertyIdk\" = \"tProperties\".idk", true);
+							if (propertyTypeSearchFields != null)
+								Apartment.applySearchFields(propertyTypeSearchFields, selectBuilder);
+							
+							selectBuilder.addSelect("\"tResidentialFeatures\".idk AS \"residentialFeaturesIdk\", " +
+								"bedrooms, bathrooms, furnished");
+							selectBuilder.addFrom("\"tResidentialFeatures\"");
+							selectBuilder.addWhere("\"tResidentialFeatures\".idk = \"tApartments\".\"residentialFeaturesIdk\"", true);
+							if (residentialFeaturesSearchFields != null)
+								ResidentialFeatures.applySearchFields(residentialFeaturesSearchFields, selectBuilder);
+						}
+						else if (propertyType.equals("propertyType.EmptyLot"))
+						{
+							selectBuilder.addSelect("\"tEmptyLots\".idk AS \"emptyLotIdk\", \"landSize\", \"landAreaUnitTypeIdk\", \"landTypeIdk\"");
+							selectBuilder.addFrom("\"tEmptyLots\"");
+							selectBuilder.addWhere("\"tEmptyLots\".\"propertyIdk\" = \"tProperties\".idk", true);
+							if (propertyTypeSearchFields != null)
+								EmptyLot.applySearchFields(propertyTypeSearchFields, selectBuilder);
+						}
+						else if (propertyType.equals("propertyType.FarmLot"))
+						{
+							selectBuilder.addSelect("\"tFarmLots\".idk AS \"farmLotIdk\", \"landSize\", \"landAreaUnitTypeIdk\", \"irrigationTypeIdk\", \"suitableCrops\"");
+							selectBuilder.addFrom("\"tFarmLots\"");
+							selectBuilder.addWhere("\"tFarmLots\".\"propertyIdk\" = \"tProperties\".idk", true);
+							if (propertyTypeSearchFields != null)
+								FarmLot.applySearchFields(propertyTypeSearchFields, selectBuilder);
+						}
+						else if (propertyType.equals("propertyType.FloorUnit"))
+						{
+							selectBuilder.addSelect("\"tFloorUnits\".idk AS \"floorUnitIdk\", \"floorUnitSize\", \"floorUnitAreaUnitTypeIdk\", \"unitFloor\"");
+							selectBuilder.addFrom("\"tFloorUnits\"");
+							selectBuilder.addWhere("\"tFloorUnits\".\"propertyIdk\" = \"tProperties\".idk", true);
+							if (propertyTypeSearchFields != null)
+								FloorUnit.applySearchFields(propertyTypeSearchFields, selectBuilder);
+			
+							selectBuilder.addSelect("\"tResidentialFeatures\".idk AS \"residentialFeaturesIdk\", " +
+								"bedrooms, bathrooms, furnished");
+							selectBuilder.addFrom("\"tResidentialFeatures\"");
+							selectBuilder.addWhere("\"tResidentialFeatures\".idk = \"tFloorUnits\".\"residentialFeaturesIdk\"", true);
+							if (residentialFeaturesSearchFields != null)
+								ResidentialFeatures.applySearchFields(residentialFeaturesSearchFields, selectBuilder);
+						}
+						else if (propertyType.equals("propertyType.House"))
+						{
+							selectBuilder.addSelect("\"tHouses\".idk AS \"houseIdk\", \"landSize\", \"landAreaUnitTypeIdk\", \"houseSize\", \"houseAreaUnitTypeIdk\", floors");
+							selectBuilder.addFrom("\"tHouses\"");
+							selectBuilder.addWhere("\"tHouses\".\"propertyIdk\" = \"tProperties\".idk", true);
+							if (propertyTypeSearchFields != null)
+								House.applySearchFields(propertyTypeSearchFields, selectBuilder);
+			
+							selectBuilder.addSelect("\"tResidentialFeatures\".idk AS \"residentialFeaturesIdk\", " +
+								"bedrooms, bathrooms, furnished");
+							selectBuilder.addFrom("\"tResidentialFeatures\"");
+							selectBuilder.addWhere("\"tResidentialFeatures\".idk = \"tHouses\".\"residentialFeaturesIdk\"", true);
+							if (residentialFeaturesSearchFields != null)
+								ResidentialFeatures.applySearchFields(residentialFeaturesSearchFields, selectBuilder);
+						}
+						else if (propertyType.equals("propertyType.MultiUnitBuilding"))
+						{
+							selectBuilder.addSelect("\"tMultiUnitBuildings\".idk AS \"multiUnitBuildingIdk\", " +
+								"\"landSize\", \"landAreaUnitTypeIdk\", \"buildingSize\", \"buildingAreaUnitTypeIdk\", " + 
+								"\"residentialUnitSize\", \"residentialUnitAreaUnitTypeIdk\", \"commercialUnitSize\", \"commercialUnitAreaUnitTypeIdk\", " +
+								"\"totalFloorsInBuilding\", \"totalResidentialUnits\", \"totalCommercialUnits\"");
+							selectBuilder.addFrom("\"tMultiUnitBuildings\"");
+							selectBuilder.addWhere("\"tMultiUnitBuildings\".\"propertyIdk\" = \"tProperties\".idk", true);
+							if (propertyTypeSearchFields != null)
+								MultiUnitBuilding.applySearchFields(propertyTypeSearchFields, selectBuilder);
+			
+							selectBuilder.addSelect("\"tResidentialFeatures\".idk AS \"residentialFeaturesIdk\", " +
+								"bedrooms, bathrooms, \"tResidentialFeatures\".furnished AS \"residentialUnitFurnished\"");
+							selectBuilder.addFrom("\"tResidentialFeatures\"");
+							selectBuilder.addWhere("\"tResidentialFeatures\".idk = \"tMultiUnitBuildings\".\"unitResidentialFeaturesIdk\"", true);
+							if (residentialFeaturesSearchFields != null)
+								ResidentialFeatures.applySearchFields(residentialFeaturesSearchFields, selectBuilder);
+			
+							selectBuilder.addSelect("\"tCommercialFeatures\".idk AS \"commercialFeaturesIdk\", " +
+								"offices, \"tCommercialFeatures\".furnished AS \"commercialUnitFurnished\"");
+							selectBuilder.addFrom("\"tCommercialFeatures\"");
+							selectBuilder.addWhere("\"tCommercialFeatures\".idk = \"tMultiUnitBuildings\".\"unitCommercialFeaturesIdk\"", true);
+							if (commercialFeaturesSearchFields != null)
+								CommercialFeatures.applySearchFields(commercialFeaturesSearchFields, selectBuilder);
+						}
+						else if (propertyType.equals("propertyType.MultiUnitCompound"))
+						{
+							selectBuilder.addSelect("\"tMultiUnitCompounds\".idk AS \"multiUnitCompoundIdk\", " +
+								"\"landSize\", \"landAreaUnitTypeIdk\", " + 
+								"\"residentialUnitSize\", \"residentialUnitAreaUnitTypeIdk\", \"commercialUnitSize\", \"commercialUnitAreaUnitTypeIdk\", " +
+								"\"totalResidentialUnits\", \"totalCommercialUnits\"");
+							selectBuilder.addFrom("\"tMultiUnitCompounds\"");
+							selectBuilder.addWhere("\"tMultiUnitCompounds\".\"propertyIdk\" = \"tProperties\".idk", true);
+							if (propertyTypeSearchFields != null)
+								MultiUnitCompound.applySearchFields(propertyTypeSearchFields, selectBuilder);
+			
+							selectBuilder.addSelect("\"tResidentialFeatures\".idk AS \"residentialFeaturesIdk\", " +
+								"bedrooms, bathrooms, \"tResidentialFeatures\".furnished AS \"residentialUnitFurnished\"");
+							selectBuilder.addFrom("\"tResidentialFeatures\"");
+							selectBuilder.addWhere("\"tResidentialFeatures\".idk = \"tMultiUnitCompounds\".\"unitResidentialFeaturesIdk\"", true);
+							if (residentialFeaturesSearchFields != null)
+								ResidentialFeatures.applySearchFields(residentialFeaturesSearchFields, selectBuilder);
+			
+							selectBuilder.addSelect("\"tCommercialFeatures\".idk AS \"commercialFeaturesIdk\", " +
+								"offices, \"tCommercialFeatures\".furnished AS \"commercialUnitFurnished\"");
+							selectBuilder.addFrom("\"tCommercialFeatures\"");
+							selectBuilder.addWhere("\"tCommercialFeatures\".idk = \"tMultiUnitCompounds\".\"unitCommercialFeaturesIdk\"", true);
+							if (commercialFeaturesSearchFields != null)
+								CommercialFeatures.applySearchFields(commercialFeaturesSearchFields, selectBuilder);
+						}
+						else if (propertyType.equals("propertyType.Office"))
+						{
+							selectBuilder.addSelect("\"tOffices\".idk AS \"officeIdk\", \"officeSize\", \"officeAreaUnitTypeIdk\", \"officeFloor\", \"intendedBusinessTypeIdk\"");
+							selectBuilder.addFrom("\"tOffices\"");
+							selectBuilder.addWhere("\"tOffices\".\"propertyIdk\" = \"tProperties\".idk", true);
+							if (propertyTypeSearchFields != null)
+								Office.applySearchFields(propertyTypeSearchFields, selectBuilder);
+			
+							selectBuilder.addSelect("\"tCommercialFeatures\".idk AS \"commercialFeaturesIdk\", " +
+								"offices, furnished");
+							selectBuilder.addFrom("\"tCommercialFeatures\"");
+							selectBuilder.addWhere("\"tCommercialFeatures\".idk = \"tOffices\".\"commercialFeaturesIdk\"", true);
+							if (commercialFeaturesSearchFields != null)
+								CommercialFeatures.applySearchFields(commercialFeaturesSearchFields, selectBuilder);
+						}
+						else if (propertyType.equals("propertyType.Store"))
+						{
+							selectBuilder.addSelect("\"tStores\".idk AS \"storeIdk\", \"storeSize\", \"storeAreaUnitTypeIdk\", \"storeFloor\", \"intendedBusinessTypeIdk\"");
+							selectBuilder.addFrom("\"tStores\"");
+							selectBuilder.addWhere("\"tStores\".\"propertyIdk\" = \"tProperties\".idk", true);
+							if (propertyTypeSearchFields != null)
+								Store.applySearchFields(propertyTypeSearchFields, selectBuilder);
+			
+							selectBuilder.addSelect("\"tCommercialFeatures\".idk AS \"commercialFeaturesIdk\", " +
+								"offices, furnished");
+							selectBuilder.addFrom("\"tCommercialFeatures\"");
+							selectBuilder.addWhere("\"tCommercialFeatures\".idk = \"tStores\".\"commercialFeaturesIdk\"", true);
+							if (commercialFeaturesSearchFields != null)
+								CommercialFeatures.applySearchFields(commercialFeaturesSearchFields, selectBuilder);
+						}
+					}
+					//else
+					//	throw new IllegalArgumentException("Property type must be specified");
+				}
+				]]></codeFragment>
+			</codeFragments>
+		</method>
+
+		<method>
+			<name enResource="Search for properties matching input parameters">searchProperties</name>
+			<tasks requiresLoggedInUser="true">
+				<task>
+					<authorizations>
+						<authorization/>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="PropertyListingType" enResource="Property Listing Type" type="String" varName="propertyListingType">
+							<validations/>
+						</inputParameter>
+						<inputParameter displayName="SortOrder" enResource="Sort Order" type="String" varName="sortOrder">
+							<validations/>
+						</inputParameter>
+						<inputParameter displayName="DateRange" enResource="Date Range" type="String" varName="dateRange">
+							<validations/>
+						</inputParameter>
+						<inputParameter displayName="Username" enResource="Username" type="String" varName="username">
+							<validations>
+								<staticFieldValidator condition='username != null &amp;&amp; !username.trim().equals("")'>User.validateUsername</staticFieldValidator>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="TestUserProperties" enResource="Test Users Properties" type="Boolean" varName="testUserProperties">
+							<validations/>
+						</inputParameter>
+						<inputParameter displayName="Telephone" enResource="Agent Telephone" type="String" varName="telephone">
+							<validations>
+								<staticFieldValidator condition='telephone != null &amp;&amp; !telephone.trim().equals("")'>UserProfile.validateTelephone</staticFieldValidator>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="Mobile" enResource="Agent Mobile" type="String" varName="mobile">
+							<validations>
+								<staticFieldValidator condition='mobile != null &amp;&amp; !mobile.trim().equals("")'>UserProfile.validateMobile</staticFieldValidator>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertySearchFields" enResource="Property Search Fields"
+							varName="propertySearchFields" type="Map&lt;String, Object&gt;" methodSuffix="Map"
+							keyClasses="String" valueClasses="Object">
+							<validations>
+								<parameterValidator condition="propertySearchFields != null"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyListingSearchFields" enResource="Property Listing Search Fields"
+							varName="propertyListingSearchFields" type="Map&lt;String, Object&gt;" methodSuffix="Map"
+							keyClasses="String" valueClasses="Object">
+							<validations>
+								<parameterValidator condition="propertyListingSearchFields != null"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="RentalSearchFields" enResource="Rental Search Fields"
+							varName="rentalSearchFields" type="Map&lt;String, Object&gt;" methodSuffix="Map"
+							keyClasses="String" valueClasses="Object">
+							<validations>
+								<parameterValidator condition="rentalSearchFields != null"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="SaleSearchFields" enResource="Sale Search Fields"
+							varName="saleSearchFields" type="Map&lt;String, Object&gt;" methodSuffix="Map"
+							keyClasses="String" valueClasses="Object">
+							<validations>
+								<parameterValidator condition="saleSearchFields != null"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyTypeSearchFields" enResource="Property Type Search Fields"
+							varName="propertyTypeSearchFields" type="Map&lt;String, Object&gt;" methodSuffix="Map"
+							keyClasses="String" valueClasses="Object">
+							<validations>
+								<parameterValidator condition="propertyTypeSearchFields != null"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="ResidentialFeaturesSearchFields" enResource="Residential Features Search Fields"
+							varName="residentialFeaturesSearchFields" type="Map&lt;String, Object&gt;" methodSuffix="Map"
+							keyClasses="String" valueClasses="Object">
+							<validations>
+								<parameterValidator condition="residentialFeaturesSearchFields != null"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="CommercialFeaturesSearchFields" enResource="Commercial Features Search Fields"
+							varName="commercialFeaturesSearchFields" type="Map&lt;String, Object&gt;" methodSuffix="Map"
+							keyClasses="String" valueClasses="Object">
+							<validations>
+								<parameterValidator condition="commercialFeaturesSearchFields != null"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="CommunityAmenitiesSearchFields" enResource="Community Amenities Search Fields"
+							varName="communityAmenitiesSearchFields" type="Map&lt;String, Object&gt;" methodSuffix="Map"
+							keyClasses="String" valueClasses="Object">
+							<validations>
+								<parameterValidator condition="communityAmenitiesSearchFields != null"/>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<customCode>
+							<codeFragmentReference baseIndent="3">cfr.searchProperties.search</codeFragmentReference>
+						</customCode>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="Rentals" enResource="Rentals"
+							type="Map" varName="rentalRows" keyClasses="Long String" 
+							valueClasses="Map Object" condition="rentalRows != null &amp;&amp; rentalRows.size() &gt; 0"/>
+						<outputParameter displayName="Sales" enResource="Sales"
+							type="Map" varName="salesRows" keyClasses="Long String" 
+							valueClasses="Map Object" condition="salesRows != null &amp;&amp; salesRows.size() &gt; 0"/>
+					</outputParameters>
+				</task>
+			</tasks>
+			<codeFragments>
+				<codeFragment name="cfr.searchProperties.search" location="generic" visibility="sessionBean"><![CDATA[
+			boolean searchRentals = true, searchSales = true;
+			
+			if (propertyListingType != null)
+			{
+				searchRentals = propertyListingType.indexOf("rental") >= 0;
+				searchSales = propertyListingType.indexOf("sale") >= 0;
+			}
+			
+			SelectBuilder sbRentals = null, sbSales = null;
+			List rentalResults = null, salesResults = null;
+
+			// if rentals are sought, prepare the query
+			if (searchRentals)
+			{
+				sbRentals = new SelectBuilder();
+				sbRentals.addSelect("\"tRentals\".idk AS \"rentalIdk\", \"periodMonths\", \"rentForPeriod\", \"tRentals\".\"currencyIdk\" AS \"rentalCurrencyIdk\"");
+				sbRentals.addFrom("\"tRentals\"");
+				if (rentalSearchFields != null)
+					Rental.applySearchFields(rentalSearchFields, sbRentals);
+				
+				sbRentals.addSelect("\"tPropertyListings\".idk AS \"propertyListingIdk\", \"tPropertyListings\".\"propertyIdk\" AS \"propertyIdk\"");
+				sbRentals.addSelect("\"tPropertyListings\".summary AS \"listingSummary\", \"tPropertyListings\".\"systemKey\", \"userKey\", direct");
+				sbRentals.addSelect("\"timePublicAccessStarts\", \"timePublicAccessEnds\", (CURRENT_DATE > \"timePublicAccessEnds\") AS expired");
+				sbRentals.addSelect("\"tPropertyListings\".\"timeLastModified\" AS \"timeLastModified\"");
+				sbRentals.addFrom("\"tPropertyListings\"");
+				sbRentals.addWhere("(\"tPropertyListings\".\"metaFlags\" & 1) = 0", true);
+
+				sbRentals.addWhere("\"tRentals\".idk > 999 AND \"tRentals\".idk = \"tPropertyListings\".\"forRentIdk\"", true);
+				if (dateRange == null || dateRange.equals("unexpired"))
+					sbRentals.addWhere("CAST (\"timePublicAccessStarts\" AS DATE) <= CURRENT_DATE AND CURRENT_DATE <= \"timePublicAccessEnds\"", true);
+				else if (dateRange.equals("expired"))
+					sbRentals.addWhere("CURRENT_DATE > \"timePublicAccessEnds\"", true);
+					
+				if (sortOrder == null || sortOrder.equalsIgnoreCase("datedes"))
+					sbRentals.addOrder("\"timeLastModified\" DESC");
+				else if (sortOrder.equalsIgnoreCase("dateasc"))
+					sbRentals.addOrder("\"timeLastModified\" ASC");
+				else if (sortOrder.equalsIgnoreCase("pricedes"))
+					sbRentals.addOrder("(\"rentForPeriod\" / \"periodMonths\") DESC");
+				else if (sortOrder.equalsIgnoreCase("priceasc"))
+					sbRentals.addOrder("(\"rentForPeriod\" / \"periodMonths\") ASC");
+					
+				if (propertyListingSearchFields != null)
+					PropertyListing.applySearchFields(propertyListingSearchFields, sbRentals);
+
+				LinkedHashMap<String, Object> searchFields = new LinkedHashMap<String, Object>();
+				searchFields.put("category", "propertyListerType");
+				searchFields.put("name", "propertyListerType.Creator");
+				Map<Long, Map<String, Object>> propertyOptions = PropertyOption.cacheLookup(searchFields);
+				Long creatorPropertyListerTypeIdk = propertyOptions.keySet().iterator().next();
+				
+				sbRentals.addSelect("\"tPropertyListers\".\"listerIdk\" AS \"propertyListerIdk\"");
+				sbRentals.addFrom("\"tPropertyListers\"");
+				sbRentals.addWhere("\"tPropertyListers\".\"listingIdk\" = \"tPropertyListings\".idk", true);
+				sbRentals.addWhere("\"tPropertyListers\".\"listerTypeIdk\" = " + creatorPropertyListerTypeIdk.longValue(), true);
+
+				if (testUserProperties != null)
+				{
+					sbRentals.addFrom("\"tUsers\"");
+					sbRentals.addWhere("\"tUsers\".\"testUser\" = $$" + testUserProperties + "$$", true);
+					sbRentals.addWhere("\"tPropertyListers\".\"listerIdk\" = \"tUsers\".idk", true);
+				}
+				if (username != null && !username.trim().equals(""))
+				{
+					sbRentals.addFrom("\"tUsers\"");
+					sbRentals.addWhere("\"tUsers\".username = $$" + username + "$$", true);
+					sbRentals.addWhere("\"tPropertyListers\".\"listerIdk\" = \"tUsers\".idk", true);
+					// already added above.
+					// sbRentals.addWhere("\"tPropertyListers\".\"listingIdk\" = \"tPropertyListings\".idk", true);
+				}
+
+				sbRentals.addSelect("\"tUserProfiles\".organization AS organization, \"tUserProfiles\".telephone AS telephone, " +
+					"\"tUserProfiles\".mobile AS mobile");
+				sbRentals.addFrom("\"tUserProfiles\"");
+				sbRentals.addWhere("\"tUserProfiles\".\"userIdk\" = \"tPropertyListers\".\"listerIdk\"", true);
+
+				if (telephone != null && !telephone.trim().equals(""))
+					sbRentals.addWhere("\"tUserProfiles\".telephone = $$" + telephone + "$$", true);
+				if (mobile != null && !mobile.trim().equals(""))
+					sbRentals.addWhere("\"tUserProfiles\".mobile = $$" + mobile + "$$", true);
+
+				applySearchPropertiesConstraints(sbRentals, propertySearchFields, communityAmenitiesSearchFields, 
+					propertyTypeSearchFields, residentialFeaturesSearchFields, commercialFeaturesSearchFields);
+
+				System.out.println("\n\n\n" + sbRentals.toString() + "\n\n\n\n");
+			
+				rentalResults = BaseEntity.findByQuery(false, manager, sbRentals, null, null);
+			}
+			
+			// if sales are sought, prepare the query
+			if (searchSales)
+			{
+				sbSales = new SelectBuilder();
+				sbSales.addSelect("\"tSales\".idk AS \"saleIdk\", \"bidTypeIdk\", bid, \"priceTypeIdk\", \"cashPrice\", \"pricePerTypeIdk\", \"installmentsAcceptable\", \"installmentsPrice\", \"tSales\".\"currencyIdk\" AS \"saleCurrencyIdk\"");
+				sbSales.addFrom("\"tSales\"");
+				if (saleSearchFields != null)
+					Sale.applySearchFields(saleSearchFields, sbSales);
+
+				// --- Begin special code to handle searching by square meter for empty lots
+				Map<String, Object> searchFields1 = new LinkedHashMap<String, Object>();
+				String propertyType = null;
+				if (propertySearchFields != null)
+				{
+					Long propertyTypeIdk = (Long) propertySearchFields.get("propertyTypeIdk");
+					searchFields1.put("idk", propertyTypeIdk);
+					propertyType = (String) PropertyOption.cacheLookup(searchFields1).get(propertyTypeIdk).get("name");
+				}
+				
+				if (propertyType != null && propertyType.equals("propertyType.EmptyLot"))
+				{	
+					Long pricePerTypeIdk = null;
+					if (saleSearchFields != null)
+						pricePerTypeIdk = (Long) saleSearchFields.get("pricePerTypeIdk");
+					if (pricePerTypeIdk != null)
+					{
+						String pricePerType = (String) PropertyOption.cacheLookup(pricePerTypeIdk).get("name");
+						
+						searchFields1.clear();
+						searchFields1.put("name", "pricePerType.SquareMeter");
+						Long pricePerTypeSquareMeterIdk = PropertyOption.cacheLookup(searchFields1).keySet().iterator().next();
+						
+						searchFields1.clear();
+						searchFields1.put("name", "pricePerType.Property");
+						Long pricePerTypePropertyIdk = PropertyOption.cacheLookup(searchFields1).keySet().iterator().next();
+	
+						if (pricePerType.equals("pricePerType.Property"))
+						{
+							if (saleSearchFields.get("cashPriceMinimum") != null && saleSearchFields.get("cashPriceMinimum").toString().length() > 0)
+							{
+								sbSales.addWhere(
+									// Compare srch_total_price with db_total_price
+									"((\"tSales\".\"pricePerTypeIdk\" = " + pricePerTypePropertyIdk +
+										" AND " +
+										"(\"tSales\".\"cashPrice\" >= " + saleSearchFields.get("cashPriceMinimum") +
+											" OR " +
+											"\"tSales\".bid >= " + saleSearchFields.get("cashPriceMinimum") + "))" +
+									" OR " +
+									// Compare srch_total_price with db_price_sqm * size
+									"(\"tSales\".\"pricePerTypeIdk\" = " + pricePerTypeSquareMeterIdk +
+										" AND ((\"tSales\".\"cashPrice\" * \"tEmptyLots\".\"landSize\") >= " + saleSearchFields.get("cashPriceMinimum") +
+											" OR " + 
+											"(\"tSales\".bid * \"tEmptyLots\".\"landSize\") >= " + saleSearchFields.get("cashPriceMinimum") + ")" +
+										"))", 
+									true);
+							}
+							if (saleSearchFields.get("cashPriceMaximum") != null && saleSearchFields.get("cashPriceMaximum").toString().length() > 0)
+							{
+								sbSales.addWhere(
+									// Compare srch_total_price with db_total_price
+									"((\"tSales\".\"pricePerTypeIdk\" = " + pricePerTypePropertyIdk +
+										" AND " +
+										"(\"tSales\".\"cashPrice\" <= " + saleSearchFields.get("cashPriceMaximum") +
+											" OR " +
+											"\"tSales\".bid <= " + saleSearchFields.get("cashPriceMaximum") + "))" +
+									" OR " +
+									// Compare srch_total_price with db_price_sqm * size
+									"(\"tSales\".\"pricePerTypeIdk\" = " + pricePerTypeSquareMeterIdk +
+										" AND ((\"tSales\".\"cashPrice\" * \"tEmptyLots\".\"landSize\") <= " + saleSearchFields.get("cashPriceMaximum") +
+											" OR " +
+											"(\"tSales\".bid * \"tEmptyLots\".\"landSize\") <= " + saleSearchFields.get("cashPriceMaximum") + ")" +
+										"))", 
+									true);
+							}
+						}
+						else if (pricePerType.equals("pricePerType.SquareMeter"))
+						{
+							if (saleSearchFields.get("cashPriceMinimum") != null && saleSearchFields.get("cashPriceMinimum").toString().length() > 0)
+							{
+								sbSales.addWhere(
+									// Compare srch_total_price with db_total_price
+									"((\"tSales\".\"pricePerTypeIdk\" = " + pricePerTypePropertyIdk +
+										" AND ((\"tSales\".\"cashPrice\" / \"tEmptyLots\".\"landSize\") >= " + saleSearchFields.get("cashPriceMinimum") +
+											" OR " +
+											"(\"tSales\".bid / \"tEmptyLots\".\"landSize\") >= " + saleSearchFields.get("cashPriceMinimum") + ")" +
+										")" +
+									" OR " +
+									// Compare srch_total_price with db_price_sqm * size
+									"(\"tSales\".\"pricePerTypeIdk\" = " + pricePerTypeSquareMeterIdk +
+										" AND (\"tSales\".\"cashPrice\" >= " + saleSearchFields.get("cashPriceMinimum") +
+											" OR " +
+											"\"tSales\".bid >= " + saleSearchFields.get("cashPriceMinimum") + ")" +
+										"))", 
+									true);
+							}
+							if (saleSearchFields.get("cashPriceMaximum") != null && saleSearchFields.get("cashPriceMaximum").toString().length() > 0)
+							{
+								sbSales.addWhere(
+									// Compare srch_total_price with db_total_price
+									"((\"tSales\".\"pricePerTypeIdk\" = " + pricePerTypePropertyIdk +
+										" AND ((\"tSales\".\"cashPrice\" / \"tEmptyLots\".\"landSize\") <= " + saleSearchFields.get("cashPriceMaximum") +
+											" OR " +
+											"(\"tSales\".bid / \"tEmptyLots\".\"landSize\") <= " + saleSearchFields.get("cashPriceMaximum") + ")" +
+										")" +
+									" OR " +
+									// Compare srch_total_price with db_price_sqm * size
+									"(\"tSales\".\"pricePerTypeIdk\" = " + pricePerTypeSquareMeterIdk +
+										" AND (\"tSales\".\"cashPrice\" <= " + saleSearchFields.get("cashPriceMaximum") +
+											" OR " +
+											"\"tSales\".bid <= " + saleSearchFields.get("cashPriceMaximum") + ")" +
+										"))", 
+									true);
+							}
+						}
+					}
+				}
+				else // all other property types
+				{
+					if (saleSearchFields != null)
+					{
+						if (saleSearchFields.get("cashPriceMinimum") != null && saleSearchFields.get("cashPriceMinimum").toString().length() > 0)
+							sbSales.addWhere(
+								"((\"tSales\".\"cashPrice\" >= " + saleSearchFields.get("cashPriceMinimum") + ")" +
+								" OR " +
+								"(\"tSales\".bid >= " + saleSearchFields.get("cashPriceMinimum") + "))", 
+								true);
+						if (saleSearchFields.get("cashPriceMaximum") != null && saleSearchFields.get("cashPriceMaximum").toString().length() > 0)
+							sbSales.addWhere(
+								"((\"tSales\".\"cashPrice\" <= " + saleSearchFields.get("cashPriceMaximum") + ")" +
+								" OR " +
+								"(\"tSales\".bid <= " + saleSearchFields.get("cashPriceMaximum") + "))",
+								true);
+					}
+				}
+				// --- End special code to handle searching by square meter for empty lots
+
+				sbSales.addSelect("\"tPropertyListings\".idk AS \"propertyListingIdk\", \"tPropertyListings\".\"propertyIdk\" AS \"propertyIdk\"");
+				sbSales.addSelect("\"tPropertyListings\".summary AS \"listingSummary\", \"tPropertyListings\".\"systemKey\", \"userKey\", direct");
+				sbSales.addSelect("\"timePublicAccessStarts\", \"timePublicAccessEnds\", (CURRENT_DATE > \"timePublicAccessEnds\") AS expired");
+				sbSales.addSelect("\"tPropertyListings\".\"timeLastModified\" AS \"timeLastModified\"");
+				sbSales.addFrom("\"tPropertyListings\"");
+				sbSales.addWhere("(\"tPropertyListings\".\"metaFlags\" & 1) = 0", true);
+
+				sbSales.addWhere("\"tSales\".idk > 999 AND \"tSales\".idk = \"tPropertyListings\".\"forSaleIdk\"", true);
+				if (dateRange == null || dateRange.equals("unexpired"))
+					sbSales.addWhere("CAST (\"timePublicAccessStarts\" AS DATE) <= CURRENT_DATE AND CURRENT_DATE <= \"timePublicAccessEnds\"", true);
+				else if (dateRange.equals("expired"))
+					sbSales.addWhere("CURRENT_DATE > \"timePublicAccessEnds\"", true);
+
+				if (sortOrder == null || sortOrder.equalsIgnoreCase("datedes"))
+					sbSales.addOrder("\"timeLastModified\" DESC");
+				else if (sortOrder.equalsIgnoreCase("dateasc"))
+					sbSales.addOrder("\"timeLastModified\" ASC");
+				else if (sortOrder.equalsIgnoreCase("pricedes"))
+					sbSales.addOrder("\"cashPrice\" DESC");
+				else if (sortOrder.equalsIgnoreCase("priceasc"))
+					sbSales.addOrder("\"cashPrice\" ASC");
+
+				if (propertyListingSearchFields != null)
+					PropertyListing.applySearchFields(propertyListingSearchFields, sbSales);
+
+				LinkedHashMap<String, Object> searchFields = new LinkedHashMap<String, Object>();
+				searchFields.put("category", "propertyListerType");
+				searchFields.put("name", "propertyListerType.Creator");
+				Map<Long, Map<String, Object>> propertyOptions = PropertyOption.cacheLookup(searchFields);
+				Long creatorPropertyListerTypeIdk = propertyOptions.keySet().iterator().next();
+				
+				sbSales.addSelect("\"tPropertyListers\".\"listerIdk\" AS \"propertyListerIdk\"");
+				sbSales.addFrom("\"tPropertyListers\"");
+				sbSales.addWhere("\"tPropertyListers\".\"listingIdk\" = \"tPropertyListings\".idk", true);
+				sbSales.addWhere("\"tPropertyListers\".\"listerTypeIdk\" = " + creatorPropertyListerTypeIdk.longValue(), true);
+
+				if (testUserProperties != null)
+				{
+					sbSales.addFrom("\"tUsers\"");
+					sbSales.addWhere("\"tUsers\".\"testUser\" = $$" + testUserProperties + "$$", true);
+					sbSales.addWhere("\"tPropertyListers\".\"listerIdk\" = \"tUsers\".idk", true);
+				}
+				if (username != null && !username.trim().equals(""))
+				{
+					sbSales.addFrom("\"tUsers\"");
+					sbSales.addWhere("\"tUsers\".username = $$" + username + "$$", true);
+					sbSales.addWhere("\"tPropertyListers\".\"listerIdk\" = \"tUsers\".idk", true);
+					// already added above.
+					// sbSales.addWhere("\"tPropertyListers\".\"listingIdk\" = \"tPropertyListings\".idk", true);
+				}
+
+				sbSales.addSelect("\"tUserProfiles\".organization AS organization, \"tUserProfiles\".telephone AS telephone, " +
+					"\"tUserProfiles\".mobile AS mobile");
+				sbSales.addFrom("\"tUserProfiles\"");
+				sbSales.addWhere("\"tUserProfiles\".\"userIdk\" = \"tPropertyListers\".\"listerIdk\"", true);
+
+				if (telephone != null && !telephone.trim().equals(""))
+					sbSales.addWhere("\"tUserProfiles\".telephone = $$" + telephone + "$$", true);
+				if (mobile != null && !mobile.trim().equals(""))
+					sbSales.addWhere("\"tUserProfiles\".mobile = $$" + mobile + "$$", true);
+
+				applySearchPropertiesConstraints(sbSales, propertySearchFields, communityAmenitiesSearchFields, 
+					propertyTypeSearchFields, residentialFeaturesSearchFields, commercialFeaturesSearchFields);	
+
+				System.out.println("\n\n\n" + sbSales.toString() + "\n\n\n\n");
+			
+				salesResults = BaseEntity.findByQuery(false, manager, sbSales, null, null);
+			}
+			
+			// TBD: find the property listers in a separate query - may be more than one per property
+			
+			Map<Long, Map<String,Object>> rentalRows = new LinkedHashMap<Long, Map<String,Object>>();
+			if (rentalResults != null && rentalResults.size() > 0)
+			{
+				List<String> columnNames = null;
+				columnNames = sbRentals.getColumnNames(true);
+
+				for (Object entry : rentalResults)
+				{
+					List rowValues = (List) entry;
+					Long rowKey = null;
+					
+					if (rowValues.size() != columnNames.size())
+						throw new java.lang.IndexOutOfBoundsException("Row size does not match column names size");
+					LinkedHashMap<String, Object> row = new LinkedHashMap<String, Object>();
+					for (int i=0; i<rowValues.size(); i++)
+					{
+						// System.out.println("Rental result column + value: " + columnNames.get(i) + " " + rowValues.get(i));
+						row.put(columnNames.get(i), rowValues.get(i));
+						if (columnNames.get(i).equals("propertyListingIdk"))
+							rowKey = (Long) rowValues.get(i);
+						
+						if (columnNames.get(i).equals("propertyTypeIdk"))
+							row.put( "propertyTypeName", PropertyOption.cacheLookup((Long) rowValues.get(i)).get("name") );
+						else if (columnNames.get(i).equals("landTypeIdk"))
+							row.put( "landTypeName", PropertyOption.cacheLookup((Long) rowValues.get(i)).get("name") );
+						else if (columnNames.get(i).equals("countryIdk"))
+							row.put( "countryName", Country.cacheLookup((Long) rowValues.get(i)).get("name") );
+						else if (columnNames.get(i).equals("intendedBusinessTypeIdk"))
+							row.put( "intendedBusinessTypeName", PropertyOption.cacheLookup((Long) rowValues.get(i)).get("name") );
+						else if (columnNames.get(i).equals("irrigationTypeIdk"))
+							row.put( "irrigationTypeName", PropertyOption.cacheLookup((Long) rowValues.get(i)).get("name") );
+						else if (columnNames.get(i).equals("regionIdk"))
+							row.put( "regionName", Region.cacheLookup((Long) rowValues.get(i)).get("name") );
+						else if (columnNames.get(i).equals("cityIdk"))
+							row.put( "cityName", City.cacheLookup((Long) rowValues.get(i)).get("name") );
+						else if (columnNames.get(i).equals("districtIdk"))
+							row.put( "districtName", District.cacheLookup((Long) rowValues.get(i)).get("name") );
+						else if (columnNames.get(i).equals("generalConditionIdk"))
+							row.put( "generalConditionDescription", PropertyOption.cacheLookup((Long) rowValues.get(i)).get("name") );
+						else if (columnNames.get(i).equals("rentalCurrencyIdk"))
+							row.put( "rentalCurrencySymbol", Currency.cacheLookup((Long) rowValues.get(i)).get("symbol") );
+						else if (columnNames.get(i).equals("saleCurrencyIdk"))
+							row.put( "saleCurrencySymbol", Currency.cacheLookup((Long) rowValues.get(i)).get("symbol") );
+						else if (columnNames.get(i).endsWith("AreaUnitTypeIdk"))
+							row.put( columnNames.get(i).replaceAll("Idk", "Name"), PropertyOption.cacheLookup((Long) rowValues.get(i)).get("name") );
+					}
+
+					rentalRows.put(rowKey, row);
+				}
+			}
+			
+			Map<Long, Map<String,Object>> salesRows = new LinkedHashMap<Long, Map<String,Object>>();
+			if (salesResults != null && salesResults.size() > 0)
+			{
+				List<String> columnNames = null;
+				columnNames = sbSales.getColumnNames(true);
+				
+				for (Object entry : salesResults)
+				{
+					List rowValues = (List) entry;
+					Long rowKey = null;
+					
+					if (rowValues.size() != columnNames.size())
+						throw new java.lang.IndexOutOfBoundsException("Row size does not match column names size");
+					LinkedHashMap<String, Object> row = new LinkedHashMap<String, Object>();
+					for (int i=0; i<rowValues.size(); i++)
+					{
+						// System.out.println("Sales result column + value: " + columnNames.get(i) + " " + rowValues.get(i));
+						row.put(columnNames.get(i), rowValues.get(i));
+						if (columnNames.get(i).equals("propertyListingIdk"))
+							rowKey = (Long) rowValues.get(i);
+
+						if (columnNames.get(i).equals("propertyTypeIdk"))
+							row.put( "propertyTypeName", PropertyOption.cacheLookup((Long) rowValues.get(i)).get("name") );
+						else if (columnNames.get(i).equals("pricePerTypeIdk"))
+							row.put( "pricePerTypeName", PropertyOption.cacheLookup((Long) rowValues.get(i)).get("name") );
+						else if (columnNames.get(i).equals("priceTypeIdk"))
+							row.put( "priceTypeName", PropertyOption.cacheLookup((Long) rowValues.get(i)).get("name") );
+						else if (columnNames.get(i).equals("bidTypeIdk"))
+							row.put( "bidTypeName", PropertyOption.cacheLookup((Long) rowValues.get(i)).get("name") );
+						else if (columnNames.get(i).equals("landTypeIdk"))
+							row.put( "landTypeName", PropertyOption.cacheLookup((Long) rowValues.get(i)).get("name") );
+						else if (columnNames.get(i).equals("countryIdk"))
+							row.put( "countryName", Country.cacheLookup((Long) rowValues.get(i)).get("name") );
+						else if (columnNames.get(i).equals("intendedBusinessTypeIdk"))
+							row.put( "intendedBusinessTypeName", PropertyOption.cacheLookup((Long) rowValues.get(i)).get("name") );
+						else if (columnNames.get(i).equals("irrigationTypeIdk"))
+							row.put( "irrigationTypeName", PropertyOption.cacheLookup((Long) rowValues.get(i)).get("name") );
+						else if (columnNames.get(i).equals("regionIdk"))
+							row.put( "regionName", Region.cacheLookup((Long) rowValues.get(i)).get("name") );
+						else if (columnNames.get(i).equals("cityIdk"))
+							row.put( "cityName", City.cacheLookup((Long) rowValues.get(i)).get("name") );
+						else if (columnNames.get(i).equals("districtIdk"))
+							row.put( "districtName", District.cacheLookup((Long) rowValues.get(i)).get("name") );
+						else if (columnNames.get(i).equals("generalConditionIdk"))
+							row.put( "generalConditionDescription", PropertyOption.cacheLookup((Long) rowValues.get(i)).get("name") );
+						else if (columnNames.get(i).equals("rentalCurrencyIdk"))
+							row.put( "rentalCurrencySymbol", Currency.cacheLookup((Long) rowValues.get(i)).get("symbol") );
+						else if (columnNames.get(i).equals("saleCurrencyIdk"))
+							row.put( "saleCurrencySymbol", Currency.cacheLookup((Long) rowValues.get(i)).get("symbol") );
+						else if (columnNames.get(i).endsWith("AreaUnitTypeIdk"))
+							row.put( columnNames.get(i).replaceAll("Idk", "Name"), PropertyOption.cacheLookup((Long) rowValues.get(i)).get("name") );
+					}
+					salesRows.put(rowKey, row);
+				}
+			}
+
+			/*if (rentalRows != null)
+			{
+				for (Long key : rentalRows.keySet())
+				{
+					StringBuffer values = new StringBuffer("");
+					values.append("\n\nFor rent: " + key + "\n");
+					Map<String, Object> row = rentalRows.get(key);
+					
+					for (String name : row.keySet())
+						values.append("\t" + name + " = " + row.get(name) + "\n");
+					System.out.println(values.toString() + "\n\n\n\n");
+				}
+			}
+			if (salesRows != null)
+			{
+				for (Long key : salesRows.keySet())
+				{
+					StringBuffer values = new StringBuffer("");
+					values.append("\n\nFor sale: " + key + "\n");
+					Map<String, Object> row = salesRows.get(key);
+					
+					for (String name : row.keySet())
+						values.append("\t" + name + " = " + row.get(name) + "\n");
+					System.out.println(values.toString() + "\n\n\n\n");
+				}
+			}
+			*/
+				]]></codeFragment>
+			</codeFragments>
+		</method>
+
+		<method>
+			<name enResource="Retrieve property with all associated information">retrieveProperty</name>
+			<tasks requiresLoggedInUser="true">
+				<task>
+					<authorizations>
+						<authorization/>
+					</authorizations>
+					<inputParameters>
+						<!-- <inputParameter displayName="Username" enResource="Username" type="String" varName="username">
+							<validations>
+								<staticFieldValidator>User.validateUsername</staticFieldValidator>
+							</validations>
+						</inputParameter> -->
+						<inputParameter displayName="PropertyListingIdk" enResource="Property Listing Idk" type="Long" varName="propertyListingIdk">
+							<validations>
+								<parameterValidator>setValidMinimum((double) PrimaryKeyHolder.KEY_HIGHEST_RESERVED + 1)</parameterValidator>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<read>
+							<findMechanism>
+								<custom>
+									<codeFragmentReference baseIndent="3">cfr.retrieveProperty.findListing</codeFragmentReference>
+								</custom>
+							</findMechanism>
+						</read>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="PropertyListing" enResource="Property Listing"
+							type="Map" varName="propertyListing.getAllFields()" keyClasses="String" 
+							valueClasses="Object"/>
+						<outputParameter displayName="Property" enResource="Property"
+							type="Map" varName="property.getAllFields()" keyClasses="String" 
+							valueClasses="Object"/>
+						<outputParameter displayName="PropertyLister" enResource="Property Lister"
+							type="Map" varName="propertyLister.getAllFields()" keyClasses="String" 
+							valueClasses="Object"/>
+						<outputParameter displayName="PropertyListerUser" enResource="Property Lister User"
+							type="Map" varName="propertyListerUser.getAllFields()" keyClasses="String" 
+							valueClasses="Object"/>
+						<outputParameter displayName="PropertyListerUserProfile" enResource="Property Lister User Profile"
+							type="Map" varName="propertyListerUserProfile.getAllFields()" keyClasses="String" 
+							valueClasses="Object"/>
+						<outputParameter displayName="Sale" enResource="Sale Information"
+							type="Map" varName="sale.getAllFields()" keyClasses="String" 
+							valueClasses="Object" condition="sale != null"/>
+						<outputParameter displayName="Rental" enResource="Rental Information"
+							type="Map" varName="rental.getAllFields()" keyClasses="String" 
+							valueClasses="Object" condition="rental != null"/>
+						<outputParameter displayName="CommunityAmenities" enResource="Community Amenities"
+							type="Map" varName="communityAmenities.getAllFields()" keyClasses="String" 
+							valueClasses="Object" condition="communityAmenities != null"/>
+						<outputParameter displayName="PropertyType" enResource="Property Type"
+							type="String" varName="propertyType" />
+						<outputParameter displayName="ExtendedProperty" enResource="Extended Property"
+							type="Map" varName="extendedProperty.getAllFields()" keyClasses="String" 
+							valueClasses="Object"/>
+						<outputParameter displayName="ResidentialFeatures" enResource="Residential Features"
+							type="Map" varName="residentialFeatures.getAllFields()" keyClasses="String" 
+							valueClasses="Object" condition="residentialFeatures != null"/>
+						<outputParameter displayName="CommercialFeatures" enResource="Commercial Features"
+							type="Map" varName="commercialFeatures.getAllFields()" keyClasses="String" 
+							valueClasses="Object" condition="commercialFeatures != null"/>
+					</outputParameters>
+				</task>
+			</tasks>
+		</method>
+
+		<method>
+			<name enResource="Mark a property listing as 'inactive' (effective deletion)">deactivateListing</name>
+			<tasks requiresLoggedInUser="true">
+				<task>
+					<authorizations>
+						<authorization/>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="PropertyListingIdk" enResource="Property Listing Idk" 
+							type="Long" varName="propertyListingIdk">
+							<validations>
+								<parameterValidator>setValidMinimum((double) PrimaryKeyHolder.KEY_HIGHEST_RESERVED + 1)</parameterValidator>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<read>
+							<findMechanism>
+								<idk entityType="PropertyListing" entityName="propertyListing" idkVarName="propertyListingIdk"/>
+							</findMechanism>
+						</read>
+					</execute>
+				</task>
+				<task>
+					<execute>
+						<customCode>
+							<codeFragmentReference baseIndent="3">cfr.deactivateListing.setDeactivatedFlag</codeFragmentReference>
+						</customCode>
+					</execute>
+				</task>
+				<task>
+					<execute>
+						<update>
+							<dataSource>
+								<singleEntity entityName="propertyListing"/>
+							</dataSource>
+						</update>
+					</execute>
+				</task>
+			</tasks>
+			<codeFragments>
+				<codeFragment name="cfr.deactivateListing.setDeactivatedFlag" location="generic" visibility="sessionBean"><![CDATA[
+				propertyListing.setMetaFlags( propertyListing.getMetaFlags() | (long) 1);
+				]]></codeFragment>
+			</codeFragments>
+		</method>
+
+	</methods>
+	
+	<codeFragments>
+		<codeFragment name="cfr.retrieveProperty.findListing" location="generic" visibility="sessionBean"><![CDATA[
+		PropertyListing propertyListing = PropertyListing.findByIdk(manager, propertyListingIdk);
+		
+		Property property = Property.findByIdk(manager, propertyListing.getPropertyIdk());
+	
+		// get the creator only for now
+		LinkedHashMap<String, Object> searchFields = new LinkedHashMap<String, Object>();
+		searchFields.put("category", "propertyListerType");
+		searchFields.put("name", "propertyListerType.Creator");
+		Map<Long, Map<String, Object>> propertyOptions = PropertyOption.cacheLookup(searchFields);
+		Long creatorPropertyListerTypeIdk = propertyOptions.keySet().iterator().next();
+	
+		searchFields.clear();
+		searchFields.put("\"listingIdk\"", propertyListingIdk);
+		searchFields.put("\"listerTypeIdk\"", creatorPropertyListerTypeIdk);
+		PropertyLister propertyLister = 
+			(PropertyLister) ((List) PropertyLister.findPropertyListerByFields(manager, searchFields)).get(0);
+		
+		User propertyListerUser = User.findByIdk(manager, propertyLister.getListerIdk());
+		searchFields.clear();
+		searchFields.put("\"userIdk\"", propertyListerUser.getIdk());
+		UserProfile propertyListerUserProfile = (UserProfile) ((List) UserProfile.findUserProfileByFields(manager, searchFields)).get(0);
+	
+		// update the number of views			
+		if (request.getLoginToken().getUserIdk() != propertyListerUser.getIdk())
+		{
+			int numberOfViews = (propertyListing.getNumberOfViews() != null ?
+				propertyListing.getNumberOfViews() : 0);
+			propertyListing.setNumberOfViews(numberOfViews + 1);
+			propertyListing = manager.merge(propertyListing);
+			manager.flush();
+		}
+		
+		Sale sale = null;
+		Rental rental = null;
+		if (propertyListing.getForSaleIdk() != null && propertyListing.getForSaleIdk() > PrimaryKeyHolder.KEY_HIGHEST_RESERVED)
+			sale = Sale.findByIdk(manager, propertyListing.getForSaleIdk());
+		if (propertyListing.getForRentIdk() != null && propertyListing.getForRentIdk() > PrimaryKeyHolder.KEY_HIGHEST_RESERVED)
+			rental = Rental.findByIdk(manager, propertyListing.getForRentIdk());
+	
+		CommunityAmenities communityAmenities = CommunityAmenities.findByIdk(manager, property.getCommunityAmenitiesIdk());
+		
+		String propertyType = (String) PropertyOption.cacheLookup(property.getPropertyTypeIdk()).get("name");
+		
+		BaseEntity extendedProperty = null;
+		ResidentialFeatures residentialFeatures = null;
+		CommercialFeatures commercialFeatures = null;
+		
+		if (propertyType == null || propertyType.equals(""))
+		{
+			throw new IllegalArgumentException("Unrecognized property type: " + propertyType);
+		}
+		else if (propertyType.equals("propertyType.Apartment"))
+		{
+			extendedProperty = 
+				(BaseEntity) Apartment.findApartmentByCondition(manager, "\"propertyIdk\" = " + property.getIdk(), null).get(0);
+			residentialFeatures = 
+				ResidentialFeatures.findByIdk(manager, ((Apartment) extendedProperty).getResidentialFeaturesIdk());
+			// need to return to caller more than idk's; need to return the keys to be used for message resources
+			// otherwise the caller will have to make extra calls to database anyway...? or perhaps the caller
+			// will simply use the cache... in which case, we can just use the cache here also, and save that
+			// second call, even if it is only to the cache.
+			// another problem: where to put all of these keys? should the entity support them? should idk values
+			// always be shadowed with fillable String values? when it comes time to send the data to a caller
+			// the shadow values would be filled in, "fillInIdkStrings" which would use tPropertyOptions, and other
+			// tables to fill in those values...?
+			// Update: added code elsewhere to automatically append resource string equivalents of property options
+		}
+		else if (propertyType.equals("propertyType.EmptyLot"))
+		{
+			extendedProperty = 
+				(BaseEntity) EmptyLot.findEmptyLotByCondition(manager, "\"propertyIdk\" = " + property.getIdk(), null).get(0); 
+		}
+		else if (propertyType.equals("propertyType.FarmLot"))
+		{
+			extendedProperty = 
+				(BaseEntity) FarmLot.findFarmLotByCondition(manager, "\"propertyIdk\" = " + property.getIdk(), null).get(0); 
+		}
+		else if (propertyType.equals("propertyType.FloorUnit"))
+		{
+			extendedProperty = 
+				(BaseEntity) FloorUnit.findFloorUnitByCondition(manager, "\"propertyIdk\" = " + property.getIdk(), null).get(0); 
+			residentialFeatures = 
+				ResidentialFeatures.findByIdk(manager, ((FloorUnit) extendedProperty).getResidentialFeaturesIdk());
+		}
+		else if (propertyType.equals("propertyType.House"))
+		{
+			extendedProperty = 
+				(BaseEntity) House.findHouseByCondition(manager, "\"propertyIdk\" = " + property.getIdk(), null).get(0); 
+			residentialFeatures = 
+				ResidentialFeatures.findByIdk(manager, ((House) extendedProperty).getResidentialFeaturesIdk());
+		}
+		else if (propertyType.equals("propertyType.MultiUnitBuilding"))
+		{
+			extendedProperty = 
+				(BaseEntity) MultiUnitBuilding.findMultiUnitBuildingByCondition(manager, "\"propertyIdk\" = " + property.getIdk(), null).get(0); 
+			residentialFeatures = 
+				ResidentialFeatures.findByIdk(manager, ((MultiUnitBuilding) extendedProperty).getUnitResidentialFeaturesIdk());
+			commercialFeatures = 
+				CommercialFeatures.findByIdk(manager, ((MultiUnitBuilding) extendedProperty).getUnitCommercialFeaturesIdk());
+		}
+		else if (propertyType.equals("propertyType.MultiUnitCompound"))
+		{
+			extendedProperty = 
+				(BaseEntity) MultiUnitCompound.findMultiUnitCompoundByCondition(manager, "\"propertyIdk\" = " + property.getIdk(), null).get(0); 
+			residentialFeatures = 
+				ResidentialFeatures.findByIdk(manager, ((MultiUnitCompound) extendedProperty).getUnitResidentialFeaturesIdk());
+			commercialFeatures = 
+				CommercialFeatures.findByIdk(manager, ((MultiUnitCompound) extendedProperty).getUnitCommercialFeaturesIdk());
+		}
+		else if (propertyType.equals("propertyType.Office"))
+		{
+			extendedProperty = 
+				(BaseEntity) Office.findOfficeByCondition(manager, "\"propertyIdk\" = " + property.getIdk(), null).get(0); 
+			commercialFeatures = 
+				CommercialFeatures.findByIdk(manager, ((Office) extendedProperty).getCommercialFeaturesIdk());
+		}
+		else if (propertyType.equals("propertyType.Store"))
+		{
+			extendedProperty = 
+				(BaseEntity) Store.findStoreByCondition(manager, "\"propertyIdk\" = " + property.getIdk(), null).get(0); 
+			commercialFeatures = 
+				CommercialFeatures.findByIdk(manager, ((Store) extendedProperty).getCommercialFeaturesIdk());
+		}
+		]]></codeFragment>
+
+		<codeFragment name="cfr.retrieveProperty.code" location="generic" visibility="sessionBean"><![CDATA[
+		
+		// Nothing for now
+		
+		]]></codeFragment>
+	</codeFragments>
+	
+</coreServerBean>

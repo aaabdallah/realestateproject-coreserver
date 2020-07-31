@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<coreServerEntity xmlns="aaacs.coreserver/generation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="aaacs.coreserver/generation ../../schemas/csDocEntity.xsd">
+	
+	<table>
+		<name>tSystemParameters</name>
+		<constraints>
+			<unique>category name</unique>
+			<foreignKey>
+				<referringColumns>systemOptionIdk</referringColumns>
+				<referredTable>tSystemOptions</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+		</constraints>
+	</table>
+
+	<class>
+		<comment type="JavaDoc">Core Server component for managing system parameters</comment>
+		<outputDirectory>src/aaacs/coreserver/ejb/entities</outputDirectory>
+		<resourcesFile>src/aaacs/coreserver/resources/entityNames.properties</resourcesFile>
+		<name>SystemParameter</name>
+		<package>aaacs.coreserver.ejb.entities</package>
+		<annotations>
+			<entity/>
+			<sqlResultSetMappings>
+				<standardMapping/>
+			</sqlResultSetMappings>
+		</annotations>
+	</class>
+
+	<attributes>
+		<includeAttributes>conf/generation/descriptors/standardAttributes.xml</includeAttributes>
+
+		<attribute>
+			<columnDescription name="category" type="VARCHAR(100)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="category" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>1</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="name" type="VARCHAR(100)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="name" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>1</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="description" type="VARCHAR(100)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="description" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>0</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="validationDescription" type="VARCHAR(100)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="validationDescription" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>1</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="validationRegex" type="VARCHAR(100)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="validationRegex" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>0</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="systemOptionIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="systemOptionIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="value" type="VARCHAR(200)">
+				<comment type="SQL" indent="1">
+				This column's size should match the size of the same-named column 
+				in tSystemOptions.
+				</comment>
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="value" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>0</minLength>
+						<maxLength>200</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="readOnly" type="BOOLEAN">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="readOnly" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+						<allowNull>false</allowNull>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+	</attributes>
+	
+	<populate>
+		<defaults>
+			<columnValues>
+			category 'string.Default'
+			name 'string.Default'
+			description 'string.Default'
+			validationDescription 'string.Default'
+			validationRegex 'string.Default'
+			systemOptionIdk '1'
+			value 'string.Default'
+			readOnly 'false'
+			</columnValues>
+		</defaults>
+		<insert>
+			<columnValues>
+			idk '1'
+			category 'string.Unset'
+			name 'string.Unset'
+			description 'string.Unset'
+			validationDescription 'string.Unset'
+			validationRegex 'string.Unset'
+			value 'string.Unset'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '101'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '102'
+			name 'string.Unknown'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '103'
+			name 'string.Nonexistent'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '901'
+			name 'string.MatchAll'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '902'
+			name 'string.MatchReserved'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '903'
+			name 'string.MatchUser'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'systemParameter.AccessControl'
+			name 'systemParameter.SystemAccessLevel'
+			description 'systemParameter.SystemAccessLevel.Description'
+			validationDescription 'systemParameter.SystemAccessLevel.ValidationDescription'
+			validationRegex ''
+			systemOptionIdk 'FKREF:systemOptionSystemAccessOpen'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'systemParameter.AccessControl'
+			name 'systemParameter.SystemAccessTimeout'
+			description 'systemParameter.SystemAccessTimeout.Description'
+			validationDescription 'systemParameter.SystemAccessTimeout.ValidationDescription'
+			validationRegex '([6-9][\\d]{5})|([1-7][0-1][\\d]{5})|(7200000)'
+			value '3600000'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'systemParameter.ErrorReports'
+			name 'systemParameter.ErrorReports.ReportExceptions'
+			description 'systemParameter.ErrorReports.ReportExceptions.Description'
+			validationDescription 'systemParameter.ErrorReports.ReportExceptions.ValidationDescription'
+			validationRegex '(true)|(false)'
+			value 'true'
+			</columnValues>
+		</insert>
+	</populate>
+	
+	<codeFragments>
+		<codeFragment name="getCurrentValue" visibility="entity" location="staticMethod"><![CDATA[
+	static public String getCurrentValue(EntityManager manager, String parameterCategory, 
+		String parameterName)
+	{
+		if (parameterCategory != null && parameterName != null)
+		{
+			try
+			{
+				String condition = " WHERE category = '" + parameterCategory + 
+					"' AND name = '" + parameterName + "'";
+				List results = findSystemParameterByCondition(manager, condition, null);
+				if (results != null && results.size() > 0)
+				{
+					SystemParameter sysParam = (SystemParameter) results.get(0);
+					if (isUserSuppliedPrimaryKey(sysParam.getSystemOptionIdk()))
+					{
+						SystemOption sysOption = new SystemOption();
+						sysOption.setAllFields(
+							SystemOption.cacheLookup(sysParam.systemOptionIdk), false);
+						return sysOption.getValue();
+					}
+					return sysParam.getValue();
+				}
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+		]]></codeFragment>
+	</codeFragments>
+
+</coreServerEntity>

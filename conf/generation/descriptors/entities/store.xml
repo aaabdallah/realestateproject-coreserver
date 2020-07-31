@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<coreServerEntity xmlns="aaacs.coreserver/generation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="aaacs.coreserver/generation ../../schemas/csDocEntity.xsd">
+	
+	<table>
+		<name>tStores</name>
+		<constraints>
+			<foreignKey>
+				<referringColumns>propertyIdk</referringColumns>
+				<referredTable>tProperties</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>storeAreaUnitTypeIdk</referringColumns>
+				<referredTable>tPropertyOptions</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>intendedBusinessTypeIdk</referringColumns>
+				<referredTable>tPropertyOptions</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>commercialFeaturesIdk</referringColumns>
+				<referredTable>tCommercialFeatures</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>currencyIdk</referringColumns>
+				<referredTable>tCurrencies</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+		</constraints>
+	</table>
+
+	<class>
+		<name>Store</name>
+		<annotations>
+			<entity/>
+			<sqlResultSetMappings>
+				<standardMapping/>
+			</sqlResultSetMappings>
+		</annotations>
+	</class>
+
+	<attributes>
+		<includeAttributes>conf/generation/descriptors/standardAttributes.xml</includeAttributes>
+
+		<attribute>
+			<columnDescription name="propertyIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="propertyIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="storeSize" type="INT4">
+			</columnDescription>
+			<javaFieldDescription name="storeSize" type="Integer">
+				<annotations><basic/></annotations>
+				<validation>
+					<Integer>
+						<allowNull>false</allowNull>
+						<min>0</min>
+					</Integer>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<minmax type="Integer"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="storeAreaUnitTypeIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="storeAreaUnitTypeIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="PropertyOption" key="name"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<equals type="Long" customSearchConstraint="cfr.storeAreaUnitTypeIdk.ignore" defaultValue='UtilitiesDelegate.getPropertyOption("areaUnitType", "areaUnitType.SquareMeter")'/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="storeSizeApproximated" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="storeSizeApproximated" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+						<allowNull>false</allowNull>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="intendedBusinessTypeIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="intendedBusinessTypeIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="PropertyOption" key="name"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<options type="Long"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="storeNumber" type="VARCHAR(50)">
+			</columnDescription>
+			<javaFieldDescription name="storeNumber" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>50</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="storeFloor" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="storeFloor" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<minmax type="Short"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="totalFloorsInBuilding" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="totalFloorsInBuilding" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<max type="Short"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="totalStoresInFloor" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="totalStoresInFloor" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="totalStoresInBuilding" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="totalStoresInBuilding" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<max type="Short"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="description" type="VARCHAR(2000)">
+			</columnDescription>
+			<javaFieldDescription name="description" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>2000</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="commercialFeaturesIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="commercialFeaturesIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="income" type="INT4">
+			</columnDescription>
+			<javaFieldDescription name="income" type="Integer">
+				<annotations><basic/></annotations>
+				<validation>
+					<Integer>
+						<min>0</min>
+					</Integer>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<minmax type="Integer"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="currencyIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="currencyIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="Currency" key="name"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<equals type="Long"/>
+			</searchCriteria>
+		</attribute>
+
+	</attributes>
+
+	<populate>
+		<defaults>
+			<columnValues>
+			propertyIdk '1'
+			storeAreaUnitTypeIdk '1'
+			intendedBusinessTypeIdk '1'
+			commercialFeaturesIdk '1'
+			currencyIdk '1'
+			</columnValues>
+		</defaults>
+		<insert>
+			<columnValues>
+			idk '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '101'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '102'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '103'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '901'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '902'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '903'
+			</columnValues>
+		</insert>
+	</populate>
+
+	<codeFragments>
+		<codeFragment name="cfr.storeAreaUnitTypeIdk.ignore" location="generic" baseIndent="2">
+			// Don't check storeAreaUnitTypeIdk by itself; only use it with storeSize
+		</codeFragment>
+	</codeFragments>
+</coreServerEntity>

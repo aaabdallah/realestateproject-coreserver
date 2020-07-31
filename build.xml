@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Core Server" 
+	default="deployEar" 
+	basedir="C:/Documents and Settings/Abu Abd-Allah/My Documents/Data/Real Estate Project/workspace/CoreServer">
+
+	<description>
+	Build file for the CoreServer project
+	</description>
+
+	<!-- ****************************************************************** -->
+	<property name="s1as.dir" location="C:/Sun/AppServer"/>
+	<property name="s1as.deploy.dir" location="${s1as.dir}/domains/domain1/autodeploy"/>
+	<property name="s1as.lib.dir" location="${s1as.dir}/lib"/>
+	<property name="s1as.domainlib.dir" location="${s1as.dir}/domains/domain1/lib"/>
+
+	<property name="src.dir" location="${basedir}/src"/>
+	<property name="bin.dir" location="${basedir}/bin"/>
+	<property name="build.dir" location="${basedir}/build"/>
+	<property name="conf.dir" location="${basedir}/conf"/>
+
+	<!-- Set up the general project classpath -->
+	<path id="build.classpath">
+		<fileset dir="${s1as.lib.dir}">
+			<include name="*.jar"/>
+		</fileset>
+		<fileset dir="${s1as.domainlib.dir}">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+
+	<!-- ****************************************************************** -->
+	<!-- Creates and populates database -->
+	<target name="rebuildDatabase">
+		<exec executable="${basedir}/sql/createDatabase.bat"/>
+	</target>
+
+	<!-- ****************************************************************** -->
+	<target name="buildJar">
+		<!-- <eclipse.refreshLocal resource="CoreServer" depth="infinite"/> -->
+		<delete quiet="true" file="${build.dir}/CoreServer.jar"/>
+		<javac srcdir="${src.dir}" destdir="${bin.dir}" classpathref="build.classpath"/>
+		<jar destfile="${build.dir}/CoreServer.jar" basedir="${bin.dir}">
+			<exclude name="**/Configurator.class"/>
+			<!-- <fileset dir="${conf.dir}" includes="META-INF/ejb-jar.xml"/> -->
+		</jar>
+		<!-- <delete quiet="true" file="${s1as.deploy.dir}/CoreServer.jar"/>
+		<copy file="${build.dir}/CoreServer.jar" todir="${s1as.deploy.dir}"/> -->
+	</target>
+    <!--<fileset dir="${src.dir}/${package}" 
+            includes="META-INF/${jarDD},META-INF/${sunjarDD},META-INF/${persDD}"/>-->
+	
+	<!-- ****************************************************************** -->
+	<target name="buildWar">
+		<!-- <eclipse.refreshLocal resource="CoreServer" depth="infinite"/> -->
+		<delete quiet="true" file="${build.dir}/CoreServerConfigurator.war"/>
+		<javac srcdir="${src.dir}" destdir="${bin.dir}" classpathref="build.classpath"/>
+		<war destfile="${build.dir}/CoreServerConfigurator.war" 
+			webxml="conf/WEB-INF/web.xml">
+			<classes dir="bin">
+				<include name="**/Configurator.class"/>
+			</classes>
+			<fileset dir="conf">
+			    <include name="WEB-INF/sun-web.xml"/>
+			</fileset>
+
+		</war>
+		<!-- <copy file="${build.dir}/CoreServer.war" todir="${s1as.deploy.dir}"/> -->
+	</target>
+
+	<!-- ****************************************************************** -->
+	<target name="buildEar" depends="buildJar, buildWar">
+		<ear update="true" destfile="${build.dir}/CoreServer.ear" 
+			appxml="${basedir}/conf/application.xml" 
+			basedir="${build.dir}">
+			<include name="CoreServer.jar"/>
+			<include name="CoreServerConfigurator.war"/>
+		</ear>
+		<antcall target="zipAll"/>
+	</target>
+
+	<!-- ****************************************************************** -->
+	<!-- target to force redeployment of everything -->
+	<target name="deployAll">
+		<antcall target="deployJar"/>
+		<antcall target="deployWardirectory"/>
+	</target>
+
+	<!-- ****************************************************************** -->
+	<!-- target to force redeployment of the EAR -->
+	<target name="deployEar" depends="buildEar">
+		<delete quiet="true" file="${s1as.deploy.dir}/CoreServer.ear"/>
+		<copy file="${build.dir}/CoreServer.ear" todir="${s1as.deploy.dir}"/>
+	</target>
+	
+	<!-- ****************************************************************** -->
+	<target name="deployJar">
+		<delete quiet="true" file="${build.dir}/CoreServer.jar"/>
+		<javac srcdir="${src.dir}" destdir="${bin.dir}" classpathref="build.classpath"/>
+		<jar update="true" destfile="${build.dir}/CoreServer.jar" basedir="${bin.dir}">
+			<exclude name="**/Configurator.class"/>
+		</jar>
+		<!-- <delete quiet="true" file="${s1as.deploy.dir}/CoreServer.jar"/>
+		<copy file="${build.dir}/CoreServer.jar" todir="${s1as.deploy.dir}"/> -->
+	</target>
+	
+	<!-- ****************************************************************** -->
+	<target name="deployWardirectory">
+		<delete quiet="true" file="${build.dir}/CoreServer_war"/>
+		<war destfile="${build.dir}/CoreServer_war" webxml="conf/web.xml">
+			<classes dir="bin">
+				<include name="**/Configurator.class"/>
+			</classes>
+		</war>
+		<delete quiet="true">
+			<fileset dir="${build.dir}/CoreServer.war"/>
+		</delete>
+		<mkdir dir="${build.dir}/CoreServer.war"/>
+		<unzip overwrite="true" src="${build.dir}/CoreServer_war" dest="${build.dir}/CoreServer.war"/>
+
+		<!-- Overwrite the files in the deployment directory -->
+		<delete quiet="true">
+			<fileset dir="${s1as.deploy.dir}/CoreServer.war"/>
+		</delete>
+		<copy overwrite="true" todir="${s1as.deploy.dir}/CoreServer.war">
+			<fileset dir="${build.dir}/CoreServer.war"/>
+		</copy>
+		<touch file="${s1as.deploy.dir}/CoreServer.war/WEB-INF/web.xml"/>
+
+		<!-- Later on, just copy over the file NB_war (but rename it to NB.war) -->
+		<!-- But for now, send over the exploded contents for easier debugging -->
+		<!--<copy file="${build.dir}/CoreServer_war" todir="${s1as.deploy.dir}"/>-->
+	</target>
+
+	<!-- ****************************************************************** -->
+	<target name="refreshDeployment">
+		<touch file="${s1as.deploy.dir}/CoreServer.war/WEB-INF/web.xml"/>
+	</target>
+
+	<!-- ****************************************************************** -->
+	<target name="zipAll">
+		<delete quiet="true" file="${build.dir}/CoreServer.zip"/>
+		<zip update="true" destfile="${build.dir}/CoreServer.zip" basedir="."/>
+	</target>
+</project>

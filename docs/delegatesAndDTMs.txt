@@ -1,0 +1,26 @@
+- page fills in bean values
+- submit calls a method
+	- method generates ActionRequest
+- method returns a string indicating outcome PLUS data
+- correct page response is picked out
+	- data is used to fill it in
+
+	
+Issues
+- need to build in capability to xfer MULTIPLE objects
+- need to build in capability to xfer objects that don't map to DB directly
+
+WebPage
+Delegate
+DTO
+Dispatcher
+
+
+Delegate:
+	- each one has a Session Bean analogue on the Core Server
+	- methods that invoke coreserver analogues
+DTM (Data Transfer Map)
+	- supports multiple objects of intended type but with String properties
+	- can translate DTM's to Maps/Lists/arrays of native objects, as well as native objects
+	- can validate properties of any object in its Map
+	- each one needs to be added to faces-config.xml as a backing bean

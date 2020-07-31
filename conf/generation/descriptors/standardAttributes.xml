@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<attributes xmlns="aaacs.coreserver/generation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="aaacs.coreserver/generation ../schemas/csDocAttributes.xsd">
+
+	<attribute>
+		<columnDescription name="idk" type="INT8">
+			<default>nextval('qidk')</default>
+			<primaryKey/>
+		</columnDescription>
+		<javaFieldDescription name="idk" type="Long">
+			<annotations>
+				<id>
+					<generatedValue strategy="GenerationType.SEQUENCE" generator="qidk"/>
+				</id>
+			</annotations>
+			<validation>
+				<Long>
+					<allowNull>false</allowNull>
+					<min>KEY_LOWEST_RESERVED</min>
+				</Long>
+			</validation>
+		</javaFieldDescription>
+	</attribute>
+
+	<attribute>
+		<columnDescription name="lockingVersion" type="INT4">
+			<default>0</default>
+		</columnDescription>
+		<javaFieldDescription name="lockingVersion" type="Integer">
+			<annotations><version/></annotations>
+		</javaFieldDescription>
+	</attribute>
+	
+	<attribute>
+		<columnDescription name="groups" type="VARCHAR(220)">
+			<default>'__UNINITIALIZED__'</default>
+			<notNull></notNull>
+		</columnDescription>
+		<javaFieldDescription name="groups" type="Groups">
+			<annotations><basic/></annotations>
+			<validation>
+				<Groups>
+					<allowNull>false</allowNull>
+				</Groups>
+			</validation>
+		</javaFieldDescription>
+	</attribute>
+	
+	<attribute>
+		<columnDescription name="metaFlags" type="INT8">
+			<default>0</default>
+			<notNull/>
+		</columnDescription>
+		<javaFieldDescription name="metaFlags" type="Long">
+			<comment type="Java">Bit 0: 0 - active, 1 - inactive</comment>
+			<annotations><basic/></annotations>
+			<validation>
+				<Long>
+					<allowNull>false</allowNull>
+				</Long>
+			</validation>
+		</javaFieldDescription>
+	</attribute>
+
+	<attribute>
+		<columnDescription name="version" type="INT2">
+			<comment type="SQL" indent="1">app (high byte)/table (low byte) version (increment default if app/table schema changes)
+			</comment>
+			<default>257</default>
+			<notNull/>
+		</columnDescription>
+		<javaFieldDescription name="version" type="Short">
+			<annotations><basic/></annotations>
+			<validation>
+				<Short>
+					<allowNull>false</allowNull>
+					<min>257</min>
+				</Short>
+			</validation>
+		</javaFieldDescription>
+	</attribute>
+
+	<attribute>
+		<columnDescription name="timeCreated" type="TIMESTAMP">
+			<default>CURRENT_TIMESTAMP</default>
+			<notNull/>
+		</columnDescription>
+		<javaFieldDescription name="timeCreated" type="Timestamp">
+			<annotations><basic/></annotations>
+				<validation>
+					<Timestamp>
+						<allowNull>false</allowNull>
+					</Timestamp>
+				</validation>
+		</javaFieldDescription>
+	</attribute>
+
+	<attribute>
+		<columnDescription name="timeLastModified" type="TIMESTAMP">
+			<default>CURRENT_TIMESTAMP</default>
+			<notNull/>
+		</columnDescription>
+		<javaFieldDescription name="timeLastModified" type="Timestamp">
+			<annotations><basic/></annotations>
+			<validation>
+				<Timestamp>
+					<allowNull>false</allowNull>
+				</Timestamp>
+			</validation>
+		</javaFieldDescription>
+	</attribute>
+
+</attributes>

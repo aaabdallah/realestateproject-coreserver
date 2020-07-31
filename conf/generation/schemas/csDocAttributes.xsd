@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- This schema is specifically for standardAttributes.xml -->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:coreServer="aaacs.coreserver/generation"
+	targetNamespace="aaacs.coreserver/generation"
+	elementFormDefault="qualified" 
+	attributeFormDefault="unqualified">
+
+	<!-- Includes -->
+	<xs:include schemaLocation="csTypEntityBasics.xsd"/>
+	
+	<!-- Global Types, Elements, and Groups -->
+
+	<!-- Document Structure -->
+	<xs:element name="attributes">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="attribute" type="coreServer:attributeType"/>
+				<xs:element name="includeAttributes" type="xs:Name"/>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>

@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<coreServerEntity xmlns="aaacs.coreserver/generation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="aaacs.coreserver/generation ../../schemas/csDocEntity.xsd">
+	
+	<table>
+		<name>tMultiUnitCompounds</name>
+		<constraints>
+			<foreignKey>
+				<referringColumns>propertyIdk</referringColumns>
+				<referredTable>tProperties</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>landAreaUnitTypeIdk</referringColumns>
+				<referredTable>tPropertyOptions</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>residentialUnitAreaUnitTypeIdk</referringColumns>
+				<referredTable>tPropertyOptions</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>commercialUnitAreaUnitTypeIdk</referringColumns>
+				<referredTable>tPropertyOptions</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>unitResidentialFeaturesIdk</referringColumns>
+				<referredTable>tResidentialFeatures</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>unitCommercialFeaturesIdk</referringColumns>
+				<referredTable>tCommercialFeatures</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>currencyIdk</referringColumns>
+				<referredTable>tCurrencies</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+		</constraints>
+	</table>
+
+	<class>
+		<name>MultiUnitCompound</name>
+		<annotations>
+			<entity/>
+			<sqlResultSetMappings>
+				<standardMapping/>
+			</sqlResultSetMappings>
+		</annotations>
+	</class>
+
+	<attributes>
+		<includeAttributes>conf/generation/descriptors/standardAttributes.xml</includeAttributes>
+
+		<attribute>
+			<columnDescription name="propertyIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="propertyIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="landSize" type="INT4">
+			</columnDescription>
+			<javaFieldDescription name="landSize" type="Integer">
+				<annotations><basic/></annotations>
+				<validation>
+					<Integer>
+						<allowNull>false</allowNull>
+						<min>0</min>
+					</Integer>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<minmax type="Integer"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="landAreaUnitTypeIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="landAreaUnitTypeIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="PropertyOption" key="name"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<equals type="Long" customSearchConstraint="cfr.multiUnitCompound.landAreaUnitTypeIdk.ignore" defaultValue='UtilitiesDelegate.getPropertyOption("areaUnitType", "areaUnitType.SquareMeter")'/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="landSizeApproximated" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="landSizeApproximated" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+						<allowNull>false</allowNull>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="residentialUnitSize" type="INT4">
+			</columnDescription>
+			<javaFieldDescription name="residentialUnitSize" type="Integer">
+				<annotations><basic/></annotations>
+				<validation>
+					<Integer>
+						<min>0</min>
+					</Integer>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<minmax type="Integer"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="residentialUnitAreaUnitTypeIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="residentialUnitAreaUnitTypeIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="PropertyOption" key="name"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<equals type="Long" customSearchConstraint="cfr.multiUnitCompound.residentialUnitAreaUnitTypeIdk.ignore" defaultValue='UtilitiesDelegate.getPropertyOption("areaUnitType", "areaUnitType.SquareMeter")'/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="residentialUnitSizeApproximated" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="residentialUnitSizeApproximated" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="commercialUnitSize" type="INT4">
+			</columnDescription>
+			<javaFieldDescription name="commercialUnitSize" type="Integer">
+				<annotations><basic/></annotations>
+				<validation>
+					<Integer>
+						<min>0</min>
+					</Integer>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<minmax type="Integer"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="commercialUnitAreaUnitTypeIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="commercialUnitAreaUnitTypeIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="PropertyOption" key="name"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<equals type="Long" customSearchConstraint="cfr.multiUnitCompound.commercialUnitAreaUnitTypeIdk.ignore" defaultValue='UtilitiesDelegate.getPropertyOption("areaUnitType", "areaUnitType.SquareMeter")'/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="commercialUnitSizeApproximated" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="commercialUnitSizeApproximated" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="totalResidentialUnits" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="totalResidentialUnits" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<minmax type="Short"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="totalCommercialUnits" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="totalCommercialUnits" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<minmax type="Short"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="description" type="VARCHAR(2000)">
+			</columnDescription>
+			<javaFieldDescription name="description" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>2000</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="unitResidentialFeaturesIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="unitResidentialFeaturesIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="unitCommercialFeaturesIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="unitCommercialFeaturesIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="income" type="INT4">
+			</columnDescription>
+			<javaFieldDescription name="income" type="Integer">
+				<annotations><basic/></annotations>
+				<validation>
+					<Integer>
+						<min>0</min>
+					</Integer>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<minmax type="Integer"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="currencyIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="currencyIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="Currency" key="name"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<equals type="Long"/>
+			</searchCriteria>
+		</attribute>
+
+	</attributes>
+
+	<populate>
+		<defaults>
+			<columnValues>
+			propertyIdk '1'
+			landAreaUnitTypeIdk '1'
+			residentialUnitAreaUnitTypeIdk '1'
+			commercialUnitAreaUnitTypeIdk '1'
+			unitResidentialFeaturesIdk '1'
+			unitCommercialFeaturesIdk '1'
+			currencyIdk '1'
+			</columnValues>
+		</defaults>
+		<insert>
+			<columnValues>
+			idk '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '101'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '102'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '103'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '901'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '902'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '903'
+			</columnValues>
+		</insert>
+	</populate>
+
+	<codeFragments>
+		<codeFragment name="cfr.multiUnitCompound.landAreaUnitTypeIdk.ignore" location="generic" baseIndent="2">
+			// Don't check landAreaUnitTypeIdk by itself; only use it with landSize
+		</codeFragment>
+		<codeFragment name="cfr.multiUnitCompound.residentialUnitAreaUnitTypeIdk.ignore" location="generic" baseIndent="2">
+			// Don't check residentialUnitAreaUnitTypeIdk by itself; only use it with residentialUnitSize
+		</codeFragment>
+		<codeFragment name="cfr.multiUnitCompound.commercialUnitAreaUnitTypeIdk.ignore" location="generic" baseIndent="2">
+			// Don't check commercialUnitAreaUnitTypeIdk by itself; only use it with commercialUnitSize
+		</codeFragment>
+	</codeFragments>
+</coreServerEntity>

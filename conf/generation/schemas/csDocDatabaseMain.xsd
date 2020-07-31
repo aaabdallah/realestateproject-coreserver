@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:coreServer="aaacs.coreserver/generation"
+	targetNamespace="aaacs.coreserver/generation"
+	elementFormDefault="qualified" 
+	attributeFormDefault="unqualified">
+
+	<!-- Includes -->
+	<xs:include schemaLocation="csTypBasics.xsd"/>
+	
+	<!-- Global Types, Elements, and Groups -->
+
+	<!-- Document Structure -->
+	<xs:element name="databaseMain">
+
+		<xs:complexType>
+			<xs:sequence minOccurs="0">
+
+				<xs:element name="sequences" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="sequence" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence minOccurs="0">
+										<xs:element ref="coreServer:comment"/>
+									</xs:sequence>
+									<xs:attribute name="name" type="xs:Name"/>
+									<xs:attribute name="start" type="xs:integer" default="0"/>
+									<xs:attribute name="increment" type="xs:integer" default="1"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+
+				<xs:element ref="coreServer:comments" minOccurs="0"/>
+
+			</xs:sequence>
+		</xs:complexType>
+
+	</xs:element>
+
+</xs:schema>

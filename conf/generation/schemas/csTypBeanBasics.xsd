@@ -1,0 +1,547 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:coreServer="aaacs.coreserver/generation"
+	targetNamespace="aaacs.coreserver/generation"
+	elementFormDefault="qualified" 
+	attributeFormDefault="unqualified">
+
+	<!-- Includes -->
+	<xs:include schemaLocation="csTypBasics.xsd"/>
+	
+	<!-- Global Types, Elements, and Groups -->
+	<xs:complexType name="setEntityPropertyType">
+		<xs:complexContent>
+			<xs:extension base="coreServer:emptyType">
+				<xs:attribute name="name" type="xs:string" use="required"/>
+				<xs:attribute name="property" type="xs:Name" use="required"/>
+				<xs:attribute name="value" type="xs:string" use="required"/>
+				<xs:attribute name="condition" type="xs:string" use="optional"/>
+				<xs:attribute name="cast" type="xs:Name" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="beanExecuteSizeCheck">
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="minimum" type="xs:string"/>
+				<xs:element name="maximum" type="xs:string"/>
+				<xs:element name="specific" type="xs:string"/>
+			</xs:choice>
+			<xs:element name="error" type="coreServer:errorReportType"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="beanExecuteCreateType">
+		<xs:sequence>
+			<xs:element name="dataSource">
+				<xs:complexType>
+					<xs:choice maxOccurs="unbounded">
+
+						<xs:element name="setEntityProperty" type="coreServer:setEntityPropertyType" maxOccurs="unbounded"/>
+
+						<xs:element name="singleFieldSet" maxOccurs="unbounded"> <!-- Get data from a single set of fields -->
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="xs:string">
+										<xs:attribute name="fieldsName" type="xs:string" use="required"/>
+										<xs:attribute name="entityType" type="xs:Name" use="required"/>
+										<xs:attribute name="entityName" type="xs:Name" use="optional"/>
+										<xs:attribute name="synchronize" type="coreServer:boolean" default="false"/>
+										<xs:attribute name="updateIfPossible" type="coreServer:boolean" default="false"/>
+										<xs:attribute name="condition" type="xs:string" use="optional"/>
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
+						</xs:element>
+						
+						<xs:element name="multipleFieldSet" maxOccurs="unbounded"> <!-- Get data from a list of field sets -->
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="xs:string">
+										<xs:attribute name="fieldsName" type="xs:string" use="required"/>
+										<xs:attribute name="entityType" type="xs:Name" use="required"/>
+										<xs:attribute name="entityListName" type="xs:Name" use="optional"/>
+										<xs:attribute name="synchronize" type="coreServer:boolean" default="false"/>
+										<xs:attribute name="updateIfPossible" type="coreServer:boolean" default="false"/>
+										<xs:attribute name="condition" type="xs:string" use="optional"/>
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
+						</xs:element>
+						
+						<xs:element name="singleEntity" maxOccurs="unbounded"> <!-- Get data from an instantiated entity -->
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="xs:string">
+										<xs:attribute name="entityName" type="xs:string" use="required"/>
+										<xs:attribute name="synchronize" type="coreServer:boolean" default="false"/>
+										<xs:attribute name="updateIfPossible" type="coreServer:boolean" default="false"/>
+										<xs:attribute name="condition" type="xs:string" use="optional"/>
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
+						</xs:element>
+						
+						<xs:element name="multipleEntities" maxOccurs="unbounded"> <!-- Get data from a list of instantiated entities -->
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="xs:string">
+										<xs:attribute name="entityListName" type="xs:string" use="required"/>
+										<xs:attribute name="synchronize" type="coreServer:boolean" default="false"/>
+										<xs:attribute name="updateIfPossible" type="coreServer:boolean" default="false"/>
+										<xs:attribute name="condition" type="xs:string" use="optional"/>
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
+						</xs:element>
+						
+						<xs:element name="custom" type="coreServer:codeFragmentReferencesType"/>
+						
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="errorChecks" minOccurs="0">
+				<xs:complexType>
+					<xs:choice maxOccurs="unbounded">
+						<xs:element name="customCheck" type="coreServer:codeFragmentReferencesType"/>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="loopTo" type="xs:string" use="optional"/>
+		<xs:attribute name="loopCtr" type="xs:Name" default="loopCtr"/>
+	</xs:complexType>
+	
+	<xs:complexType name="beanExecuteReadType">
+		<xs:sequence>
+			<xs:element name="findMechanism">
+				<xs:complexType>
+					<xs:choice>
+
+						<xs:element name="idk">
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="xs:string">
+										<xs:attribute name="entityType" type="xs:string" use="required"/>
+										<xs:attribute name="idkVarName" type="xs:string" default="idk"/>
+										<xs:attribute name="entityName" type="xs:Name" use="optional"/>
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
+						</xs:element>
+						
+						<xs:element name="fieldSet">
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="xs:string">
+										<xs:attribute name="findMethod" type="xs:string" use="required"/>
+										<xs:attribute name="listVarName" type="xs:Name" use="optional"/>
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
+						</xs:element>
+						
+						<xs:element name="fields">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="coreServer:fieldsType">
+										<xs:attribute name="findMethod" type="xs:string" use="required"/>
+										<xs:attribute name="listVarName" type="xs:Name" use="optional"/>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+						
+						<xs:element name="condition">
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="xs:string">
+										<xs:attribute name="findMethod" type="xs:string" use="required"/>
+										<xs:attribute name="listVarName" type="xs:Name" use="optional"/>
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
+						</xs:element>
+						
+						<xs:element name="custom" type="coreServer:codeFragmentReferencesType"/>
+						
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="errorChecks" minOccurs="0">
+				<xs:complexType>
+					<xs:choice maxOccurs="unbounded">
+						<xs:element name="sizeCheck" type="coreServer:beanExecuteSizeCheck"/>
+						<xs:element name="customCheck" type="coreServer:codeFragmentReferencesType"/>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="loopTo" type="xs:string" use="optional"/>
+		<xs:attribute name="loopCtr" type="xs:Name" default="loopCtr"/>
+	</xs:complexType>
+	
+	<xs:complexType name="beanExecuteUpdateType">
+		<xs:sequence>
+			<xs:element name="dataSource">
+				<xs:complexType>
+					<xs:choice>
+
+						<xs:element name="setEntityProperty" type="coreServer:setEntityPropertyType" maxOccurs="unbounded"/>
+
+						<xs:element name="singleFieldSet"> <!-- Get data from a single set of fields -->
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="xs:string">
+										<xs:attribute name="fieldsName" type="xs:string" use="required"/>
+										<xs:attribute name="entityType" type="xs:Name" use="required"/>
+										<xs:attribute name="entityName" type="xs:Name" use="optional"/>
+										<xs:attribute name="synchronize" type="coreServer:boolean" default="false"/>
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
+						</xs:element>
+						
+						<xs:element name="multipleFieldSet"> <!-- Get data from a list of field sets -->
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="xs:string">
+										<xs:attribute name="fieldsName" type="xs:string" use="required"/>
+										<xs:attribute name="entityType" type="xs:Name" use="required"/>
+										<xs:attribute name="entityListName" type="xs:Name" use="optional"/>
+										<xs:attribute name="synchronize" type="coreServer:boolean" default="false"/>
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
+						</xs:element>
+						
+						<xs:element name="singleEntity"> <!-- Get data from an instantiated entity -->
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="xs:string">
+										<xs:attribute name="entityName" type="xs:string" use="required"/>
+										<xs:attribute name="synchronize" type="coreServer:boolean" default="false"/>
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
+						</xs:element>
+						
+						<xs:element name="multipleEntities"> <!-- Get data from a list of instantiated entities -->
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="xs:string">
+										<xs:attribute name="entityListName" type="xs:string" use="required"/>
+										<xs:attribute name="synchronize" type="coreServer:boolean" default="false"/>
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
+						</xs:element>
+						
+						<xs:element name="bulkFromFieldSet"> <!-- the text content=search fields ref -->
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="xs:string">
+										<xs:attribute name="fieldsName" type="xs:string" use="required"/>
+										<xs:attribute name="entityType" type="xs:Name" use="required"/>
+										<xs:attribute name="synchronize" type="coreServer:boolean" default="false"/>
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
+						</xs:element>
+						
+						<xs:element name="bulkFromCondition"> <!-- the text content=condition -->
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="xs:string">
+										<xs:attribute name="fieldsName" type="xs:string" use="required"/>
+										<xs:attribute name="entityType" type="xs:Name" use="required"/>
+										<xs:attribute name="synchronize" type="coreServer:boolean" default="false"/>
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
+						</xs:element>
+						
+						<xs:element name="custom" type="coreServer:codeFragmentReferencesType"/>
+						
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="errorChecks" minOccurs="0">
+				<xs:complexType>
+					<xs:choice maxOccurs="unbounded">
+						<xs:element name="sizeCheck" type="coreServer:beanExecuteSizeCheck"/>
+						<xs:element name="customCheck" type="coreServer:codeFragmentReferencesType"/>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="loopTo" type="xs:string" use="optional"/>
+		<xs:attribute name="loopCtr" type="xs:Name" default="loopCtr"/>
+	</xs:complexType>
+
+	<xs:complexType name="ejbType">
+		<xs:sequence>
+			<xs:element name="name" type="xs:string"/>
+			<xs:element name="beanInterface" type="xs:string"/>
+			<xs:element name="beanName" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="beanAnnotations" mixed="false">
+		<xs:sequence>
+			<xs:element name="beanType">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Stateless"/>
+						<xs:enumeration value="Stateful"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			
+			<xs:element name="interfaces">
+				<xs:complexType>
+					<xs:sequence maxOccurs="2">
+						<xs:element name="interface">
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="xs:string">
+										<xs:attribute name="name" type="xs:Name" use="required"/>
+										<xs:attribute name="type" default="Local">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:enumeration value="Local"/>
+													<xs:enumeration value="Remote"/>
+												</xs:restriction>
+											</xs:simpleType>										
+										</xs:attribute>
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+							
+			<xs:element name="transactionManagement">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute name="type" use="required">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="Bean"/>
+										<xs:enumeration value="Container"/>
+									</xs:restriction>
+								</xs:simpleType>										
+							</xs:attribute>
+							<xs:attribute name="ctrTxAttr" use="required">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="Required"/>
+										<xs:enumeration value="Mandatory"/>
+										<xs:enumeration value="Never"/>
+										<xs:enumeration value="Not_Supported"/>
+										<xs:enumeration value="Requires_New"/>
+										<xs:enumeration value="Supported"/>
+									</xs:restriction>
+								</xs:simpleType>										
+							</xs:attribute>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="ejbs" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence maxOccurs="unbounded">
+						<xs:element name="ejb" type="coreServer:ejbType"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="beanAuthorization">
+		<xs:sequence>
+			<xs:element name="userIdk" type="xs:string" minOccurs="0"/>
+			<xs:element name="userRankIdk" type="xs:string" minOccurs="0"/>
+			<xs:element name="userRoles" type="xs:string" minOccurs="0"/>
+			<xs:element name="actionName" type="xs:string" minOccurs="0"/>
+			<xs:element name="actionVersion" type="xs:string" minOccurs="0"/>
+			<xs:element name="objectGroup" type="xs:string" minOccurs="0"/>
+			<xs:element name="objectTable" type="xs:string" minOccurs="0"/>
+			<xs:element name="objectIdk" type="xs:string" minOccurs="0"/>
+			<xs:element name="objectParameters" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="beanInputParameterType">
+		<xs:sequence minOccurs="0">
+			<xs:element name="validations">
+				<xs:complexType>
+					<xs:sequence maxOccurs="unbounded">
+						<xs:element name="staticEntityListValidator" minOccurs="0">
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="xs:string">
+										<xs:attribute name="checkIfUserSuppliedIdk" type="coreServer:boolean" default="true"/>
+										<xs:attribute name="condition" type="xs:string" use="optional"/>
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="staticEntityValidator" minOccurs="0">
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="xs:string">
+										<xs:attribute name="checkIfUserSuppliedIdk" type="coreServer:boolean" default="true"/>
+										<xs:attribute name="condition" type="xs:string" use="optional"/>
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="staticFieldValidator" minOccurs="0">
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="xs:string">
+										<xs:attribute name="condition" type="xs:string" use="optional"/>
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="parameterValidator" minOccurs="0">
+							<xs:complexType>
+								<xs:simpleContent>
+									<xs:extension base="xs:string">
+										<xs:attribute name="condition" type="xs:string" use="optional"/>
+									</xs:extension>
+								</xs:simpleContent>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="customValidator" type="coreServer:codeFragmentReferencesType" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="displayName" type="xs:Name" use="required"/>
+		<xs:attribute name="enResource" type="xs:string" use="required"/>
+		<xs:attribute name="type" type="xs:string" use="required"/>
+		<xs:attribute name="methodSuffix" type="xs:Name" use="optional"/>
+		<xs:attribute name="varName" type="xs:string" use="optional"/>
+		<xs:attribute name="keyClasses" type="coreServer:stringList" use="optional"/>
+		<xs:attribute name="valueClasses" type="coreServer:stringList" use="optional"/>
+		<xs:attribute name="entityType" type="xs:Name" use="optional"/>
+		<xs:attribute name="entityVarName" type="xs:string" use="optional"/>
+	</xs:complexType>
+	
+	<xs:complexType name="beanOutputParameterType">
+		<xs:complexContent>
+			<xs:extension base="coreServer:emptyType">
+				<xs:attribute name="displayName" type="xs:Name" use="required"/>
+				<xs:attribute name="enResource" type="xs:string" use="required"/>
+				<xs:attribute name="type" type="xs:string" use="required"/>
+				<xs:attribute name="methodSuffix" type="xs:Name" use="optional"/>
+				<xs:attribute name="varName" type="xs:string" use="optional"/>
+				<xs:attribute name="keyClasses" type="coreServer:stringList" use="optional"/>
+				<xs:attribute name="valueClasses" type="coreServer:stringList" use="optional"/>
+				<xs:attribute name="condition" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="beanTask">
+		<xs:sequence>
+
+			<xs:element name="authorizations" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence maxOccurs="unbounded">
+						<xs:element name="authorization" type="coreServer:beanAuthorization"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="inputParameters" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence maxOccurs="unbounded">
+						<xs:element name="inputParameter" type="coreServer:beanInputParameterType"/>
+						<xs:element name="customParameter" type="coreServer:codeFragmentReferencesType" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>			
+
+			<xs:element name="execute" minOccurs="0">
+				<xs:complexType>
+					<xs:choice> <!-- Only allow one execution per task -->
+						<xs:element name="create" type="coreServer:beanExecuteCreateType"/>
+						<xs:element name="read" type="coreServer:beanExecuteReadType"/>
+						<xs:element name="update" type="coreServer:beanExecuteUpdateType"/>
+						<xs:element name="delete" type="coreServer:beanExecuteUpdateType"/> <!-- same type as update -->
+						<xs:element name="customCode" type="coreServer:codeFragmentReferencesType"/>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="outputParameters" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence maxOccurs="unbounded">
+						<xs:element name="outputParameter" type="coreServer:beanOutputParameterType"/>
+						<xs:element name="customParameter" type="coreServer:codeFragmentReferencesType" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>			
+
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="beanMethodType">
+		<xs:sequence>
+
+			<xs:element name="name">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:Name">
+							<xs:attribute name="displayName" type="xs:Name" use="optional"/>
+							<xs:attribute name="enResource" type="xs:string" use="required"/>
+							<xs:attribute name="version" type="xs:nonNegativeInteger" default="1"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="signature" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="returns" type="xs:string"/>
+						<xs:element name="parameters" minOccurs="0">
+							<xs:complexType>
+								<xs:sequence maxOccurs="unbounded">
+									<xs:element name="type" type="xs:string"/>
+									<xs:element name="name" type="xs:Name"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="tasks">
+				<xs:complexType>
+					<xs:sequence maxOccurs="unbounded">
+						<xs:element name="task" type="coreServer:beanTask"/>
+					</xs:sequence>
+					<xs:attribute name="requiresLoggedInUser" type="coreServer:boolean" default="true"/>
+				</xs:complexType>
+			</xs:element>
+
+			<xs:element name="codeFragments" type="coreServer:codeFragmentsType" minOccurs="0"/>
+
+		</xs:sequence>
+	</xs:complexType>
+
+</xs:schema>

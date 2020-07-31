@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. -->
+<project basedir="." default="build" name="CoreServer">
+    <property environment="env"/>
+    <property name="ECLIPSE_HOME" value="../../../../../../../eclipse"/>
+    <property name="CoreServerCommons.location" value="../CoreServerCommons"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
+    <path id="CoreServerCommons.classpath">
+        <pathelement location="${CoreServerCommons.location}/bin"/>
+        <pathelement location="${CoreServerCommons.location}/../../../../../../../Sun/AppServer/lib/javaee.jar"/>
+    </path>
+    <path id="CoreServer.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="../../../../../../../Sun/AppServer/lib/appserv-rt.jar"/>
+        <pathelement location="../../../../../../../Sun/AppServer/lib/javaee.jar"/>
+        <path refid="CoreServerCommons.classpath"/>
+        <pathelement location="../../../../../../../Sun/AppServer/lib/toplink-essentials.jar"/>
+        <pathelement location="../../../../../../../Sun/AppServer/domains/domain1/lib/postgresql-8.2-504.jdbc3.jar"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src" excludes="**/*.launch, **/*.testsuite, **/*.deploy, **/*.location, **/*.execution, **/*.datapool, **/*.artifact, **/*.html, **/*.svg, **/*.java"/>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall">
+        <ant antfile="${CoreServerCommons.location}/build22.xml" inheritAll="false" target="clean"/>
+    </target>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects">
+        <ant antfile="${CoreServerCommons.location}/build22.xml" inheritAll="false" target="build-project">
+            <propertyset>
+                <propertyref name="build.compiler"/>
+            </propertyset>
+        </ant>
+    </target>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="CoreServer.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+    <target name="CSGenerationManager">
+        <java classname="aaacs.coreserver.generation.CSGenerationManager" failonerror="true" fork="yes">
+            <classpath refid="CoreServer.classpath"/>
+        </java>
+    </target>
+    <target name="SelectBuilder (2)">
+        <java classname="aaacs.coreserver.database.SelectBuilder" failonerror="true" fork="yes">
+            <classpath refid="CoreServer.classpath"/>
+        </java>
+    </target>
+</project>

@@ -1,0 +1,708 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<coreServerEntity xmlns="aaacs.coreserver/generation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="aaacs.coreserver/generation ../../schemas/csDocEntity.xsd">
+	
+	<table>
+		<name>tCommunityAmenities</name>
+		<constraints>
+			<unique>referenceHandle createdByIdk</unique>
+			<foreignKey>
+				<referringColumns>createdByIdk</referringColumns>
+				<referredTable>tUsers</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+		</constraints>
+	</table>
+
+	<class>
+		<name>CommunityAmenities</name>
+		<annotations>
+			<entity/>
+			<sqlResultSetMappings>
+				<standardMapping/>
+			</sqlResultSetMappings>
+		</annotations>
+	</class>
+
+	<attributes>
+		<includeAttributes>conf/generation/descriptors/standardAttributes.xml</includeAttributes>
+
+		<attribute>
+			<columnDescription name="createdByIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="createdByIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_HIGHEST_RESERVED + 1</min>
+					</Long>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="referenceHandle" type="VARCHAR(100)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="referenceHandle" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>1</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="communityName" type="VARCHAR(100)">
+			</columnDescription>
+			<javaFieldDescription name="communityName" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<substring/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="managedCommunity" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="managedCommunity" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="walled" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="walled" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="secureGates" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="secureGates" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="masjids" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="masjids" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="restaurants" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="restaurants" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="cafes" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="cafes" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="convenienceStores" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="convenienceStores" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="supermarkets" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="supermarkets" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="selfServeLaundromats" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="selfServeLaundromats" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="dryCleaners" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="dryCleaners" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="otherStores" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="otherStores" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="malePools" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="malePools" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="femalePools" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="femalePools" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="mixedPools" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="mixedPools" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="maleGymnasiums" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="maleGymnasiums" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="femaleGymnasiums" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="femaleGymnasiums" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="mixedGymnasiums" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="mixedGymnasiums" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="soccerFields" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="soccerFields" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="otherFields" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="otherFields" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="basketballCourts" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="basketballCourts" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="tennisCourts" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="tennisCourts" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="parks" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="parks" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="playgrounds" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="playgrounds" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="businessCenters" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="businessCenters" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="internetCenters" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="internetCenters" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="socialCenters" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="socialCenters" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="organizedWomensActivities" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="organizedWomensActivities" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="organizedChildrensActivities" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="organizedChildrensActivities" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="hospitals" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="hospitals" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="clinics" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="clinics" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="doctors" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="doctors" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="daycareCenters" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="daycareCenters" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="elementarySchools" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="elementarySchools" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="middleSchools" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="middleSchools" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="highSchools" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="highSchools" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="securityCenters" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="securityCenters" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="other" type="VARCHAR(300)">
+			</columnDescription>
+			<javaFieldDescription name="other" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>300</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+	</attributes>
+
+	<populate>
+		<defaults>
+			<columnValues>
+			createdByIdk '1'
+			referenceHandle 'string.Default'
+			</columnValues>
+		</defaults>
+		<insert>
+			<columnValues>
+			idk '1'
+			referenceHandle 'string.Unset'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '101'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '102'
+			referenceHandle 'string.Unknown'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '103'
+			referenceHandle 'string.Nonexistent'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '901'
+			referenceHandle 'string.MatchAll'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '902'
+			referenceHandle 'string.MatchReserved'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '903'
+			referenceHandle 'string.MatchUser'
+			</columnValues>
+		</insert>
+	</populate>
+
+</coreServerEntity>

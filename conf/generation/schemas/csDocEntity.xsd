@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:coreServer="aaacs.coreserver/generation"
+	targetNamespace="aaacs.coreserver/generation"
+	elementFormDefault="qualified" 
+	attributeFormDefault="unqualified">
+
+	<!-- Includes -->
+	<xs:include schemaLocation="csTypEntityBasics.xsd"/>
+	
+	<!-- Global Types, Elements, and Groups -->
+
+	<!-- Document Structure -->
+	<xs:element name="coreServerEntity">
+
+		<xs:complexType>
+			<xs:sequence>
+
+				<xs:element name="table">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="coreServer:comment" minOccurs="0"/>
+							<xs:element name="name" type="xs:Name"/>
+							<xs:element name="constraints" type="coreServer:tableConstraints"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+
+				<xs:element name="cache" type="coreServer:emptyType" minOccurs="0"/>
+
+				<xs:element name="class">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="coreServer:comment" minOccurs="0"/>
+							<xs:element name="outputDirectory" type="xs:string" minOccurs="0"/>
+							<xs:element name="resourcesFile" type="xs:string" minOccurs="0"/>
+							<xs:element name="name" type="xs:Name"/>
+							<xs:element name="package" type="xs:string" minOccurs="0"/>
+							<xs:element name="import" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+							<xs:element name="annotations" type="coreServer:entityAnnotations" minOccurs="0"/>
+							<xs:element name="enums" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence maxOccurs="unbounded">
+										<xs:element ref="coreServer:comment" minOccurs="0"/>
+										<xs:element name="enum" type="coreServer:enumType"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				
+				<xs:element name="attributes">
+					<xs:complexType>
+						<xs:choice minOccurs="0" maxOccurs="unbounded">
+							<xs:element name="attribute" type="coreServer:attributeType"/>
+							<xs:element name="includeAttributes">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute name="useInSQL" type="xs:string" default="true"/>
+											<xs:attribute name="useInJavaAttributes" type="xs:string" default="false"/>
+											<xs:attribute name="useInJavaMapping" type="xs:string" default="true"/>
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+						</xs:choice>
+					</xs:complexType>
+				</xs:element>
+				
+				<xs:element name="populate" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="defaults" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element ref="coreServer:comment" minOccurs="0"/>
+										<xs:element name="columnValues" type="coreServer:columnValuesType"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="insert" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element ref="coreServer:comment" minOccurs="0"/>
+										<xs:element name="columnValues" type="coreServer:columnValuesType"/>
+										<xs:element name="store" type="xs:Name" minOccurs="0"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+
+				<xs:element name="codeFragments" type="coreServer:codeFragmentsType" minOccurs="0"/>
+
+			</xs:sequence>
+		</xs:complexType>
+
+	</xs:element>
+
+</xs:schema>

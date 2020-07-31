@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<coreServerEntity xmlns="aaacs.coreserver/generation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="aaacs.coreserver/generation ../../schemas/csDocEntity.xsd">
+	
+	<table>
+		<name>tRoles</name>
+		<constraints>
+			<unique>name</unique>
+		</constraints>
+	</table>
+
+	<cache/>
+
+	<class>
+		<comment type="JavaDoc">Core Server component for managing roles</comment>
+		<outputDirectory>src/aaacs/coreserver/ejb/entities</outputDirectory>
+		<resourcesFile>src/aaacs/coreserver/resources/entityNames.properties</resourcesFile>
+		<name>Role</name>
+		<package>aaacs.coreserver.ejb.entities</package>
+		<import>aaacs.coreserver.ejb.entities.support.CacheManager</import>
+		<annotations>
+			<entity/>
+			<sqlResultSetMappings>
+				<standardMapping/>
+			</sqlResultSetMappings>
+		</annotations>
+	</class>
+
+	<attributes>
+		<includeAttributes>conf/generation/descriptors/standardAttributes.xml</includeAttributes>
+
+		<attribute>
+			<columnDescription name="name" type="VARCHAR(100)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="name" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>1</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+				<dto cacheLookup="true"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<equals type="String"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="description" type="VARCHAR(100)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="description" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>1</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<substring/>
+			</searchCriteria>
+		</attribute>
+
+	</attributes>
+
+	<populate>
+		<defaults>
+			<columnValues>
+			name 'string.Default'
+			description 'string.Default'
+			</columnValues>
+		</defaults>
+		<insert>
+			<columnValues>
+			idk '1'
+			name 'string.Unset'
+			description 'string.Unset'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '101'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '102'
+			name 'string.Unknown'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '103'
+			name 'string.Nonexistent'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '901'
+			name 'string.MatchAll'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '902'
+			name 'string.MatchReserved'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '903'
+			name 'string.MatchUser'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'role.Administrator.Name'
+			description 'role.Administrator.Description'
+			</columnValues>
+			<store>roleAdministrator</store>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'role.RegisteredUser.Name'
+			description 'role.RegisteredUser.Description'
+			</columnValues>
+			<store>roleRegisteredUser</store>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'role.Guest.Name'
+			description 'role.Guest.Description'
+			</columnValues>
+			<store>roleGuest</store>
+		</insert>
+	</populate>
+
+</coreServerEntity>

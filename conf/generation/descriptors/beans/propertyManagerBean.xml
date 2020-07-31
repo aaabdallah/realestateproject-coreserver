@@ -1,0 +1,1785 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<coreServerBean xmlns="aaacs.coreserver/generation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="aaacs.coreserver/generation ../../schemas/csDocBean.xsd">
+
+	<class>
+		<name>PropertyManagerBean</name>
+		<imports>
+			<import>aaacs.coreserver.ejb.entities.support.CacheManager</import>
+			<import>java.util.Calendar</import>
+		</imports>
+		<annotations>
+			<beanType>Stateless</beanType>
+			<interfaces>
+				<interface name="PropertyManager" type="Local"/>
+				<!--<interface name="CoreServerBridgeR" type="Remote"/>-->
+			</interfaces>
+			<transactionManagement type="Container" ctrTxAttr="Required"/>
+		</annotations>
+	</class>
+
+	<methods>
+
+		<method>
+			<name enResource="Temporary method of generating property listers">generatePropertyLister</name>
+			<signature>
+				<returns>PropertyLister</returns>
+				<parameters>
+					<type>EntityManager</type><name>manager</name>
+					<type>Long</type><name>userIdk</name>
+					<type>PropertyListing</type><name>propertyListing</name>
+				</parameters>
+			</signature>
+			<tasks requiresLoggedInUser="true">
+				<task>
+					<execute>
+						<customCode>
+							<codeFragmentReference baseIndent="3">cfr.generatePropertyLister.generate</codeFragmentReference>
+						</customCode>
+					</execute>
+				</task>
+			</tasks>
+
+			<codeFragments>
+				<codeFragment name="cfr.generatePropertyLister.generate" location="generic" visibility="sessionBean"><![CDATA[
+				manager.flush(); // to forcibly update propertyListing with the new idk
+				PropertyLister propertyLister = new PropertyLister();
+				propertyLister.setAllFields(null, true);
+				propertyLister.setListerIdk(userIdk);
+				propertyLister.setListingIdk(propertyListing.getIdk());
+				propertyLister.setCommissionAmount(100.0F);
+				
+				LinkedHashMap<String, Object> searchFields = new LinkedHashMap<String, Object>();
+				searchFields.put("category", "commissionType");
+				searchFields.put("name", "commissionType.Percentage");
+				List list = PropertyOption.findPropertyOptionByFields(manager, searchFields);
+				propertyLister.setCommissionTypeIdk(((PropertyOption) list.get(0)).getIdk());
+				
+				searchFields.clear();
+				searchFields.put("category", "propertyListerType");
+				searchFields.put("name", "propertyListerType.Creator");
+				list = PropertyOption.findPropertyOptionByFields(manager, searchFields);
+				propertyLister.setListerTypeIdk(((PropertyOption) list.get(0)).getIdk());
+				return propertyLister;
+				]]></codeFragment>
+			</codeFragments>
+		</method>
+
+		<method>
+			<name enResource="Create a new apartment (with all its associated information) for sale/rental">createApartmentForRentalSale</name>
+			<tasks requiresLoggedInUser="true">
+				<task>
+					<authorizations>
+						<authorization>
+							<!--<objectTable>&quot;tProperties&quot;</objectTable>-->
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="UserIdk" enResource="User Idk" type="Long" varName="userIdk">
+							<validations>
+								<parameterValidator>setValidMinimum((double) PrimaryKeyHolder.KEY_HIGHEST_RESERVED + 1)</parameterValidator>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyFields" enResource="Property Fields"
+							varName="propertyFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Property" entityVarName="property">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="ExtendedPropertyFields" enResource="Apartment Fields"
+							varName="apartmentFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Apartment" entityVarName="apartment">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="ResidentialFeaturesFields" enResource="ResidentialFeatures Fields"
+							varName="residentialFeaturesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="ResidentialFeatures" entityVarName="residentialFeatures">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="CommunityAmenitiesFields" enResource="CommunityAmenities Fields"
+							varName="communityAmenitiesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="CommunityAmenities" entityVarName="communityAmenities">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyListingFields" enResource="PropertyListing Fields"
+							varName="propertyListingFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="PropertyListing" entityVarName="propertyListing">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="RentalFields" enResource="Rental Fields"
+							varName="rentalFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Rental" entityVarName="rental">
+							<validations>
+								<staticEntityValidator condition="rentalFields != null" checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="SaleFields" enResource="Sale Fields"
+							varName="saleFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Sale" entityVarName="sale">
+							<validations>
+								<staticEntityValidator condition="saleFields != null" checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<customCode>
+							<codeFragmentReference baseIndent="3">cfr.GenerateSystemKey</codeFragmentReference>
+						</customCode>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="SystemKey" enResource="System-generated key for property listing"
+							type="String" varName="propertyListing.getSystemKey()"/>
+					</outputParameters>
+				</task>
+				<task>
+					<execute>
+						<create>
+							<dataSource>
+								<singleEntity condition="rentalFields != null" entityName="rental"/>
+								<singleEntity condition="saleFields != null" entityName="sale"/>
+								<setEntityProperty name="communityAmenities" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="communityAmenities" updateIfPossible="true"/>
+								<setEntityProperty name="residentialFeatures" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="residentialFeatures" updateIfPossible="true" synchronize="true"/>
+								<setEntityProperty name="property" property="communityAmenitiesIdk" value="communityAmenities.getIdk()"/>
+								<singleEntity entityName="property" synchronize="true"/>
+								<setEntityProperty name="propertyListing" property="propertyIdk" value="property.getIdk()"/>
+								<setEntityProperty condition="rentalFields != null" name="propertyListing" property="forRentIdk" value="rental.getIdk()"/>
+								<setEntityProperty condition="saleFields != null" name="propertyListing" property="forSaleIdk" value="sale.getIdk()"/>
+								<singleEntity entityName="propertyListing"/>
+								<setEntityProperty name="apartment" property="propertyIdk" value="property.getIdk()"/>
+								<setEntityProperty name="apartment" property="residentialFeaturesIdk" value="residentialFeatures.getIdk()"/>
+								<singleEntity entityName="apartment"/>
+								<custom>
+									<codeFragmentReference baseIndent="3">cfr.createApartmentForRentalSale.InstantiatePropertyLister</codeFragmentReference>
+								</custom>
+								<singleEntity entityName="propertyLister"/>
+							</dataSource>
+						</create>
+					</execute>
+				</task>
+			</tasks>
+
+			<codeFragments>
+				<codeFragment name="cfr.createApartmentForRentalSale.InstantiatePropertyLister" location="generic" visibility="sessionBean"><![CDATA[
+				PropertyLister propertyLister = generatePropertyLister(manager, userIdk, propertyListing);
+				]]></codeFragment>
+			</codeFragments>
+		</method>
+
+		<method>
+			<name enResource="Create a new empty lot (with all its associated information) for sale/rental">createEmptyLotForRentalSale</name>
+			<tasks requiresLoggedInUser="true">
+				<task>
+					<authorizations>
+						<authorization>
+							<!--<objectTable>&quot;tProperties&quot;</objectTable>-->
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="UserIdk" enResource="User Idk" type="Long" varName="userIdk">
+							<validations>
+								<parameterValidator>setValidMinimum((double) PrimaryKeyHolder.KEY_HIGHEST_RESERVED + 1)</parameterValidator>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyFields" enResource="Property Fields"
+							varName="propertyFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Property" entityVarName="property">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="ExtendedPropertyFields" enResource="Empty Lot Fields"
+							varName="emptyLotFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="EmptyLot" entityVarName="emptyLot">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="CommunityAmenitiesFields" enResource="CommunityAmenities Fields"
+							varName="communityAmenitiesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="CommunityAmenities" entityVarName="communityAmenities">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyListingFields" enResource="PropertyListing Fields"
+							varName="propertyListingFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="PropertyListing" entityVarName="propertyListing">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="RentalFields" enResource="Rental Fields"
+							varName="rentalFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Rental" entityVarName="rental">
+							<validations>
+								<staticEntityValidator condition="rentalFields != null" checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="SaleFields" enResource="Sale Fields"
+							varName="saleFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Sale" entityVarName="sale">
+							<validations>
+								<staticEntityValidator condition="saleFields != null" checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<customCode>
+							<codeFragmentReference baseIndent="3">cfr.GenerateSystemKey</codeFragmentReference>
+						</customCode>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="SystemKey" enResource="System-generated key for property listing"
+							type="String" varName="propertyListing.getSystemKey()"/>
+					</outputParameters>
+				</task>
+				<task>
+					<execute>
+						<create>
+							<dataSource>
+								<singleEntity condition="rentalFields != null" entityName="rental"/>
+								<singleEntity condition="saleFields != null" entityName="sale"/>
+								<setEntityProperty name="communityAmenities" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="communityAmenities" updateIfPossible="true" synchronize="true"/>
+								<setEntityProperty name="property" property="communityAmenitiesIdk" value="communityAmenities.getIdk()"/>
+								<singleEntity entityName="property" synchronize="true"/>
+								<setEntityProperty name="propertyListing" property="propertyIdk" value="property.getIdk()"/>
+								<setEntityProperty condition="rentalFields != null" name="propertyListing" property="forRentIdk" value="rental.getIdk()"/>
+								<setEntityProperty condition="saleFields != null" name="propertyListing" property="forSaleIdk" value="sale.getIdk()"/>
+								<singleEntity entityName="propertyListing"/>
+								<setEntityProperty name="emptyLot" property="propertyIdk" value="property.getIdk()"/>
+								<singleEntity entityName="emptyLot"/>
+							</dataSource>
+						</create>
+					</execute>
+				</task>
+				<task>
+					<execute>
+						<customCode>
+							<codeFragmentReference baseIndent="3">cfr.createEmptyLotForRentalSale.InstantiatePropertyLister</codeFragmentReference>
+						</customCode>
+					</execute>
+				</task>
+				<task>
+					<execute>
+						<create>
+							<dataSource>
+								<singleEntity entityName="propertyLister"/>
+							</dataSource>
+						</create>
+					</execute>
+				</task>
+			</tasks>
+
+			<codeFragments>
+				<codeFragment name="cfr.createEmptyLotForRentalSale.InstantiatePropertyLister" location="generic" visibility="sessionBean"><![CDATA[
+				PropertyLister propertyLister = generatePropertyLister(manager, userIdk, propertyListing);
+				]]></codeFragment>
+			</codeFragments>
+		</method>
+
+		<method>
+			<name enResource="Create a new farm lot (with all its associated information) for sale/rental">createFarmLotForRentalSale</name>
+			<tasks requiresLoggedInUser="true">
+				<task>
+					<authorizations>
+						<authorization>
+							<!--<objectTable>&quot;tProperties&quot;</objectTable>-->
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="UserIdk" enResource="User Idk" type="Long" varName="userIdk">
+							<validations>
+								<parameterValidator>setValidMinimum((double) PrimaryKeyHolder.KEY_HIGHEST_RESERVED + 1)</parameterValidator>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyFields" enResource="Property Fields"
+							varName="propertyFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Property" entityVarName="property">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="ExtendedPropertyFields" enResource="Farm Lot Fields"
+							varName="farmLotFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="FarmLot" entityVarName="farmLot">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="CommunityAmenitiesFields" enResource="CommunityAmenities Fields"
+							varName="communityAmenitiesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="CommunityAmenities" entityVarName="communityAmenities">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyListingFields" enResource="PropertyListing Fields"
+							varName="propertyListingFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="PropertyListing" entityVarName="propertyListing">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="RentalFields" enResource="Rental Fields"
+							varName="rentalFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Rental" entityVarName="rental">
+							<validations>
+								<staticEntityValidator condition="rentalFields != null" checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="SaleFields" enResource="Sale Fields"
+							varName="saleFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Sale" entityVarName="sale">
+							<validations>
+								<staticEntityValidator condition="saleFields != null" checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<customCode>
+							<codeFragmentReference baseIndent="3">cfr.GenerateSystemKey</codeFragmentReference>
+						</customCode>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="SystemKey" enResource="System-generated key for property listing"
+							type="String" varName="propertyListing.getSystemKey()"/>
+					</outputParameters>
+				</task>
+				<task>
+					<execute>
+						<create>
+							<dataSource>
+								<singleEntity condition="rentalFields != null" entityName="rental"/>
+								<singleEntity condition="saleFields != null" entityName="sale"/>
+								<setEntityProperty name="communityAmenities" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="communityAmenities" updateIfPossible="true" synchronize="true"/>
+								<setEntityProperty name="property" property="communityAmenitiesIdk" value="communityAmenities.getIdk()"/>
+								<singleEntity entityName="property" synchronize="true"/>
+								<setEntityProperty name="propertyListing" property="propertyIdk" value="property.getIdk()"/>
+								<setEntityProperty condition="rentalFields != null" name="propertyListing" property="forRentIdk" value="rental.getIdk()"/>
+								<setEntityProperty condition="saleFields != null" name="propertyListing" property="forSaleIdk" value="sale.getIdk()"/>
+								<singleEntity entityName="propertyListing"/>
+								<setEntityProperty name="farmLot" property="propertyIdk" value="property.getIdk()"/>
+								<singleEntity entityName="farmLot"/>
+							</dataSource>
+						</create>
+					</execute>
+				</task>
+				<task>
+					<execute>
+						<customCode>
+							<codeFragmentReference baseIndent="3">cfr.createFarmLotForRentalSale.InstantiatePropertyLister</codeFragmentReference>
+						</customCode>
+					</execute>
+				</task>
+				<task>
+					<execute>
+						<create>
+							<dataSource>
+								<singleEntity entityName="propertyLister"/>
+							</dataSource>
+						</create>
+					</execute>
+				</task>
+			</tasks>
+
+			<codeFragments>
+				<codeFragment name="cfr.createFarmLotForRentalSale.InstantiatePropertyLister" location="generic" visibility="sessionBean"><![CDATA[
+				PropertyLister propertyLister = generatePropertyLister(manager, userIdk, propertyListing);
+				]]></codeFragment>
+			</codeFragments>
+		</method>
+
+		<method>
+			<name enResource="Create a new house (with all its associated information) for sale/rental">createHouseForRentalSale</name>
+			<tasks requiresLoggedInUser="true">
+				<task>
+					<authorizations>
+						<authorization>
+							<!--<objectTable>&quot;tProperties&quot;</objectTable>-->
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="UserIdk" enResource="User Idk" type="Long" varName="userIdk">
+							<validations>
+								<parameterValidator>setValidMinimum((double) PrimaryKeyHolder.KEY_HIGHEST_RESERVED + 1)</parameterValidator>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyFields" enResource="Property Fields"
+							varName="propertyFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Property" entityVarName="property">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="ExtendedPropertyFields" enResource="House Fields"
+							varName="houseFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="House" entityVarName="house">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="ResidentialFeaturesFields" enResource="ResidentialFeatures Fields"
+							varName="residentialFeaturesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="ResidentialFeatures" entityVarName="residentialFeatures">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="CommunityAmenitiesFields" enResource="CommunityAmenities Fields"
+							varName="communityAmenitiesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="CommunityAmenities" entityVarName="communityAmenities">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyListingFields" enResource="PropertyListing Fields"
+							varName="propertyListingFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="PropertyListing" entityVarName="propertyListing">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="RentalFields" enResource="Rental Fields"
+							varName="rentalFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Rental" entityVarName="rental">
+							<validations>
+								<staticEntityValidator condition="rentalFields != null" checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="SaleFields" enResource="Sale Fields"
+							varName="saleFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Sale" entityVarName="sale">
+							<validations>
+								<staticEntityValidator condition="saleFields != null" checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<customCode>
+							<codeFragmentReference baseIndent="3">cfr.GenerateSystemKey</codeFragmentReference>
+						</customCode>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="SystemKey" enResource="System-generated key for property listing"
+							type="String" varName="propertyListing.getSystemKey()"/>
+					</outputParameters>
+				</task>
+				<task>
+					<execute>
+						<create>
+							<dataSource>
+								<singleEntity condition="rentalFields != null" entityName="rental"/>
+								<singleEntity condition="saleFields != null" entityName="sale"/>
+								<setEntityProperty name="communityAmenities" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="communityAmenities" updateIfPossible="true"/>
+								<setEntityProperty name="residentialFeatures" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="residentialFeatures" updateIfPossible="true" synchronize="true"/>
+								<setEntityProperty name="property" property="communityAmenitiesIdk" value="communityAmenities.getIdk()"/>
+								<singleEntity entityName="property" synchronize="true"/>
+								<setEntityProperty name="propertyListing" property="propertyIdk" value="property.getIdk()"/>
+								<setEntityProperty condition="rentalFields != null" name="propertyListing" property="forRentIdk" value="rental.getIdk()"/>
+								<setEntityProperty condition="saleFields != null" name="propertyListing" property="forSaleIdk" value="sale.getIdk()"/>
+								<singleEntity entityName="propertyListing"/>
+								<setEntityProperty name="house" property="propertyIdk" value="property.getIdk()"/>
+								<setEntityProperty name="house" property="residentialFeaturesIdk" value="residentialFeatures.getIdk()"/>
+								<singleEntity entityName="house"/>
+							</dataSource>
+						</create>
+					</execute>
+				</task>
+				<task>
+					<execute>
+						<customCode>
+							<codeFragmentReference baseIndent="3">cfr.createHouseForRentalSale.InstantiatePropertyLister</codeFragmentReference>
+						</customCode>
+					</execute>
+				</task>
+				<task>
+					<execute>
+						<create>
+							<dataSource>
+								<singleEntity entityName="propertyLister"/>
+							</dataSource>
+						</create>
+					</execute>
+				</task>
+			</tasks>
+
+			<codeFragments>
+				<codeFragment name="cfr.createHouseForRentalSale.InstantiatePropertyLister" location="generic" visibility="sessionBean"><![CDATA[
+				PropertyLister propertyLister = generatePropertyLister(manager, userIdk, propertyListing);
+				]]></codeFragment>
+			</codeFragments>
+		</method>
+
+		<method>
+			<name enResource="Create a new multi-unit building (with all its associated information) for sale/rental">createMultiUnitBuildingForRentalSale</name>
+			<tasks requiresLoggedInUser="true">
+				<task>
+					<authorizations>
+						<authorization>
+							<!--<objectTable>&quot;tProperties&quot;</objectTable>-->
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="UserIdk" enResource="User Idk" type="Long" varName="userIdk">
+							<validations>
+								<parameterValidator>setValidMinimum((double) PrimaryKeyHolder.KEY_HIGHEST_RESERVED + 1)</parameterValidator>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyFields" enResource="Property Fields"
+							varName="propertyFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Property" entityVarName="property">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="ExtendedPropertyFields" enResource="MultiUnitBuilding Fields"
+							varName="multiUnitBuildingFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="MultiUnitBuilding" entityVarName="multiUnitBuilding">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="ResidentialFeaturesFields" enResource="ResidentialFeatures Fields"
+							varName="residentialFeaturesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="ResidentialFeatures" entityVarName="residentialFeatures">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="CommercialFeaturesFields" enResource="CommercialFeatures Fields"
+							varName="commercialFeaturesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="CommercialFeatures" entityVarName="commercialFeatures">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="CommunityAmenitiesFields" enResource="CommunityAmenities Fields"
+							varName="communityAmenitiesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="CommunityAmenities" entityVarName="communityAmenities">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyListingFields" enResource="PropertyListing Fields"
+							varName="propertyListingFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="PropertyListing" entityVarName="propertyListing">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="RentalFields" enResource="Rental Fields"
+							varName="rentalFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Rental" entityVarName="rental">
+							<validations>
+								<staticEntityValidator condition="rentalFields != null" checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="SaleFields" enResource="Sale Fields"
+							varName="saleFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Sale" entityVarName="sale">
+							<validations>
+								<staticEntityValidator condition="saleFields != null" checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<customCode>
+							<codeFragmentReference baseIndent="3">cfr.GenerateSystemKey</codeFragmentReference>
+						</customCode>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="SystemKey" enResource="System-generated key for property listing"
+							type="String" varName="propertyListing.getSystemKey()"/>
+					</outputParameters>
+				</task>
+				<task>
+					<execute>
+						<create>
+							<dataSource>
+								<singleEntity condition="rentalFields != null" entityName="rental"/>
+								<singleEntity condition="saleFields != null" entityName="sale"/>
+								<setEntityProperty name="communityAmenities" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="communityAmenities" updateIfPossible="true"/>
+								<setEntityProperty name="residentialFeatures" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="residentialFeatures" updateIfPossible="true"/>
+								<setEntityProperty name="commercialFeatures" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="commercialFeatures" updateIfPossible="true" synchronize="true"/>
+								<setEntityProperty name="property" property="communityAmenitiesIdk" value="communityAmenities.getIdk()"/>
+								<singleEntity entityName="property" synchronize="true"/>
+								<setEntityProperty name="propertyListing" property="propertyIdk" value="property.getIdk()"/>
+								<setEntityProperty condition="rentalFields != null" name="propertyListing" property="forRentIdk" value="rental.getIdk()"/>
+								<setEntityProperty condition="saleFields != null" name="propertyListing" property="forSaleIdk" value="sale.getIdk()"/>
+								<singleEntity entityName="propertyListing"/>
+								<setEntityProperty name="multiUnitBuilding" property="propertyIdk" value="property.getIdk()"/>
+								<setEntityProperty name="multiUnitBuilding" property="unitResidentialFeaturesIdk" value="residentialFeatures.getIdk()"/>
+								<setEntityProperty name="multiUnitBuilding" property="unitCommercialFeaturesIdk" value="commercialFeatures.getIdk()"/>
+								<singleEntity entityName="multiUnitBuilding"/>
+							</dataSource>
+						</create>
+					</execute>
+				</task>
+				<task>
+					<execute>
+						<customCode>
+							<codeFragmentReference baseIndent="3">cfr.createMultiUnitBuildingForRentalSale.InstantiatePropertyLister</codeFragmentReference>
+						</customCode>
+					</execute>
+				</task>
+				<task>
+					<execute>
+						<create>
+							<dataSource>
+								<singleEntity entityName="propertyLister"/>
+							</dataSource>
+						</create>
+					</execute>
+				</task>
+			</tasks>
+
+			<codeFragments>
+				<codeFragment name="cfr.createMultiUnitBuildingForRentalSale.InstantiatePropertyLister" location="generic" visibility="sessionBean"><![CDATA[
+				PropertyLister propertyLister = generatePropertyLister(manager, userIdk, propertyListing);
+				]]></codeFragment>
+			</codeFragments>
+		</method>
+
+		<method>
+			<name enResource="Create a new multi-unit compound (with all its associated information) for sale/rental">createMultiUnitCompoundForRentalSale</name>
+			<tasks requiresLoggedInUser="true">
+				<task>
+					<authorizations>
+						<authorization>
+							<!--<objectTable>&quot;tProperties&quot;</objectTable>-->
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="UserIdk" enResource="User Idk" type="Long" varName="userIdk">
+							<validations>
+								<parameterValidator>setValidMinimum((double) PrimaryKeyHolder.KEY_HIGHEST_RESERVED + 1)</parameterValidator>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyFields" enResource="Property Fields"
+							varName="propertyFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Property" entityVarName="property">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="ExtendedPropertyFields" enResource="MultiUnitCompound Fields"
+							varName="multiUnitCompoundFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="MultiUnitCompound" entityVarName="multiUnitCompound">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="ResidentialFeaturesFields" enResource="ResidentialFeatures Fields"
+							varName="residentialFeaturesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="ResidentialFeatures" entityVarName="residentialFeatures">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="CommercialFeaturesFields" enResource="CommercialFeatures Fields"
+							varName="commercialFeaturesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="CommercialFeatures" entityVarName="commercialFeatures">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="CommunityAmenitiesFields" enResource="CommunityAmenities Fields"
+							varName="communityAmenitiesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="CommunityAmenities" entityVarName="communityAmenities">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyListingFields" enResource="PropertyListing Fields"
+							varName="propertyListingFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="PropertyListing" entityVarName="propertyListing">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="RentalFields" enResource="Rental Fields"
+							varName="rentalFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Rental" entityVarName="rental">
+							<validations>
+								<staticEntityValidator condition="rentalFields != null" checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="SaleFields" enResource="Sale Fields"
+							varName="saleFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Sale" entityVarName="sale">
+							<validations>
+								<staticEntityValidator condition="saleFields != null" checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<customCode>
+							<codeFragmentReference baseIndent="3">cfr.GenerateSystemKey</codeFragmentReference>
+						</customCode>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="SystemKey" enResource="System-generated key for property listing"
+							type="String" varName="propertyListing.getSystemKey()"/>
+					</outputParameters>
+				</task>
+				<task>
+					<execute>
+						<create>
+							<dataSource>
+								<singleEntity condition="rentalFields != null" entityName="rental"/>
+								<singleEntity condition="saleFields != null" entityName="sale"/>
+								<setEntityProperty name="communityAmenities" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="communityAmenities" updateIfPossible="true"/>
+								<setEntityProperty name="residentialFeatures" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="residentialFeatures" updateIfPossible="true"/>
+								<setEntityProperty name="commercialFeatures" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="commercialFeatures" updateIfPossible="true" synchronize="true"/>
+								<setEntityProperty name="property" property="communityAmenitiesIdk" value="communityAmenities.getIdk()"/>
+								<singleEntity entityName="property" synchronize="true"/>
+								<setEntityProperty name="propertyListing" property="propertyIdk" value="property.getIdk()"/>
+								<setEntityProperty condition="rentalFields != null" name="propertyListing" property="forRentIdk" value="rental.getIdk()"/>
+								<setEntityProperty condition="saleFields != null" name="propertyListing" property="forSaleIdk" value="sale.getIdk()"/>
+								<singleEntity entityName="propertyListing"/>
+								<setEntityProperty name="multiUnitCompound" property="propertyIdk" value="property.getIdk()"/>
+								<setEntityProperty name="multiUnitCompound" property="unitResidentialFeaturesIdk" value="residentialFeatures.getIdk()"/>
+								<setEntityProperty name="multiUnitCompound" property="unitCommercialFeaturesIdk" value="commercialFeatures.getIdk()"/>
+								<singleEntity entityName="multiUnitCompound"/>
+							</dataSource>
+						</create>
+					</execute>
+				</task>
+				<task>
+					<execute>
+						<customCode>
+							<codeFragmentReference baseIndent="3">cfr.createMultiUnitCompoundForRentalSale.InstantiatePropertyLister</codeFragmentReference>
+						</customCode>
+					</execute>
+				</task>
+				<task>
+					<execute>
+						<create>
+							<dataSource>
+								<singleEntity entityName="propertyLister"/>
+							</dataSource>
+						</create>
+					</execute>
+				</task>
+			</tasks>
+
+			<codeFragments>
+				<codeFragment name="cfr.createMultiUnitCompoundForRentalSale.InstantiatePropertyLister" location="generic" visibility="sessionBean"><![CDATA[
+				PropertyLister propertyLister = generatePropertyLister(manager, userIdk, propertyListing);
+				]]></codeFragment>
+			</codeFragments>
+		</method>
+
+		<method>
+			<name enResource="Create a new office (with all its associated information) for sale/rental">createOfficeForRentalSale</name>
+			<tasks requiresLoggedInUser="true">
+				<task>
+					<authorizations>
+						<authorization>
+							<!--<objectTable>&quot;tProperties&quot;</objectTable>-->
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="UserIdk" enResource="User Idk" type="Long" varName="userIdk">
+							<validations>
+								<parameterValidator>setValidMinimum((double) PrimaryKeyHolder.KEY_HIGHEST_RESERVED + 1)</parameterValidator>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyFields" enResource="Property Fields"
+							varName="propertyFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Property" entityVarName="property">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="ExtendedPropertyFields" enResource="Office Fields"
+							varName="officeFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Office" entityVarName="office">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="CommercialFeaturesFields" enResource="CommercialFeatures Fields"
+							varName="commercialFeaturesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="CommercialFeatures" entityVarName="commercialFeatures">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="CommunityAmenitiesFields" enResource="CommunityAmenities Fields"
+							varName="communityAmenitiesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="CommunityAmenities" entityVarName="communityAmenities">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyListingFields" enResource="PropertyListing Fields"
+							varName="propertyListingFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="PropertyListing" entityVarName="propertyListing">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="RentalFields" enResource="Rental Fields"
+							varName="rentalFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Rental" entityVarName="rental">
+							<validations>
+								<staticEntityValidator condition="rentalFields != null" checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="SaleFields" enResource="Sale Fields"
+							varName="saleFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Sale" entityVarName="sale">
+							<validations>
+								<staticEntityValidator condition="saleFields != null" checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<customCode>
+							<codeFragmentReference baseIndent="3">cfr.GenerateSystemKey</codeFragmentReference>
+						</customCode>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="SystemKey" enResource="System-generated key for property listing"
+							type="String" varName="propertyListing.getSystemKey()"/>
+					</outputParameters>
+				</task>
+				<task>
+					<execute>
+						<create>
+							<dataSource>
+								<singleEntity condition="rentalFields != null" entityName="rental"/>
+								<singleEntity condition="saleFields != null" entityName="sale"/>
+								<setEntityProperty name="communityAmenities" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="communityAmenities" updateIfPossible="true"/>
+								<setEntityProperty name="commercialFeatures" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="commercialFeatures" updateIfPossible="true" synchronize="true"/>
+								<setEntityProperty name="property" property="communityAmenitiesIdk" value="communityAmenities.getIdk()"/>
+								<singleEntity entityName="property" synchronize="true"/>
+								<setEntityProperty name="propertyListing" property="propertyIdk" value="property.getIdk()"/>
+								<setEntityProperty condition="rentalFields != null" name="propertyListing" property="forRentIdk" value="rental.getIdk()"/>
+								<setEntityProperty condition="saleFields != null" name="propertyListing" property="forSaleIdk" value="sale.getIdk()"/>
+								<singleEntity entityName="propertyListing"/>
+								<setEntityProperty name="office" property="propertyIdk" value="property.getIdk()"/>
+								<setEntityProperty name="office" property="commercialFeaturesIdk" value="commercialFeatures.getIdk()"/>
+								<singleEntity entityName="office"/>
+							</dataSource>
+						</create>
+					</execute>
+				</task>
+				<task>
+					<execute>
+						<customCode>
+							<codeFragmentReference baseIndent="3">cfr.createOfficeForRentalSale.InstantiatePropertyLister</codeFragmentReference>
+						</customCode>
+					</execute>
+				</task>
+				<task>
+					<execute>
+						<create>
+							<dataSource>
+								<singleEntity entityName="propertyLister"/>
+							</dataSource>
+						</create>
+					</execute>
+				</task>
+			</tasks>
+
+			<codeFragments>
+				<codeFragment name="cfr.createOfficeForRentalSale.InstantiatePropertyLister" location="generic" visibility="sessionBean"><![CDATA[
+				PropertyLister propertyLister = generatePropertyLister(manager, userIdk, propertyListing);
+				]]></codeFragment>
+			</codeFragments>
+		</method>
+
+		<method>
+			<name enResource="Create a new floor unit (with all its associated information) for sale/rental">createFloorUnitForRentalSale</name>
+			<tasks requiresLoggedInUser="true">
+				<task>
+					<authorizations>
+						<authorization>
+							<!--<objectTable>&quot;tProperties&quot;</objectTable>-->
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="UserIdk" enResource="User Idk" type="Long" varName="userIdk">
+							<validations>
+								<parameterValidator>setValidMinimum((double) PrimaryKeyHolder.KEY_HIGHEST_RESERVED + 1)</parameterValidator>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyFields" enResource="Property Fields"
+							varName="propertyFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Property" entityVarName="property">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="ExtendedPropertyFields" enResource="House Fields"
+							varName="flooUnitFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="FloorUnit" entityVarName="floorUnit">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="ResidentialFeaturesFields" enResource="ResidentialFeatures Fields"
+							varName="residentialFeaturesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="ResidentialFeatures" entityVarName="residentialFeatures">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="CommunityAmenitiesFields" enResource="CommunityAmenities Fields"
+							varName="communityAmenitiesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="CommunityAmenities" entityVarName="communityAmenities">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyListingFields" enResource="PropertyListing Fields"
+							varName="propertyListingFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="PropertyListing" entityVarName="propertyListing">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="RentalFields" enResource="Rental Fields"
+							varName="rentalFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Rental" entityVarName="rental">
+							<validations>
+								<staticEntityValidator condition="rentalFields != null" checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="SaleFields" enResource="Sale Fields"
+							varName="saleFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Sale" entityVarName="sale">
+							<validations>
+								<staticEntityValidator condition="saleFields != null" checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<customCode>
+							<codeFragmentReference baseIndent="3">cfr.GenerateSystemKey</codeFragmentReference>
+						</customCode>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="SystemKey" enResource="System-generated key for property listing"
+							type="String" varName="propertyListing.getSystemKey()"/>
+					</outputParameters>
+				</task>
+				<task>
+					<execute>
+						<create>
+							<dataSource>
+								<singleEntity condition="rentalFields != null" entityName="rental"/>
+								<singleEntity condition="saleFields != null" entityName="sale"/>
+								<setEntityProperty name="communityAmenities" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="communityAmenities" updateIfPossible="true"/>
+								<setEntityProperty name="residentialFeatures" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="residentialFeatures" updateIfPossible="true" synchronize="true"/>
+								<setEntityProperty name="property" property="communityAmenitiesIdk" value="communityAmenities.getIdk()"/>
+								<singleEntity entityName="property" synchronize="true"/>
+								<setEntityProperty name="propertyListing" property="propertyIdk" value="property.getIdk()"/>
+								<setEntityProperty condition="rentalFields != null" name="propertyListing" property="forRentIdk" value="rental.getIdk()"/>
+								<setEntityProperty condition="saleFields != null" name="propertyListing" property="forSaleIdk" value="sale.getIdk()"/>
+								<singleEntity entityName="propertyListing"/>
+								<setEntityProperty name="floorUnit" property="propertyIdk" value="property.getIdk()"/>
+								<setEntityProperty name="floorUnit" property="residentialFeaturesIdk" value="residentialFeatures.getIdk()"/>
+								<singleEntity entityName="floorUnit"/>
+							</dataSource>
+						</create>
+					</execute>
+				</task>
+				<task>
+					<execute>
+						<customCode>
+							<codeFragmentReference baseIndent="3">cfr.createFloorUnitForRentalSale.InstantiatePropertyLister</codeFragmentReference>
+						</customCode>
+					</execute>
+				</task>
+				<task>
+					<execute>
+						<create>
+							<dataSource>
+								<singleEntity entityName="propertyLister"/>
+							</dataSource>
+						</create>
+					</execute>
+				</task>
+			</tasks>
+
+			<codeFragments>
+				<codeFragment name="cfr.createFloorUnitForRentalSale.InstantiatePropertyLister" location="generic" visibility="sessionBean"><![CDATA[
+				PropertyLister propertyLister = generatePropertyLister(manager, userIdk, propertyListing);
+				]]></codeFragment>
+			</codeFragments>
+		</method>
+
+		<method>
+			<name enResource="Create a new store (with all its associated information) for sale/rental">createStoreForRentalSale</name>
+			<tasks requiresLoggedInUser="true">
+				<task>
+					<authorizations>
+						<authorization>
+							<!--<objectTable>&quot;tProperties&quot;</objectTable>-->
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="UserIdk" enResource="User Idk" type="Long" varName="userIdk">
+							<validations>
+								<parameterValidator>setValidMinimum((double) PrimaryKeyHolder.KEY_HIGHEST_RESERVED + 1)</parameterValidator>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyFields" enResource="Property Fields"
+							varName="propertyFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Property" entityVarName="property">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="ExtendedPropertyFields" enResource="Store Fields"
+							varName="storeFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Store" entityVarName="store">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="CommercialFeaturesFields" enResource="CommercialFeatures Fields"
+							varName="commercialFeaturesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="CommercialFeatures" entityVarName="commercialFeatures">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="CommunityAmenitiesFields" enResource="CommunityAmenities Fields"
+							varName="communityAmenitiesFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="CommunityAmenities" entityVarName="communityAmenities">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyListingFields" enResource="PropertyListing Fields"
+							varName="propertyListingFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="PropertyListing" entityVarName="propertyListing">
+							<validations>
+								<staticEntityValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="RentalFields" enResource="Rental Fields"
+							varName="rentalFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Rental" entityVarName="rental">
+							<validations>
+								<staticEntityValidator condition="rentalFields != null" checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="SaleFields" enResource="Sale Fields"
+							varName="saleFields" type="Map&lt;String, Object&gt;" methodSuffix="Map" 
+							keyClasses="String" valueClasses="Object" 
+							entityType="Sale" entityVarName="sale">
+							<validations>
+								<staticEntityValidator condition="saleFields != null" checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<customCode>
+							<codeFragmentReference baseIndent="3">cfr.GenerateSystemKey</codeFragmentReference>
+						</customCode>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="SystemKey" enResource="System-generated key for property listing"
+							type="String" varName="propertyListing.getSystemKey()"/>
+					</outputParameters>
+				</task>
+				<task>
+					<execute>
+						<create>
+							<dataSource>
+								<singleEntity condition="rentalFields != null" entityName="rental"/>
+								<singleEntity condition="saleFields != null" entityName="sale"/>
+								<setEntityProperty name="communityAmenities" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="communityAmenities" updateIfPossible="true"/>
+								<setEntityProperty name="commercialFeatures" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="commercialFeatures" updateIfPossible="true" synchronize="true"/>
+								<setEntityProperty name="property" property="communityAmenitiesIdk" value="communityAmenities.getIdk()"/>
+								<singleEntity entityName="property" synchronize="true"/>
+								<setEntityProperty name="propertyListing" property="propertyIdk" value="property.getIdk()"/>
+								<setEntityProperty condition="rentalFields != null" name="propertyListing" property="forRentIdk" value="rental.getIdk()"/>
+								<setEntityProperty condition="saleFields != null" name="propertyListing" property="forSaleIdk" value="sale.getIdk()"/>
+								<singleEntity entityName="propertyListing"/>
+								<setEntityProperty name="store" property="propertyIdk" value="property.getIdk()"/>
+								<setEntityProperty name="store" property="commercialFeaturesIdk" value="commercialFeatures.getIdk()"/>
+								<singleEntity entityName="store"/>
+							</dataSource>
+						</create>
+					</execute>
+				</task>
+				<task>
+					<execute>
+						<customCode>
+							<codeFragmentReference baseIndent="3">cfr.createStoreForRentalSale.InstantiatePropertyLister</codeFragmentReference>
+						</customCode>
+					</execute>
+				</task>
+				<task>
+					<execute>
+						<create>
+							<dataSource>
+								<singleEntity entityName="propertyLister"/>
+							</dataSource>
+						</create>
+					</execute>
+				</task>
+			</tasks>
+
+			<codeFragments>
+				<codeFragment name="cfr.createStoreForRentalSale.InstantiatePropertyLister" location="generic" visibility="sessionBean"><![CDATA[
+				PropertyLister propertyLister = generatePropertyLister(manager, userIdk, propertyListing);
+				]]></codeFragment>
+			</codeFragments>
+		</method>
+
+		<method>
+			<name enResource="Find all property-supported districts arranged by country, region, and city">findAllPropertyDistricts</name>
+			<tasks requiresLoggedInUser="false">
+				<task>
+					<authorizations>
+						<authorization/>
+					</authorizations>
+					<execute>
+						<customCode>
+							<codeFragmentReference baseIndent="3">cfr.findAllPropertyDistricts.Find</codeFragmentReference>
+						</customCode>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="Districts" enResource="Districts by country, region, city"
+							type="List" varName="list" keyClasses="null" 
+							valueClasses="Object" condition="list.size() &gt; 0"/>
+					</outputParameters>
+				</task>
+			</tasks>
+			
+			<codeFragments>
+				<codeFragment name="cfr.findAllPropertyDistricts.Find" location="generic" visibility="sessionBean"><![CDATA[
+				List list = Country.findAllDistricts(manager, Country.Status.BLOCKEDFROMPROPERTIES.value, null);
+				]]></codeFragment>
+			</codeFragments>
+		</method>
+
+		<method>
+			<name enResource="Find specific property-supported districts arranged by country, region, and city">findPropertyDistricts</name>
+			<tasks requiresLoggedInUser="false">
+				<task>
+					<authorizations>
+						<authorization/>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="Country" enResource="Country"
+							type="String" varName="country">
+							<validations>
+								<staticFieldValidator condition="country != null">Country.validateName</staticFieldValidator>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="Region" enResource="Region"
+							type="String" varName="region">
+							<validations>
+								<staticFieldValidator condition="region != null">Region.validateName</staticFieldValidator>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="City" enResource="City"
+							type="String" varName="city">
+							<validations>
+								<staticFieldValidator condition="city != null">City.validateName</staticFieldValidator>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="District" enResource="District"
+							type="String" varName="district">
+							<validations>
+								<staticFieldValidator condition="district != null">District.validateName</staticFieldValidator>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<customCode>
+							<codeFragmentReference baseIndent="3">cfr.findPropertyDistricts.Find</codeFragmentReference>
+						</customCode>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="Districts" enResource="Districts by country, region, city"
+							type="List" varName="list" keyClasses="null" 
+							valueClasses="Object" condition="list.size() &gt; 0"/>
+					</outputParameters>
+				</task>
+			</tasks>
+			
+			<codeFragments>
+				<codeFragment name="cfr.findPropertyDistricts.Find" location="generic" visibility="sessionBean"><![CDATA[
+				List list = Country.findDistricts(manager, Country.Status.BLOCKEDFROMPROPERTIES.value, null, 
+					country, region, city, district);
+				]]></codeFragment>
+			</codeFragments>
+		</method>
+
+		<method>
+			<name enResource="Find all commercial features created by someone">findCommercialFeaturesByCreator</name>
+			<tasks requiresLoggedInUser="false">
+				<task>
+					<authorizations>
+						<authorization>
+							<objectTable>&quot;tCommercialFeatures&quot;</objectTable>
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="CreatedByIdk" enResource="Creator" type="Long" varName="createdByIdk">
+							<validations>
+								<parameterValidator>setValidMinimum((double) PrimaryKeyHolder.KEY_HIGHEST_RESERVED + 1)</parameterValidator>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<read>
+							<findMechanism>
+								<fields findMethod="CommercialFeatures.findCommercialFeaturesByFields" listVarName="commercialFeaturesList">
+									<field><name>\"createdByIdk\"</name><value>createdByIdk</value></field>
+								</fields>
+							</findMechanism>
+						</read>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="CommercialFeatures" enResource="Commercial Features"
+							type="Map" varName="entitiesToMaps(commercialFeaturesList)" keyClasses="Long String" 
+							valueClasses="Map Object" condition="commercialFeaturesList.size() &gt; 0"/>
+					</outputParameters>
+				</task>
+			</tasks>
+		</method>
+
+		<method>
+			<name enResource="Find all community amenities created by someone">findCommunityAmenitiesByCreator</name>
+			<tasks requiresLoggedInUser="false">
+				<task>
+					<authorizations>
+						<authorization>
+							<objectTable>&quot;tCommunityAmenities&quot;</objectTable>
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="CreatedByIdk" enResource="Creator" type="Long" varName="createdByIdk">
+							<validations>
+								<parameterValidator>setValidMinimum((double) PrimaryKeyHolder.KEY_HIGHEST_RESERVED + 1)</parameterValidator>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<read>
+							<findMechanism>
+								<fields findMethod="CommunityAmenities.findCommunityAmenitiesByFields" listVarName="communityAmenitiesList">
+									<field><name>\"createdByIdk\"</name><value>createdByIdk</value></field>
+								</fields>
+							</findMechanism>
+						</read>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="CommunityAmenities" enResource="Community Amenities"
+							type="Map" varName="entitiesToMaps(communityAmenitiesList)" keyClasses="Long String" 
+							valueClasses="Map Object" condition="communityAmenitiesList.size() &gt; 0"/>
+					</outputParameters>
+				</task>
+			</tasks>
+		</method>
+
+		<method>
+			<name enResource="Find all property options matching a particular category">findPropertyOptionsByCategory</name>
+			<tasks requiresLoggedInUser="false">
+				<task>
+					<authorizations>
+						<authorization>
+							<objectTable>&quot;tPropertyOptions&quot;</objectTable>
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="Category" enResource="Category"
+							type="String" varName="category">
+							<validations>
+								<parameterValidator>setValidMinimum((double) 1)</parameterValidator>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<read>
+							<findMechanism>
+								<fields findMethod="PropertyOption.findPropertyOptionByFields" listVarName="propertyOptionList">
+									<field><name>category</name><value>category</value></field>
+								</fields>
+							</findMechanism>
+						</read>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="PropertyOptions" enResource="Property Options"
+							type="Map" varName="entitiesToMaps(propertyOptionList)" keyClasses="Long String" 
+							valueClasses="Map Object" condition="propertyOptionList.size() &gt; 0"/>
+					</outputParameters>
+				</task>
+			</tasks>
+		</method>
+
+		<method>
+			<name enResource="Find the property option matching a particular category and name">findPropertyOptionByCategoryName</name>
+			<tasks requiresLoggedInUser="false">
+				<task>
+					<authorizations>
+						<authorization>
+							<objectTable>&quot;tPropertyOptions&quot;</objectTable>
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="Category" enResource="Category"
+							type="String" varName="category">
+							<validations>
+								<parameterValidator>setValidMinimum((double) 1)</parameterValidator>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="Name" enResource="Name"
+							type="String" varName="name">
+							<validations>
+								<parameterValidator>setValidMinimum((double) 1)</parameterValidator>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<read>
+							<findMechanism>
+								<fields findMethod="PropertyOption.findPropertyOptionByFields" listVarName="propertyOptionList">
+									<field><name>category</name><value>category</value></field>
+									<field><name>name</name><value>name</value></field>
+								</fields>
+							</findMechanism>
+						</read>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="PropertyOption" enResource="Property Option"
+							type="Map" varName="((PropertyOption) propertyOptionList.get(0)).getAllFields()" keyClasses="String" 
+							valueClasses="Object" condition="propertyOptionList.size() &gt; 0"/>
+					</outputParameters>
+				</task>
+			</tasks>
+		</method>
+
+		<method>
+			<name enResource="Find all residential features created by someone">findResidentialFeaturesByCreator</name>
+			<tasks requiresLoggedInUser="false">
+				<task>
+					<authorizations>
+						<authorization>
+							<objectTable>&quot;tResidentialFeatures&quot;</objectTable>
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="CreatedByIdk" enResource="Creator" type="Long" varName="createdByIdk">
+							<validations>
+								<parameterValidator>setValidMinimum((double) PrimaryKeyHolder.KEY_HIGHEST_RESERVED + 1)</parameterValidator>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<read>
+							<findMechanism>
+								<fields findMethod="ResidentialFeatures.findResidentialFeaturesByFields" listVarName="residentialFeaturesList">
+									<field><name>\"createdByIdk\"</name><value>createdByIdk</value></field>
+								</fields>
+							</findMechanism>
+						</read>
+					</execute>
+					<outputParameters>
+						<outputParameter displayName="ResidentialFeatures" enResource="Residential Features"
+							type="Map" varName="entitiesToMaps(residentialFeaturesList)" keyClasses="Long String" 
+							valueClasses="Map Object" condition="residentialFeaturesList.size() &gt; 0"/>
+					</outputParameters>
+				</task>
+			</tasks>
+		</method>
+		
+		<!-- =============================================================================== -->
+		<!-- =============================================================================== -->
+		<!-- ===== For groups of properties ================================================ -->
+		<!-- =============================================================================== -->
+		<!-- =============================================================================== -->
+
+		<method>
+			<name enResource="Create a new set of properties (with all their associated information) for sale/rental">createPropertiesForRentalSale</name>
+			<tasks requiresLoggedInUser="true">
+				<task>
+					<authorizations>
+						<authorization>
+							<!--<objectTable>&quot;tProperties&quot;</objectTable>-->
+						</authorization>
+					</authorizations>
+					<inputParameters>
+						<inputParameter displayName="UserIdk" enResource="User Idk" type="Long" varName="userIdk">
+							<validations>
+								<parameterValidator>setValidMinimum((double) PrimaryKeyHolder.KEY_HIGHEST_RESERVED + 1)</parameterValidator>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertiesTypes" enResource="Properties Types"
+							varName="propertiesTypes" type="List&lt;String&gt;" 
+							keyClasses="null" valueClasses="String">
+							<validations/>
+						</inputParameter>
+						<inputParameter displayName="PropertiesFields" enResource="Properties' Fields"
+							varName="propertiesFields" type="List&lt;Map&lt;String, Object&gt;&gt;" 
+							keyClasses="null String" valueClasses="Map Object"
+							entityType="Property" entityVarName="propertiesList">
+							<validations>
+								<staticEntityListValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="CommercialFeaturesFields" enResource="CommercialFeatures Fields"
+							varName="commercialFeaturesFields" type="List&lt;Map&lt;String, Object&gt;&gt;" 
+							keyClasses="null String" valueClasses="Map Object" 
+							entityType="CommercialFeatures" entityVarName="commercialFeaturesList">
+							<validations>
+								<staticEntityListValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="ResidentialFeaturesFields" enResource="ResidentialFeatures Fields"
+							varName="residentialFeaturesFields" type="List&lt;Map&lt;String, Object&gt;&gt;" 
+							keyClasses="null String" valueClasses="Map Object" 
+							entityType="ResidentialFeatures" entityVarName="residentialFeaturesList">
+							<validations>
+								<staticEntityListValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="CommunityAmenitiesFields" enResource="CommunityAmenities Fields"
+							varName="communityAmenitiesFields" type="List&lt;Map&lt;String, Object&gt;&gt;" 
+							keyClasses="null String" valueClasses="Map Object" 
+							entityType="CommunityAmenities" entityVarName="communityAmenitiesList">
+							<validations>
+								<staticEntityListValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="PropertyListingFields" enResource="PropertyListings' Fields"
+							varName="propertyListingsFields" type="List&lt;Map&lt;String, Object&gt;&gt;" 
+							keyClasses="null String" valueClasses="Map Object" 
+							entityType="PropertyListing" entityVarName="propertyListingsList">
+							<validations>
+								<staticEntityListValidator checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="RentalFields" enResource="Rentals' Fields"
+							varName="rentalsFields" type="List&lt;Map&lt;String, Object&gt;&gt;" 
+							keyClasses="null String" valueClasses="Map Object" 
+							entityType="Rental" entityVarName="rentalsList">
+							<validations>
+								<staticEntityListValidator condition="rentalsFields != null" checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+						<inputParameter displayName="SaleFields" enResource="Sales' Fields"
+							varName="salesFields" type="List&lt;Map&lt;String, Object&gt;&gt;" 
+							keyClasses="null String" valueClasses="Map Object" 
+							entityType="Sale" entityVarName="salesList">
+							<validations>
+								<staticEntityListValidator condition="salesFields != null" checkIfUserSuppliedIdk="false"/>
+							</validations>
+						</inputParameter>
+					</inputParameters>
+					<execute>
+						<customCode>
+							<codeFragmentReference baseIndent="3">cfr.InitializeGenerateSystemKey</codeFragmentReference>
+						</customCode>
+					</execute>
+				</task>
+				<task>
+					<execute>
+						<customCode>
+							<codeFragmentReference baseIndent="3">cfr.ExtractExtendedProperties</codeFragmentReference>
+						</customCode>
+					</execute>
+				</task>
+				<task>
+					<execute>
+						<create loopTo="propertiesList.size()" loopCtr="i">
+							<dataSource>
+								<custom>
+									<codeFragmentReference baseIndent="4">cfr.SetExtendedPropertyFlags</codeFragmentReference>
+								</custom>
+								<singleEntity condition="rentalsFields != null &amp;&amp; rentalsFields.size() > 0 &amp;&amp; rentalsFields.get(i) != null" entityName="rentalsList.get(i)"/>
+								<singleEntity condition="salesFields != null &amp;&amp; salesFields.size() > 0 &amp;&amp; salesFields.get(i) != null" entityName="salesList.get(i)"/>
+								<setEntityProperty name="communityAmenitiesList.get(i)" property="createdByIdk" value="userIdk"/>
+								<singleEntity entityName="communityAmenitiesList.get(i)" updateIfPossible="true"/>
+
+								<setEntityProperty condition="useResidentialFeatures" name="residentialFeaturesList.get(i)" property="createdByIdk" value="userIdk"/>
+								<singleEntity condition="useResidentialFeatures" entityName="residentialFeaturesList.get(i)" updateIfPossible="true"/>
+								<setEntityProperty condition="useCommercialFeatures" name="commercialFeaturesList.get(i)" property="createdByIdk" value="userIdk"/>
+								<singleEntity condition="useCommercialFeatures" entityName="commercialFeaturesList.get(i)" updateIfPossible="true" synchronize="true"/>
+								
+								<setEntityProperty name="propertiesList.get(i)" property="communityAmenitiesIdk" value="communityAmenitiesList.get(i).getIdk()"/>
+								<singleEntity entityName="propertiesList.get(i)" synchronize="true"/>
+								<setEntityProperty name="propertyListingsList.get(i)" property="propertyIdk" value="propertiesList.get(i).getIdk()"/>
+								<setEntityProperty condition='rentalsFields != null &amp;&amp; rentalsFields.size() > 0 &amp;&amp; rentalsFields.get(i) != null &amp;&amp; Boolean.TRUE.equals(rentalsFields.get(i).get("_confirmed_"))' name="propertyListingsList.get(i)" property="forRentIdk" value="rentalsList.get(i).getIdk()"/>
+								<setEntityProperty condition='salesFields != null &amp;&amp; salesFields.size() > 0 &amp;&amp; salesFields.get(i) != null &amp;&amp; Boolean.TRUE.equals(salesFields.get(i).get("_confirmed_"))' name="propertyListingsList.get(i)" property="forSaleIdk" value="salesList.get(i).getIdk()"/>
+								<singleEntity entityName="propertyListingsList.get(i)"/>
+							
+								<setEntityProperty condition='propertiesTypes.get(i).equals("propertyType.Apartment")' cast="Apartment"
+									name="extendedPropertiesList.get(i)" property="propertyIdk" value="propertiesList.get(i).getIdk()"/>
+								<setEntityProperty condition='propertiesTypes.get(i).equals("propertyType.EmptyLot")' cast="EmptyLot"
+									name="extendedPropertiesList.get(i)" property="propertyIdk" value="propertiesList.get(i).getIdk()"/>
+								<setEntityProperty condition='propertiesTypes.get(i).equals("propertyType.FarmLot")' cast="FarmLot"
+									name="extendedPropertiesList.get(i)" property="propertyIdk" value="propertiesList.get(i).getIdk()"/>
+								<setEntityProperty condition='propertiesTypes.get(i).equals("propertyType.FloorUnit")' cast="FloorUnit"
+									name="extendedPropertiesList.get(i)" property="propertyIdk" value="propertiesList.get(i).getIdk()"/>
+								<setEntityProperty condition='propertiesTypes.get(i).equals("propertyType.House")' cast="House"
+									name="extendedPropertiesList.get(i)" property="propertyIdk" value="propertiesList.get(i).getIdk()"/>
+								<setEntityProperty condition='propertiesTypes.get(i).equals("propertyType.MultiUnitBuilding")' cast="MultiUnitBuilding"
+									name="extendedPropertiesList.get(i)" property="propertyIdk" value="propertiesList.get(i).getIdk()"/>
+								<setEntityProperty condition='propertiesTypes.get(i).equals("propertyType.MultiUnitCompound")' cast="MultiUnitCompound"
+									name="extendedPropertiesList.get(i)" property="propertyIdk" value="propertiesList.get(i).getIdk()"/>
+								<setEntityProperty condition='propertiesTypes.get(i).equals("propertyType.Office")' cast="Office"
+									name="extendedPropertiesList.get(i)" property="propertyIdk" value="propertiesList.get(i).getIdk()"/>
+								<setEntityProperty condition='propertiesTypes.get(i).equals("propertyType.Store")' cast="Store"
+									name="extendedPropertiesList.get(i)" property="propertyIdk" value="propertiesList.get(i).getIdk()"/>
+
+								<setEntityProperty condition='propertiesTypes.get(i).equals("propertyType.Apartment")' cast="Apartment"
+									name="extendedPropertiesList.get(i)" property="residentialFeaturesIdk" value="residentialFeaturesList.get(i).getIdk()"/>
+								<setEntityProperty condition='propertiesTypes.get(i).equals("propertyType.FloorUnit")' cast="FloorUnit"
+									name="extendedPropertiesList.get(i)" property="residentialFeaturesIdk" value="residentialFeaturesList.get(i).getIdk()"/>
+								<setEntityProperty condition='propertiesTypes.get(i).equals("propertyType.House")' cast="House"
+									name="extendedPropertiesList.get(i)" property="residentialFeaturesIdk" value="residentialFeaturesList.get(i).getIdk()"/>
+								<setEntityProperty condition='propertiesTypes.get(i).equals("propertyType.MultiUnitBuilding")' cast="MultiUnitBuilding"
+									name="extendedPropertiesList.get(i)" property="unitResidentialFeaturesIdk" value="residentialFeaturesList.get(i).getIdk()"/>
+								<setEntityProperty condition='propertiesTypes.get(i).equals("propertyType.MultiUnitCompound")' cast="MultiUnitCompound"
+									name="extendedPropertiesList.get(i)" property="unitResidentialFeaturesIdk" value="residentialFeaturesList.get(i).getIdk()"/>
+
+								<setEntityProperty condition='propertiesTypes.get(i).equals("propertyType.MultiUnitBuilding")' cast="MultiUnitBuilding"
+									name="extendedPropertiesList.get(i)" property="unitCommercialFeaturesIdk" value="commercialFeaturesList.get(i).getIdk()"/>
+								<setEntityProperty condition='propertiesTypes.get(i).equals("propertyType.MultiUnitCompound")' cast="MultiUnitCompound"
+									name="extendedPropertiesList.get(i)" property="unitCommercialFeaturesIdk" value="commercialFeaturesList.get(i).getIdk()"/>
+								<setEntityProperty condition='propertiesTypes.get(i).equals("propertyType.Office")' cast="Office"
+									name="extendedPropertiesList.get(i)" property="commercialFeaturesIdk" value="commercialFeaturesList.get(i).getIdk()"/>
+								<setEntityProperty condition='propertiesTypes.get(i).equals("propertyType.Store")' cast="Store"
+									name="extendedPropertiesList.get(i)" property="commercialFeaturesIdk" value="commercialFeaturesList.get(i).getIdk()"/>
+
+								<singleEntity entityName="extendedPropertiesList.get(i)"/>
+								<custom>
+									<codeFragmentReference baseIndent="4">cfr.GenerateOneOfManySystemKey</codeFragmentReference>
+									<codeFragmentReference baseIndent="4">cfr.createPropertiesForRentalSale.InstantiatePropertyLister</codeFragmentReference>
+								</custom>
+								<singleEntity entityName="propertyLister"/>
+							</dataSource>
+						</create>
+					</execute>
+				</task>
+				<task>
+					<outputParameters>
+						<outputParameter displayName="SystemKeys" enResource="System-generated keys for property listings"
+							type="List" varName="systemKeys" keyClasses="null" 
+							valueClasses="String" condition="systemKeys.size() &gt; 0"/>
+					</outputParameters>
+				</task>
+			</tasks>
+			<codeFragments>
+				<codeFragment name="cfr.ExtractExtendedProperties" location="generic" visibility="sessionBean"><![CDATA[
+				List<Map<String, Object>> extendedPropertiesFields =
+					inputParameters.getList("action.CreatePropertiesForRentalSale.ExtendedPropertiesFields");
+				List<BaseEntity> extendedPropertiesList = new Vector<BaseEntity>();
+				int c = 0;
+				for (Map<String, Object> oneFieldSet : extendedPropertiesFields)
+				{
+					String propertyType = propertiesTypes.get(c);
+					if (propertyType.equals("propertyType.Apartment"))
+					{
+						Apartment ep = new Apartment(oneFieldSet);
+						extendedPropertiesList.add(ep);
+					}
+					else if (propertyType.equals("propertyType.EmptyLot"))
+					{
+						EmptyLot ep = new EmptyLot(oneFieldSet);
+						extendedPropertiesList.add(ep);
+					}
+					else if (propertyType.equals("propertyType.FarmLot"))
+					{
+						FarmLot ep = new FarmLot(oneFieldSet);
+						extendedPropertiesList.add(ep);
+					}
+					else if (propertyType.equals("propertyType.FloorUnit"))
+					{
+						FloorUnit ep = new FloorUnit(oneFieldSet);
+						extendedPropertiesList.add(ep);
+					}
+					else if (propertyType.equals("propertyType.House"))
+					{
+						House ep = new House(oneFieldSet);
+						extendedPropertiesList.add(ep);
+					}
+					else if (propertyType.equals("propertyType.MultiUnitBuilding"))
+					{
+						MultiUnitBuilding ep = new MultiUnitBuilding(oneFieldSet);
+						extendedPropertiesList.add(ep);
+					}
+					else if (propertyType.equals("propertyType.MultiUnitCompound"))
+					{
+						MultiUnitCompound ep = new MultiUnitCompound(oneFieldSet);
+						extendedPropertiesList.add(ep);
+					}
+					else if (propertyType.equals("propertyType.Office"))
+					{
+						Office ep = new Office(oneFieldSet);
+						extendedPropertiesList.add(ep);
+					}
+					else if (propertyType.equals("propertyType.Store"))
+					{
+						Store ep = new Store(oneFieldSet);
+						extendedPropertiesList.add(ep);
+					}
+					c++;
+				}
+				for (BaseEntity extendedProperty : extendedPropertiesList)
+				{
+					vldResults = extendedProperty.validateAllFields(false, null, false);
+					if (vldResults != null)
+					{
+						int cntr = 0;
+						Map<String, List<MsgArgsPair>> tempo = new LinkedHashMap<String, List<MsgArgsPair>>();
+						for (String field : vldResults.keySet())
+							tempo.put("action.CreatePropertiesForRentalSale.ExtendedPropertiesFields" + "[" + cntr++ + "]" + "(" + field + ")", vldResults.get(field));
+						vldResults = tempo;
+						errors.add(new ErrorReport("error.System.CoreServer", ErrorReport.Source.PARAMETER,
+							"action.InvalidParameter", request).
+							addItem(vldResults));
+					}
+				}
+				]]></codeFragment>
+
+				<codeFragment name="cfr.SetExtendedPropertyFlags" location="generic" visibility="sessionBean"><![CDATA[
+				boolean useResidentialFeatures = false, useCommercialFeatures = true;
+				if (propertiesTypes.get(i).equals("propertyType.Apartment") || 
+					propertiesTypes.get(i).equals("propertyType.FloorUnit") ||
+					propertiesTypes.get(i).equals("propertyType.House") ||
+					propertiesTypes.get(i).equals("propertyType.MultiUnitBuilding") ||
+					propertiesTypes.get(i).equals("propertyType.MultiUnitCompound"))
+					useResidentialFeatures = true;
+				if (propertiesTypes.get(i).equals("propertyType.MultiUnitBuilding") || 
+					propertiesTypes.get(i).equals("propertyType.MultiUnitCompound") ||
+					propertiesTypes.get(i).equals("propertyType.Office") ||
+					propertiesTypes.get(i).equals("propertyType.Store"))
+					useCommercialFeatures = true;
+				]]></codeFragment>
+			</codeFragments>
+		</method>
+
+	</methods>
+	
+	<codeFragments>
+		<codeFragment name="cfr.GenerateSystemKey" location="generic" visibility="sessionBean"><![CDATA[
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(2008, 0, 1, 0, 0, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		propertyListing.setSystemKey( Long.toString(request.getLoginToken().getUserIdk(), Character.MAX_RADIX).toUpperCase() +
+			Long.toString(System.currentTimeMillis() - calendar.getTimeInMillis(), Character.MAX_RADIX).toUpperCase() );
+		]]></codeFragment>
+
+		<codeFragment name="cfr.InitializeGenerateSystemKey" location="generic" visibility="sessionBean"><![CDATA[
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(2008, 0, 1, 0, 0, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		List<String> systemKeys = new Vector<String>();
+		]]></codeFragment>
+		
+		<codeFragment name="cfr.GenerateOneOfManySystemKey" location="generic" visibility="sessionBean"><![CDATA[
+		propertyListingsList.get(i).setSystemKey( Long.toString(request.getLoginToken().getUserIdk(), Character.MAX_RADIX).toUpperCase() +
+			Long.toString(System.currentTimeMillis() - calendar.getTimeInMillis(), Character.MAX_RADIX).toUpperCase() );
+		systemKeys.add(propertyListingsList.get(i).getSystemKey());
+		Thread.sleep(50);
+		]]></codeFragment>
+
+		<codeFragment name="cfr.createPropertiesForRentalSale.InstantiatePropertyLister" location="generic" visibility="sessionBean"><![CDATA[
+		PropertyLister propertyLister = generatePropertyLister(manager, userIdk, propertyListingsList.get(i));
+		]]></codeFragment>
+	</codeFragments>
+	
+</coreServerBean>

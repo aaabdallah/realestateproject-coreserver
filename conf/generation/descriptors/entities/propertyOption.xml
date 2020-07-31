@@ -1,0 +1,1333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<coreServerEntity xmlns="aaacs.coreserver/generation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="aaacs.coreserver/generation ../../schemas/csDocEntity.xsd">
+	
+	<table>
+		<comment type="SQL">
+		Use This Table For: 
+		+Property Types, +Zone Types, +Directions, +Internet Access Types, +Construction Types, 
+		+Cooling Types, +Heating Types, +Water Supply Types, +Sewage Disposal Types, +Conditions,
+		+Colors, +House Styles, +Roof Types, +Foundation Types, 
+		+Irrigation Types, +Business Types, +Commission Type (percentage, flat fee),
+		+Property Lister Type (Creating, Primary, Negotiating Listers),
+		+Area Units, +Finishing, +PricePer Type, +PriceType, +BidType
+		</comment>
+		<name>tPropertyOptions</name>
+		<constraints>
+			<unique>category name</unique>
+		</constraints>
+	</table>
+
+	<cache/>
+
+	<class>
+		<name>PropertyOption</name>
+		<import>aaacs.coreserver.ejb.entities.support.CacheManager</import>
+		<annotations>
+			<entity/>
+			<sqlResultSetMappings>
+				<standardMapping/>
+			</sqlResultSetMappings>
+		</annotations>
+	</class>
+
+	<attributes>
+		<includeAttributes>conf/generation/descriptors/standardAttributes.xml</includeAttributes>
+
+		<attribute>
+			<columnDescription name="category" type="VARCHAR(100)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="category" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>1</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="name" type="VARCHAR(100)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="name" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>1</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="value" type="VARCHAR(200)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="value" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>0</minLength>
+						<maxLength>200</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+	</attributes>
+
+	<populate>
+		<defaults>
+			<columnValues>
+			category 'string.Default'
+			name 'string.Default'
+			value 'string.Default'
+			</columnValues>
+		</defaults>
+		<insert>
+			<columnValues>
+			idk '1'
+			category 'string.Unset'
+			name 'string.Unset'
+			value 'string.Unset'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '101'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '102'
+			name 'string.Unknown'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '103'
+			name 'string.Nonexistent'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '901'
+			name 'string.MatchAll'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '902'
+			name 'string.MatchReserved'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '903'
+			name 'string.MatchUser'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'areaUnitType'
+			name 'areaUnitType.Acre'
+			value 'areaUnitType.Acre.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'areaUnitType'
+			name 'areaUnitType.SquareFoot'
+			value 'areaUnitType.SquareFoot.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'areaUnitType'
+			name 'areaUnitType.SquareKilometer'
+			value 'areaUnitType.SquareKilometer.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'areaUnitType'
+			name 'areaUnitType.SquareMeter'
+			value 'areaUnitType.SquareMeter.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'areaUnitType'
+			name 'areaUnitType.SquareMile'
+			value 'areaUnitType.SquareMile.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'bidType'
+			name 'bidType.BidsOk'
+			value 'bidType.BidsOk.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'bidType'
+			name 'bidType.OnBank'
+			value 'bidType.OnBank.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'bidType'
+			name 'bidType.PlusBank'
+			value 'bidType.PlusBank.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'bidType'
+			name 'bidType.Unknown'
+			value 'bidType.Unknown.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'businessType'
+			name 'businessType.ManufacturingFood'
+			value 'businessType.ManufacturingFood.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'businessType'
+			name 'businessType.ManufacturingEquipmentHeavy'
+			value 'businessType.ManufacturingEquipmentHeavy.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'businessType'
+			name 'businessType.ManufacturingEquipmentLight'
+			value 'businessType.ManufacturingEquipmentLight.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'businessType'
+			name 'businessType.ManufacturingOther'
+			value 'businessType.ManufacturingOther.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'businessType'
+			name 'businessType.MedicalClinic'
+			value 'businessType.MedicalClinic.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'businessType'
+			name 'businessType.MedicalHospital'
+			value 'businessType.MedicalHospital.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'businessType'
+			name 'businessType.MedicalLaboratory'
+			value 'businessType.MedicalLaboratory.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'businessType'
+			name 'businessType.MedicalOther'
+			value 'businessType.MedicalOther.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'businessType'
+			name 'businessType.Other'
+			value 'businessType.Other.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'businessType'
+			name 'businessType.ServicesConsulting'
+			value 'businessType.ServicesConsulting.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'businessType'
+			name 'businessType.ServicesContracting'
+			value 'businessType.ServicesContracting.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'businessType'
+			name 'businessType.ServicesFinancial'
+			value 'businessType.ServicesFinancial.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'businessType'
+			name 'businessType.ServicesFood'
+			value 'businessType.ServicesFood.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'businessType'
+			name 'businessType.ServicesOther'
+			value 'businessType.ServicesOther.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'businessType'
+			name 'businessType.ServicesEducation'
+			value 'businessType.ServicesEducation.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'businessType'
+			name 'businessType.TradeClothing'
+			value 'businessType.TradeClothing.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'businessType'
+			name 'businessType.TradeFoodSupplies'
+			value 'businessType.TradeFoodSupplies.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'businessType'
+			name 'businessType.TradeEquipmentHeavy'
+			value 'businessType.TradeEquipmentHeavy.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'businessType'
+			name 'businessType.TradeEquipmentLight'
+			value 'businessType.TradeEquipmentLight.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'businessType'
+			name 'businessType.TradeOther'
+			value 'businessType.TradeOther.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'businessType'
+			name 'businessType.Unknown'
+			value 'businessType.Unknown.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'color'
+			name 'color.Beige'
+			value 'color.Beige.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'color'
+			name 'color.Black'
+			value 'color.Black.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'color'
+			name 'color.Blue'
+			value 'color.Blue.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'color'
+			name 'color.Brown'
+			value 'color.Brown.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'color'
+			name 'color.Cyan'
+			value 'color.Cyan.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'color'
+			name 'color.Gray'
+			value 'color.Gray.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'color'
+			name 'color.Green'
+			value 'color.Green.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'color'
+			name 'color.Orange'
+			value 'color.Orange.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'color'
+			name 'color.Other'
+			value 'color.Other.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'color'
+			name 'color.Magenta'
+			value 'color.Magenta.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'color'
+			name 'color.Pink'
+			value 'color.Pink.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'color'
+			name 'color.Purple'
+			value 'color.Purple.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'color'
+			name 'color.Red'
+			value 'color.Red.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'color'
+			name 'color.Unknown'
+			value 'color.Unknown.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'color'
+			name 'color.White'
+			value 'color.White.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'color'
+			name 'color.Yellow'
+			value 'color.Yellow.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'commissionType'
+			name 'commissionType.FlatFee'
+			value 'commissionType.FlatFee.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'commissionType'
+			name 'commissionType.Other'
+			value 'commissionType.Other.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'commissionType'
+			name 'commissionType.Percentage'
+			value 'commissionType.Percentage.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'constructionType'
+			name 'constructionType.Brick'
+			value 'constructionType.Brick.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'constructionType'
+			name 'constructionType.ConcreteBlock'
+			value 'constructionType.ConcreteBlock.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'constructionType'
+			name 'constructionType.ConcreteWall'
+			value 'constructionType.ConcreteWall.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'constructionType'
+			name 'constructionType.Mud'
+			value 'constructionType.Mud.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'constructionType'
+			name 'constructionType.Other'
+			value 'constructionType.Other.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'constructionType'
+			name 'constructionType.Steel'
+			value 'constructionType.Steel.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'constructionType'
+			name 'constructionType.Unknown'
+			value 'constructionType.Unknown.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'constructionType'
+			name 'constructionType.Wood'
+			value 'constructionType.Wood.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'coolingType'
+			name 'coolingType.AirCoolers'
+			value 'coolingType.AirCoolers.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'coolingType'
+			name 'coolingType.CeilingFans'
+			value 'coolingType.CeilingFans.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'coolingType'
+			name 'coolingType.CentralAirConditioning'
+			value 'coolingType.CentralAirConditioning.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'coolingType'
+			name 'coolingType.MultiUnitAirConditioning'
+			value 'coolingType.MultiUnitAirConditioning.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'coolingType'
+			name 'coolingType.Other'
+			value 'coolingType.Other.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'coolingType'
+			name 'coolingType.Unknown'
+			value 'coolingType.Unknown.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'finishingType'
+			name 'finishingType.Excellent'
+			value 'finishingType.Excellent.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'finishingType'
+			name 'finishingType.Fair'
+			value 'finishingType.Fair.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'finishingType'
+			name 'finishingType.Good'
+			value 'finishingType.Good.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'finishingType'
+			name 'finishingType.Minimal'
+			value 'finishingType.Minimal.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'finishingType'
+			name 'finishingType.None'
+			value 'finishingType.None.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'finishingType'
+			name 'finishingType.Other'
+			value 'finishingType.Other.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'finishingType'
+			name 'finishingType.Unknown'
+			value 'finishingType.Unknown.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'finishingType'
+			name 'finishingType.VeryGood'
+			value 'finishingType.VeryGood.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'foundationType'
+			name 'foundationType.Concrete'
+			value 'foundationType.Concrete.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'foundationType'
+			name 'foundationType.Other'
+			value 'foundationType.Other.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'foundationType'
+			name 'foundationType.Stone'
+			value 'foundationType.Stone.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'foundationType'
+			name 'foundationType.Unknown'
+			value 'foundationType.Unknown.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'foundationType'
+			name 'foundationType.Wood'
+			value 'foundationType.Wood.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'direction'
+			name 'direction.North'
+			value 'direction.North.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'direction'
+			name 'direction.Northeast'
+			value 'direction.Northeast.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'direction'
+			name 'direction.East'
+			value 'direction.East.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'direction'
+			name 'direction.Southeast'
+			value 'direction.Southeast.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'direction'
+			name 'direction.South'
+			value 'direction.South.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'direction'
+			name 'direction.Southwest'
+			value 'direction.Southwest.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'direction'
+			name 'direction.West'
+			value 'direction.West.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'direction'
+			name 'direction.Northwest'
+			value 'direction.Northwest.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'direction'
+			name 'direction.Unknown'
+			value 'direction.Unknown.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'heatingType'
+			name 'heatingType.CentralHeating'
+			value 'heatingType.CentralHeating.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'heatingType'
+			name 'heatingType.Fireplace'
+			value 'heatingType.Fireplace.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'heatingType'
+			name 'heatingType.MultiUnitHeating'
+			value 'heatingType.MultiUnitHeating.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'heatingType'
+			name 'heatingType.Other'
+			value 'heatingType.Other.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'heatingType'
+			name 'heatingType.Unknown'
+			value 'heatingType.Unknown.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'houseStyle'
+			name 'houseStyle.Duplex'
+			value 'houseStyle.Duplex.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'houseStyle'
+			name 'houseStyle.Other'
+			value 'houseStyle.Other.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'houseStyle'
+			name 'houseStyle.Palace'
+			value 'houseStyle.Palace.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'houseStyle'
+			name 'houseStyle.Unknown'
+			value 'houseStyle.Unknown.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'houseStyle'
+			name 'houseStyle.Villa'
+			value 'houseStyle.Villa.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'internetAccessType'
+			name 'internetAccessType.Cable'
+			value 'internetAccessType.Cable.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'internetAccessType'
+			name 'internetAccessType.DialUp'
+			value 'internetAccessType.DialUp.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'internetAccessType'
+			name 'internetAccessType.DSL'
+			value 'internetAccessType.DSL.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'internetAccessType'
+			name 'internetAccessType.LAN'
+			value 'internetAccessType.LAN.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'internetAccessType'
+			name 'internetAccessType.Other'
+			value 'internetAccessType.Other.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'internetAccessType'
+			name 'internetAccessType.Unknown'
+			value 'internetAccessType.Unknown.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'internetAccessType'
+			name 'internetAccessType.Wireless'
+			value 'internetAccessType.Wireless.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'irrigationType'
+			name 'irrigationType.BasinFlood'
+			value 'irrigationType.BasinFlood.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'irrigationType'
+			name 'irrigationType.Canal'
+			value 'irrigationType.Canal.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'irrigationType'
+			name 'irrigationType.Drip'
+			value 'irrigationType.Drip.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'irrigationType'
+			name 'irrigationType.Other'
+			value 'irrigationType.Other.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'irrigationType'
+			name 'irrigationType.Rain'
+			value 'irrigationType.Rain.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'irrigationType'
+			name 'irrigationType.Sprinkler'
+			value 'irrigationType.Sprinkler.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'irrigationType'
+			name 'irrigationType.Unknown'
+			value 'irrigationType.Unknown.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'irrigationType'
+			name 'irrigationType.Well'
+			value 'irrigationType.Well.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'landType'
+			name 'landType.Agricultural'
+			value 'landType.Agricultural.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'landType'
+			name 'landType.Beachfront'
+			value 'landType.Beachfront.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'landType'
+			name 'landType.Commercial'
+			value 'landType.Commercial.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'landType'
+			name 'landType.Desert'
+			value 'landType.Desert.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'landType'
+			name 'landType.Industrial'
+			value 'landType.Industrial.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'landType'
+			name 'landType.Mountains'
+			value 'landType.Mountains.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'landType'
+			name 'landType.Other'
+			value 'landType.Other.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'landType'
+			name 'landType.Residential'
+			value 'landType.Residential.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'landType'
+			name 'landType.Unknown'
+			value 'landType.Unknown.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'pricePerType'
+			name 'pricePerType.SquareMeter'
+			value 'pricePerType.SquareMeter.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'pricePerType'
+			name 'pricePerType.Property'
+			value 'pricePerType.Property.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'priceType'
+			name 'priceType.CloseToBid'
+			value 'priceType.CloseToBid.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'priceType'
+			name 'priceType.OnBank'
+			value 'priceType.OnBank.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'priceType'
+			name 'priceType.OverBid'
+			value 'priceType.OverBid.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'priceType'
+			name 'priceType.PlusBank'
+			value 'priceType.PlusBank.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'priceType'
+			name 'priceType.SoftLimit'
+			value 'priceType.SoftLimit.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'priceType'
+			name 'priceType.Unknown'
+			value 'priceType.Unknown.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'propertyGeneralCondition'
+			name 'propertyGeneralCondition.Fair'
+			value 'propertyGeneralCondition.Fair.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'propertyGeneralCondition'
+			name 'propertyGeneralCondition.Good'
+			value 'propertyGeneralCondition.Good.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'propertyGeneralCondition'
+			name 'propertyGeneralCondition.NeedsMajorRepairs'
+			value 'propertyGeneralCondition.NeedsMajorRepairs.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'propertyGeneralCondition'
+			name 'propertyGeneralCondition.NeedsMinorRepairs'
+			value 'propertyGeneralCondition.NeedsMinorRepairs.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'propertyGeneralCondition'
+			name 'propertyGeneralCondition.New'
+			value 'propertyGeneralCondition.New.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'propertyGeneralCondition'
+			name 'propertyGeneralCondition.Other'
+			value 'propertyGeneralCondition.Other.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'propertyGeneralCondition'
+			name 'propertyGeneralCondition.Renovated'
+			value 'propertyGeneralCondition.Renovated.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'propertyGeneralCondition'
+			name 'propertyGeneralCondition.Unknown'
+			value 'propertyGeneralCondition.Unknown.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'propertyType'
+			name 'propertyType.Apartment'
+			value 'propertyType.Apartment.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'propertyType'
+			name 'propertyType.EmptyLot'
+			value 'propertyType.EmptyLot.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'propertyType'
+			name 'propertyType.FarmLot'
+			value 'propertyType.FarmLot.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'propertyType'
+			name 'propertyType.FloorUnit'
+			value 'propertyType.FloorUnit.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'propertyType'
+			name 'propertyType.House'
+			value 'propertyType.House.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'propertyType'
+			name 'propertyType.MultiUnitBuilding'
+			value 'propertyType.MultiUnitBuilding.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'propertyType'
+			name 'propertyType.MultiUnitCompound'
+			value 'propertyType.MultiUnitCompound.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'propertyType'
+			name 'propertyType.Office'
+			value 'propertyType.Office.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'propertyType'
+			name 'propertyType.Store'
+			value 'propertyType.Store.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'propertyListerType'
+			name 'propertyListerType.Creator'
+			value 'propertyListerType.Creator.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'propertyListerType'
+			name 'propertyListerType.Negotiator'
+			value 'propertyListerType.Negotiator.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'propertyListerType'
+			name 'propertyListerType.Silent'
+			value 'propertyListerType.Silent.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'roofType'
+			name 'roofType.AsphaltShingle'
+			value 'roofType.AsphaltShingle.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'roofType'
+			name 'roofType.Cement'
+			value 'roofType.Cement.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'roofType'
+			name 'roofType.CeramicTile'
+			value 'roofType.CeramicTile.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'roofType'
+			name 'roofType.Metal'
+			value 'roofType.Metal.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'roofType'
+			name 'roofType.Other'
+			value 'roofType.Other.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'roofType'
+			name 'roofType.SlateShingle'
+			value 'roofType.SlateShingle.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'roofType'
+			name 'roofType.Unknown'
+			value 'roofType.Unknown.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'roofType'
+			name 'roofType.Wood'
+			value 'roofType.Wood.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'sewageDisposalType'
+			name 'sewageDisposalType.LinkedWithCity'
+			value 'sewageDisposalType.LinkedWithCity.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'sewageDisposalType'
+			name 'sewageDisposalType.Other'
+			value 'sewageDisposalType.Other.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'sewageDisposalType'
+			name 'sewageDisposalType.SepticTank'
+			value 'sewageDisposalType.SepticTank.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'sewageDisposalType'
+			name 'sewageDisposalType.Unknown'
+			value 'sewageDisposalType.Unknown.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'waterSupplyType'
+			name 'waterSupplyType.CityLinkedWaterTanks'
+			value 'waterSupplyType.CityLinkedWaterTanks.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'waterSupplyType'
+			name 'waterSupplyType.Other'
+			value 'waterSupplyType.Other.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'waterSupplyType'
+			name 'waterSupplyType.RefillableWaterTanks'
+			value 'waterSupplyType.RefillableWaterTanks.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'waterSupplyType'
+			name 'waterSupplyType.Unknown'
+			value 'waterSupplyType.Unknown.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'waterSupplyType'
+			name 'waterSupplyType.Well'
+			value 'waterSupplyType.Well.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'zoningType'
+			name 'zoningType.Agricultural'
+			value 'zoningType.Agricultural.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'zoningType'
+			name 'zoningType.Commercial'
+			value 'zoningType.Commercial.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'zoningType'
+			name 'zoningType.Industrial'
+			value 'zoningType.Industrial.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'zoningType'
+			name 'zoningType.Other'
+			value 'zoningType.Other.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'zoningType'
+			name 'zoningType.Residential'
+			value 'zoningType.Residential.Value'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			category 'zoningType'
+			name 'zoningType.Unknown'
+			value 'zoningType.Unknown.Value'
+			</columnValues>
+		</insert>
+
+	</populate>
+
+</coreServerEntity>

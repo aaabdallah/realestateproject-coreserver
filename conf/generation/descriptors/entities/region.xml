@@ -1,0 +1,1619 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<coreServerEntity xmlns="aaacs.coreserver/generation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="aaacs.coreserver/generation ../../schemas/csDocEntity.xsd">
+	
+	<table>
+		<name>tRegions</name>
+		<constraints>
+			<unique>name countryIdk</unique>
+			<foreignKey>
+				<referringColumns>countryIdk</referringColumns>
+				<referredTable>tCountries</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+		</constraints>
+	</table>
+
+	<cache/>
+
+	<class>
+		<name>Region</name>
+		<import>aaacs.coreserver.ejb.entities.support.CacheManager</import>
+		<annotations>
+			<entity/>
+			<sqlResultSetMappings>
+				<standardMapping/>
+			</sqlResultSetMappings>
+		</annotations>
+		<enums>
+			<enum name="Status" type="Short" bitMask="true">
+				<comment type="Java" indent="1">
+				The different statuses a location may have.
+				</comment>
+				<constant name="BLOCKEDFROMPROPERTIES" value="0x1"/>
+				<constant name="BLOCKEDFROMPROFILES" value="0x2"/>
+			</enum>
+		</enums>
+	</class>
+
+	<attributes>
+		<includeAttributes>conf/generation/descriptors/standardAttributes.xml</includeAttributes>
+
+		<attribute>
+			<columnDescription name="name" type="VARCHAR(100)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="name" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>1</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="countryIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="countryIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="Country" key="name"/>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="status" type="INT2">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="status" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<allowNull>false</allowNull>
+						<validChoices useChoicesAs="bitMasks">
+							<static>(Object[]) Status.allValues</static>
+						</validChoices>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+	</attributes>
+
+	<populate>
+		<defaults>
+			<columnValues>
+			name 'string.Default'
+			countryIdk '1'
+			status '0'
+			</columnValues>
+		</defaults>
+		<insert>
+			<columnValues>
+			idk '1'
+			name 'string.Unset'
+			countryIdk '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '101'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '102'
+			name 'string.Unknown'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '103'
+			name 'string.Nonexistent'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '901'
+			name 'string.MatchAll'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '902'
+			name 'string.MatchReserved'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '903'
+			name 'string.MatchUser'
+			</columnValues>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Kabul'
+			countryIdk 'FKREF:countryAfghanistan'
+			</columnValues>
+			<store>regionKabul</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Tirane'
+			countryIdk 'FKREF:countryAlbania'
+			</columnValues>
+			<store>regionTirane</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Algiers'
+			countryIdk 'FKREF:countryAlgeria'
+			</columnValues>
+			<store>regionAlgiers</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.AndorraLaVella'
+			countryIdk 'FKREF:countryAndorra'
+			</columnValues>
+			<store>regionAndorraLaVella</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Luanda'
+			countryIdk 'FKREF:countryAngola'
+			</columnValues>
+			<store>regionLuanda</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.BuenosAires'
+			countryIdk 'FKREF:countryArgentina'
+			</columnValues>
+			<store>regionBuenosAires</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Yerevan'
+			countryIdk 'FKREF:countryArmenia'
+			</columnValues>
+			<store>regionYerevan</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Canberra'
+			countryIdk 'FKREF:countryAustralia'
+			</columnValues>
+			<store>regionCanberra</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Vienna'
+			countryIdk 'FKREF:countryAustria'
+			</columnValues>
+			<store>regionVienna</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Baku'
+			countryIdk 'FKREF:countryAzerbaijan'
+			</columnValues>
+			<store>regionBaku</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Manama'
+			countryIdk 'FKREF:countryBahrain'
+			</columnValues>
+			<store>regionManama</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Dhaka'
+			countryIdk 'FKREF:countryBangladesh'
+			</columnValues>
+			<store>regionDhaka</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Bridgetown'
+			countryIdk 'FKREF:countryBarbados'
+			</columnValues>
+			<store>regionBridgetown</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Minsk'
+			countryIdk 'FKREF:countryBelarus'
+			</columnValues>
+			<store>regionMinsk</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Brussels'
+			countryIdk 'FKREF:countryBelgium'
+			</columnValues>
+			<store>regionBrussels</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Belmopan'
+			countryIdk 'FKREF:countryBelize'
+			</columnValues>
+			<store>regionBelmopan</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.PortoNovo'
+			countryIdk 'FKREF:countryBenin'
+			</columnValues>
+			<store>regionPortoNovo</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Thimphu'
+			countryIdk 'FKREF:countryBhutan'
+			</columnValues>
+			<store>regionThimphu</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Sarajevo'
+			countryIdk 'FKREF:countryBosnia'
+			</columnValues>
+			<store>regionSarajevo</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Gaborone'
+			countryIdk 'FKREF:countryBotswana'
+			</columnValues>
+			<store>regionGaborone</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Brasilia'
+			countryIdk 'FKREF:countryBrazil'
+			</columnValues>
+			<store>regionBrasilia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.BandarSeriBegawan'
+			countryIdk 'FKREF:countryBrunei'
+			</columnValues>
+			<store>regionBandarSeriBegawan</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Sofia'
+			countryIdk 'FKREF:countryBulgaria'
+			</columnValues>
+			<store>regionSofia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Ouagadougou'
+			countryIdk 'FKREF:countryBurkinaFaso'
+			</columnValues>
+			<store>regionOuagadougou</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Bujumbura'
+			countryIdk 'FKREF:countryBurundi'
+			</columnValues>
+			<store>regionBujumbura</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.PhnomPenh'
+			countryIdk 'FKREF:countryCambodia'
+			</columnValues>
+			<store>regionPhnomPenh</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Yaounde'
+			countryIdk 'FKREF:countryCameroon'
+			</columnValues>
+			<store>regionYaounde</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Ottawa'
+			countryIdk 'FKREF:countryCanada'
+			</columnValues>
+			<store>regionOttawa</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Praia'
+			countryIdk 'FKREF:countryCapeVerde'
+			</columnValues>
+			<store>regionPraia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.NDjamena'
+			countryIdk 'FKREF:countryChad'
+			</columnValues>
+			<store>regionNDjamena</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Santiago'
+			countryIdk 'FKREF:countryChile'
+			</columnValues>
+			<store>regionSantiago</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Beijing'
+			countryIdk 'FKREF:countryChina'
+			</columnValues>
+			<store>regionBeijing</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Bogota'
+			countryIdk 'FKREF:countryColombia'
+			</columnValues>
+			<store>regionBogota</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Moroni'
+			countryIdk 'FKREF:countryComoros'
+			</columnValues>
+			<store>regionMoroni</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.SanJose'
+			countryIdk 'FKREF:countryCostaRica'
+			</columnValues>
+			<store>regionSanJose</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Zagreb'
+			countryIdk 'FKREF:countryCroatia'
+			</columnValues>
+			<store>regionZagreb</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Havana'
+			countryIdk 'FKREF:countryCuba'
+			</columnValues>
+			<store>regionHavana</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Nicosia'
+			countryIdk 'FKREF:countryCyprus'
+			</columnValues>
+			<store>regionNicosia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Prague'
+			countryIdk 'FKREF:countryCzechRepublic'
+			</columnValues>
+			<store>regionPrague</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Copenhagen'
+			countryIdk 'FKREF:countryDenmark'
+			</columnValues>
+			<store>regionCopenhagen</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Djibouti'
+			countryIdk 'FKREF:countryDjibouti'
+			</columnValues>
+			<store>regionDjibouti</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Roseau'
+			countryIdk 'FKREF:countryDominica'
+			</columnValues>
+			<store>regionRoseau</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.SantoDomingo'
+			countryIdk 'FKREF:countryDominicanRepublic'
+			</columnValues>
+			<store>regionSantoDomingo</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Quito'
+			countryIdk 'FKREF:countryEcuador'
+			</columnValues>
+			<store>regionQuito</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Cairo'
+			countryIdk 'FKREF:countryEgypt'
+			</columnValues>
+			<store>regionCairo</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.SanSalvador'
+			countryIdk 'FKREF:countryElSalvador'
+			</columnValues>
+			<store>regionSanSalvador</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Malabo'
+			countryIdk 'FKREF:countryEquatorialGuinea'
+			</columnValues>
+			<store>regionMalabo</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Asmara'
+			countryIdk 'FKREF:countryEritrea'
+			</columnValues>
+			<store>regionAsmara</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Tallinn'
+			countryIdk 'FKREF:countryEstonia'
+			</columnValues>
+			<store>regionTallinn</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.AddisAbaba'
+			countryIdk 'FKREF:countryEthiopia'
+			</columnValues>
+			<store>regionAddisAbaba</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Suva'
+			countryIdk 'FKREF:countryFiji'
+			</columnValues>
+			<store>regionSuva</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Helsinki'
+			countryIdk 'FKREF:countryFinland'
+			</columnValues>
+			<store>regionHelsinki</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Paris'
+			countryIdk 'FKREF:countryFrance'
+			</columnValues>
+			<store>regionParis</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Libreville'
+			countryIdk 'FKREF:countryGabon'
+			</columnValues>
+			<store>regionLibreville</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Banjul'
+			countryIdk 'FKREF:countryGambia'
+			</columnValues>
+			<store>regionBanjul</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Tbilisi'
+			countryIdk 'FKREF:countryGeorgia'
+			</columnValues>
+			<store>regionTbilisi</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Berlin'
+			countryIdk 'FKREF:countryGermany'
+			</columnValues>
+			<store>regionBerlin</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Accra'
+			countryIdk 'FKREF:countryGhana'
+			</columnValues>
+			<store>regionAccra</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Athens'
+			countryIdk 'FKREF:countryGreece'
+			</columnValues>
+			<store>regionAthens</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.SaintGeorge'
+			countryIdk 'FKREF:countryGrenada'
+			</columnValues>
+			<store>regionSaintGeorge</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.GuatemalaCity'
+			countryIdk 'FKREF:countryGuatemala'
+			</columnValues>
+			<store>regionGuatemalaCity</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Conakry'
+			countryIdk 'FKREF:countryGuinea'
+			</columnValues>
+			<store>regionConakry</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Georgetown'
+			countryIdk 'FKREF:countryGuyana'
+			</columnValues>
+			<store>regionGeorgetown</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.PortauPrince'
+			countryIdk 'FKREF:countryHaiti'
+			</columnValues>
+			<store>regionPortauPrince</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Tegucigalpa'
+			countryIdk 'FKREF:countryHonduras'
+			</columnValues>
+			<store>regionTegucigalpa</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Budapest'
+			countryIdk 'FKREF:countryHungary'
+			</columnValues>
+			<store>regionBudapest</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Reykjavik'
+			countryIdk 'FKREF:countryIceland'
+			</columnValues>
+			<store>regionReykjavik</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.NewDelhi'
+			countryIdk 'FKREF:countryIndia'
+			</columnValues>
+			<store>regionNewDelhi</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Jakarta'
+			countryIdk 'FKREF:countryIndonesia'
+			</columnValues>
+			<store>regionJakarta</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Tehran'
+			countryIdk 'FKREF:countryIran'
+			</columnValues>
+			<store>regionTehran</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Baghdad'
+			countryIdk 'FKREF:countryIraq'
+			</columnValues>
+			<store>regionBaghdad</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Dublin'
+			countryIdk 'FKREF:countryIreland'
+			</columnValues>
+			<store>regionDublin</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Jerusalem'
+			countryIdk 'FKREF:countryIsrael'
+			</columnValues>
+			<store>regionJerusalem</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Rome'
+			countryIdk 'FKREF:countryItaly'
+			</columnValues>
+			<store>regionRome</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Kingston'
+			countryIdk 'FKREF:countryJamaica'
+			</columnValues>
+			<store>regionKingston</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Tokyo'
+			countryIdk 'FKREF:countryJapan'
+			</columnValues>
+			<store>regionTokyo</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Amman'
+			countryIdk 'FKREF:countryJordan'
+			</columnValues>
+			<store>regionAmman</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Astana'
+			countryIdk 'FKREF:countryKazakhstan'
+			</columnValues>
+			<store>regionAstana</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Nairobi'
+			countryIdk 'FKREF:countryKenya'
+			</columnValues>
+			<store>regionNairobi</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Tarawa'
+			countryIdk 'FKREF:countryKiribati'
+			</columnValues>
+			<store>regionTarawa</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Seoul'
+			countryIdk 'FKREF:countryKorea'
+			</columnValues>
+			<store>regionSeoul</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.KuwaitCity'
+			countryIdk 'FKREF:countryKuwait'
+			</columnValues>
+			<store>regionKuwaitCity</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Bishtek'
+			countryIdk 'FKREF:countryKyrgyzstan'
+			</columnValues>
+			<store>regionBishtek</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Vientiane'
+			countryIdk 'FKREF:countryLaos'
+			</columnValues>
+			<store>regionVientiane</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Riga'
+			countryIdk 'FKREF:countryLatvia'
+			</columnValues>
+			<store>regionRiga</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Beirut'
+			countryIdk 'FKREF:countryLebanon'
+			</columnValues>
+			<store>regionBeirut</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Maseru'
+			countryIdk 'FKREF:countryLesotho'
+			</columnValues>
+			<store>regionMaseru</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Monrovia'
+			countryIdk 'FKREF:countryLiberia'
+			</columnValues>
+			<store>regionMonrovia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Tripoli'
+			countryIdk 'FKREF:countryLibya'
+			</columnValues>
+			<store>regionTripoli</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Vaduz'
+			countryIdk 'FKREF:countryLiechtenstein'
+			</columnValues>
+			<store>regionVaduz</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Vilnius'
+			countryIdk 'FKREF:countryLithuania'
+			</columnValues>
+			<store>regionVilnius</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Luxembourg'
+			countryIdk 'FKREF:countryLuxembourg'
+			</columnValues>
+			<store>regionLuxembourg</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Skopje'
+			countryIdk 'FKREF:countryMacedonia'
+			</columnValues>
+			<store>regionSkopje</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Antananarivo'
+			countryIdk 'FKREF:countryMadagascar'
+			</columnValues>
+			<store>regionAntananarivo</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Lilongwe'
+			countryIdk 'FKREF:countryMalawi'
+			</columnValues>
+			<store>regionLilongwe</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.KualaLumpur'
+			countryIdk 'FKREF:countryMalaysia'
+			</columnValues>
+			<store>regionKualaLumpur</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Male'
+			countryIdk 'FKREF:countryMaldives'
+			</columnValues>
+			<store>regionMale</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Bamko'
+			countryIdk 'FKREF:countryMali'
+			</columnValues>
+			<store>regionBamko</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Valletta'
+			countryIdk 'FKREF:countryMalta'
+			</columnValues>
+			<store>regionValletta</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Nouakchott'
+			countryIdk 'FKREF:countryMauritania'
+			</columnValues>
+			<store>regionNouakchott</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.PortLouis'
+			countryIdk 'FKREF:countryMauritius'
+			</columnValues>
+			<store>regionPortLouis</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.MexicoCity'
+			countryIdk 'FKREF:countryMexico'
+			</columnValues>
+			<store>regionMexicoCity</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Chisinau'
+			countryIdk 'FKREF:countryMoldova'
+			</columnValues>
+			<store>regionChisinau</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Monaco'
+			countryIdk 'FKREF:countryMonaco'
+			</columnValues>
+			<store>regionMonaco</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Ulaanbaatar'
+			countryIdk 'FKREF:countryMongolia'
+			</columnValues>
+			<store>regionUlaanbaatar</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Rabat'
+			countryIdk 'FKREF:countryMorocco'
+			</columnValues>
+			<store>regionRabat</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Maputo'
+			countryIdk 'FKREF:countryMozambique'
+			</columnValues>
+			<store>regionMaputo</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Rangoon'
+			countryIdk 'FKREF:countryMyanmar'
+			</columnValues>
+			<store>regionRangoon</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Windhoek'
+			countryIdk 'FKREF:countryNamibia'
+			</columnValues>
+			<store>regionWindhoek</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.YarenDistrict'
+			countryIdk 'FKREF:countryNauru'
+			</columnValues>
+			<store>regionYarenDistrict</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Kathmandu'
+			countryIdk 'FKREF:countryNepal'
+			</columnValues>
+			<store>regionKathmandu</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Amsterdam'
+			countryIdk 'FKREF:countryNetherlands'
+			</columnValues>
+			<store>regionAmsterdam</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Wellington'
+			countryIdk 'FKREF:countryNewZealand'
+			</columnValues>
+			<store>regionWellington</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Managua'
+			countryIdk 'FKREF:countryNicaragua'
+			</columnValues>
+			<store>regionManagua</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Niamey'
+			countryIdk 'FKREF:countryNiger'
+			</columnValues>
+			<store>regionNiamey</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Abuja'
+			countryIdk 'FKREF:countryNigeria'
+			</columnValues>
+			<store>regionAbuja</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Oslo'
+			countryIdk 'FKREF:countryNorway'
+			</columnValues>
+			<store>regionOslo</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Muscat'
+			countryIdk 'FKREF:countryOman'
+			</columnValues>
+			<store>regionMuscat</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Islamabad'
+			countryIdk 'FKREF:countryPakistan'
+			</columnValues>
+			<store>regionIslamabad</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Koror'
+			countryIdk 'FKREF:countryPalau'
+			</columnValues>
+			<store>regionKoror</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.PanamaCity'
+			countryIdk 'FKREF:countryPanama'
+			</columnValues>
+			<store>regionPanamaCity</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Asuncion'
+			countryIdk 'FKREF:countryParaguay'
+			</columnValues>
+			<store>regionAsuncion</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Lima'
+			countryIdk 'FKREF:countryPeru'
+			</columnValues>
+			<store>regionLima</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Manila'
+			countryIdk 'FKREF:countryPhilippines'
+			</columnValues>
+			<store>regionManila</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Warsaw'
+			countryIdk 'FKREF:countryPoland'
+			</columnValues>
+			<store>regionWarsaw</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Lisbon'
+			countryIdk 'FKREF:countryPortugal'
+			</columnValues>
+			<store>regionLisbon</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Doha'
+			countryIdk 'FKREF:countryQatar'
+			</columnValues>
+			<store>regionDoha</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Bucharest'
+			countryIdk 'FKREF:countryRomania'
+			</columnValues>
+			<store>regionBucharest</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Moscow'
+			countryIdk 'FKREF:countryRussia'
+			</columnValues>
+			<store>regionMoscow</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Kigali'
+			countryIdk 'FKREF:countryRwanda'
+			</columnValues>
+			<store>regionKigali</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Castries'
+			countryIdk 'FKREF:countrySaintLucia'
+			</columnValues>
+			<store>regionCastries</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Apia'
+			countryIdk 'FKREF:countrySamoa'
+			</columnValues>
+			<store>regionApia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.SanMarino'
+			countryIdk 'FKREF:countrySanMarino'
+			</columnValues>
+			<store>regionSanMarino</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.AlBaaha'
+			countryIdk 'FKREF:countrySaudiArabia'
+			</columnValues>
+			<store>regionAlBaaha</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.AlHudoodAshShamaaliyya'
+			countryIdk 'FKREF:countrySaudiArabia'
+			</columnValues>
+			<store>regionAlHudoodAshShamaaliyya</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.AlJawf'
+			countryIdk 'FKREF:countrySaudiArabia'
+			</columnValues>
+			<store>regionAlJawf</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.AlMadeenah'
+			countryIdk 'FKREF:countrySaudiArabia'
+			</columnValues>
+			<store>regionAlMadeenah</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.AlQaseem'
+			countryIdk 'FKREF:countrySaudiArabia'
+			</columnValues>
+			<store>regionAlQaseem</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.ArRiyaadh'
+			countryIdk 'FKREF:countrySaudiArabia'
+			</columnValues>
+			<store>regionArRiyaadh</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.AshSharqiyya'
+			countryIdk 'FKREF:countrySaudiArabia'
+			</columnValues>
+			<store>regionAshSharqiyya</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Aseer'
+			countryIdk 'FKREF:countrySaudiArabia'
+			</columnValues>
+			<store>regionAseer</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Haail'
+			countryIdk 'FKREF:countrySaudiArabia'
+			</columnValues>
+			<store>regionHaail</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Jeezaan'
+			countryIdk 'FKREF:countrySaudiArabia'
+			</columnValues>
+			<store>regionJeezaan</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Makkah'
+			countryIdk 'FKREF:countrySaudiArabia'
+			</columnValues>
+			<store>regionMakkah</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Najraan'
+			countryIdk 'FKREF:countrySaudiArabia'
+			</columnValues>
+			<store>regionNajraan</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Tabook'
+			countryIdk 'FKREF:countrySaudiArabia'
+			</columnValues>
+			<store>regionTabook</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Dakar'
+			countryIdk 'FKREF:countrySenegal'
+			</columnValues>
+			<store>regionDakar</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Victoria'
+			countryIdk 'FKREF:countrySeychelles'
+			</columnValues>
+			<store>regionVictoria</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Freetown'
+			countryIdk 'FKREF:countrySierraLeone'
+			</columnValues>
+			<store>regionFreetown</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Singapore'
+			countryIdk 'FKREF:countrySingapore'
+			</columnValues>
+			<store>regionSingapore</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Bratislava'
+			countryIdk 'FKREF:countrySlovakia'
+			</columnValues>
+			<store>regionBratislava</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Ljubljana'
+			countryIdk 'FKREF:countrySlovenia'
+			</columnValues>
+			<store>regionLjubljana</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Honiara'
+			countryIdk 'FKREF:countrySolomonIslands'
+			</columnValues>
+			<store>regionHoniara</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Mogadishu'
+			countryIdk 'FKREF:countrySomalia'
+			</columnValues>
+			<store>regionMogadishu</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Pretoria'
+			countryIdk 'FKREF:countrySouthAfrica'
+			</columnValues>
+			<store>regionPretoria</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Madrid'
+			countryIdk 'FKREF:countrySpain'
+			</columnValues>
+			<store>regionMadrid</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Colombo'
+			countryIdk 'FKREF:countrySriLanka'
+			</columnValues>
+			<store>regionColombo</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Khartoum'
+			countryIdk 'FKREF:countrySudan'
+			</columnValues>
+			<store>regionKhartoum</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Paramaribo'
+			countryIdk 'FKREF:countrySuriname'
+			</columnValues>
+			<store>regionParamaribo</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Mbabana'
+			countryIdk 'FKREF:countrySwaziland'
+			</columnValues>
+			<store>regionMbabana</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Stockholm'
+			countryIdk 'FKREF:countrySweden'
+			</columnValues>
+			<store>regionStockholm</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Bern'
+			countryIdk 'FKREF:countrySwitzerland'
+			</columnValues>
+			<store>regionBern</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Damascus'
+			countryIdk 'FKREF:countrySyria'
+			</columnValues>
+			<store>regionDamascus</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Dushanbe'
+			countryIdk 'FKREF:countryTajikistan'
+			</columnValues>
+			<store>regionDushanbe</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.DaresSalaam'
+			countryIdk 'FKREF:countryTanzania'
+			</columnValues>
+			<store>regionDaresSalaam</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Bangkok'
+			countryIdk 'FKREF:countryThailand'
+			</columnValues>
+			<store>regionBangkok</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Lome'
+			countryIdk 'FKREF:countryTogo'
+			</columnValues>
+			<store>regionLome</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Tunis'
+			countryIdk 'FKREF:countryTunisia'
+			</columnValues>
+			<store>regionTunis</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Ankara'
+			countryIdk 'FKREF:countryTurkey'
+			</columnValues>
+			<store>regionAnkara</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Ashgabat'
+			countryIdk 'FKREF:countryTurkmenistan'
+			</columnValues>
+			<store>regionAshgabat</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Funafuti'
+			countryIdk 'FKREF:countryTuvalu'
+			</columnValues>
+			<store>regionFunafuti</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Kampala'
+			countryIdk 'FKREF:countryUganda'
+			</columnValues>
+			<store>regionKampala</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Kiev'
+			countryIdk 'FKREF:countryUkraine'
+			</columnValues>
+			<store>regionKiev</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.AbuDhabi'
+			countryIdk 'FKREF:countryUnitedArabEmirates'
+			</columnValues>
+			<store>regionAbuDhabi</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.London'
+			countryIdk 'FKREF:countryUnitedKingdom'
+			</columnValues>
+			<store>regionLondon</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.WashingtonDC'
+			countryIdk 'FKREF:countryUnitedStates'
+			</columnValues>
+			<store>regionWashingtonDC</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Montevideo'
+			countryIdk 'FKREF:countryUruguay'
+			</columnValues>
+			<store>regionMontevideo</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Tashkent'
+			countryIdk 'FKREF:countryUzbekistan'
+			</columnValues>
+			<store>regionTashkent</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.PortVila'
+			countryIdk 'FKREF:countryVanuatu'
+			</columnValues>
+			<store>regionPortVila</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Caracas'
+			countryIdk 'FKREF:countryVenezuela'
+			</columnValues>
+			<store>regionCaracas</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Hanoi'
+			countryIdk 'FKREF:countryVietnam'
+			</columnValues>
+			<store>regionHanoi</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Sanaa'
+			countryIdk 'FKREF:countryYemen'
+			</columnValues>
+			<store>regionSanaa</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Lusaka'
+			countryIdk 'FKREF:countryZambia'
+			</columnValues>
+			<store>regionLusaka</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'region.Harare'
+			countryIdk 'FKREF:countryZimbabwe'
+			</columnValues>
+			<store>regionHarare</store>
+		</insert>
+	</populate>
+
+</coreServerEntity>

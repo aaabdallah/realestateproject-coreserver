@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<coreServerEntity xmlns="aaacs.coreserver/generation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="aaacs.coreserver/generation ../../schemas/csDocEntity.xsd">
+	
+	<table>
+		<name>tActions</name>
+		<constraints>
+			<unique>name actionVersion</unique>
+		</constraints>
+	</table>
+
+	<cache/>
+
+	<class>
+		<comment type="JavaDoc">Core Server component for managing actions</comment>
+		<outputDirectory>src/aaacs/coreserver/ejb/entities</outputDirectory>
+		<resourcesFile>src/aaacs/coreserver/resources/entityNames.properties</resourcesFile>
+		<name>Action</name>
+		<package>aaacs.coreserver.ejb.entities</package>
+		<import>aaacs.coreserver.ejb.entities.support.CacheManager</import>
+		<annotations>
+			<entity/>
+			<sqlResultSetMappings>
+				<standardMapping/>
+			</sqlResultSetMappings>
+		</annotations>
+		<enums>
+			<enum name="ActionName" type="String">
+				<comment type="Java" indent="1">
+				a simple marker to represent a 'wild-card' action name
+				</comment>
+				<constant name="MATCH_ALL_ACTION_NAMES" value="&quot;*&quot;"/>
+			</enum>
+			<enum name="ActionVersion" type="Short">
+				<comment type="Java" indent="1">
+				a simple marker to represent a 'wild-card' action version
+				</comment>
+				<constant name="MATCH_ALL_ACTION_VERSIONS" value="0"/>
+			</enum>
+		</enums>
+	</class>
+
+	<attributes>
+		<includeAttributes>conf/generation/descriptors/standardAttributes.xml</includeAttributes>
+
+		<attribute>
+			<columnDescription name="name" type="VARCHAR(100)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="name" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>1</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="actionVersion" type="INT2">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="actionVersion" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<allowNull>false</allowNull>
+						<min>1</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+	</attributes>
+
+	<populate>
+		<defaults>
+			<columnValues>
+			name 'string.Default'
+			actionVersion '1'
+			</columnValues>
+		</defaults>
+		<insert>
+			<columnValues>
+			idk '1'
+			name 'string.Unset'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '101'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '102'
+			name 'string.Unknown'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '103'
+			name 'string.Nonexistent'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '901'
+			name 'string.MatchAll'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '902'
+			name 'string.MatchReserved'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '903'
+			name '*'
+			actionVersion '0'
+			</columnValues>
+		</insert>
+
+		<!-- NOTE THAT FIRST LETTER OF ACTION IS CAPITALIZED!!!! -->
+
+		<insert>
+			<columnValues>
+			name 'action.AddUser'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.CreateApartmentForRentalSale'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.CreateEmptyLotForRentalSale'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.CreateFarmLotForRentalSale'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.CreateHouseForRentalSale'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.CreateMultiUnitBuildingForRentalSale'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.CreateMultiUnitCompoundForRentalSale'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.CreateOfficeForRentalSale'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.CreateFloorUnitForRentalSale'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.CreateStoreForRentalSale'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.CreatePropertiesForRentalSale'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.DeactivateListing'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.FindAllProfileDistricts'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.FindAllPropertyDistricts'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.FindCommercialFeaturesByCreator'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.FindCommunityAmenitiesByCreator'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.FindPropertyDistricts'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.FindPropertyOptionByCategoryName'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.FindPropertyOptionsByCategory'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.FindResidentialFeaturesByCreator'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.FindUserProfilesByUserIdks'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.GetUserProfiles'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.Login'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.Logout'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.LookupTableFromCache'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.LookupTableColumnFromCache'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.RetrieveProperty'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.SearchProperties'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.SearchUsers'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.UpdateApartmentForRentalSale'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.UpdateEmptyLotForRentalSale'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.UpdateFarmLotForRentalSale'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.UpdateFloorUnitForRentalSale'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.UpdateHouseForRentalSale'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.UpdateMultiUnitBuildingForRentalSale'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.UpdateMultiUnitCompoundForRentalSale'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.UpdateOfficeForRentalSale'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.UpdateStoreForRentalSale'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.UpdateUser'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.UpdateUserProfiles'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			name 'action.UpdateUserWithProfile'
+			actionVersion '1'
+			</columnValues>
+		</insert>
+	</populate>
+
+</coreServerEntity>

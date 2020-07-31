@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/Sun/AppServer/lib/appserv-rt.jar"/>
+	<classpathentry kind="lib" path="C:/Sun/AppServer/lib/javaee.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CoreServerCommons"/>
+	<classpathentry kind="lib" path="C:/Sun/AppServer/lib/toplink-essentials.jar"/>
+	<classpathentry kind="lib" path="C:/Sun/AppServer/domains/domain1/lib/postgresql-8.2-504.jdbc3.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

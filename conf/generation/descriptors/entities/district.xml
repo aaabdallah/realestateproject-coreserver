@@ -1,0 +1,2911 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<coreServerEntity xmlns="aaacs.coreserver/generation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="aaacs.coreserver/generation ../../schemas/csDocEntity.xsd">
+	
+	<table>
+		<name>tDistricts</name>
+		<constraints>
+			<unique>name cityIdk</unique>
+			<foreignKey>
+				<referringColumns>cityIdk</referringColumns>
+				<referredTable>tCities</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+		</constraints>
+	</table>
+
+	<cache/>
+
+	<class>
+		<name>District</name>
+		<import>aaacs.coreserver.ejb.entities.support.CacheManager</import>
+		<annotations>
+			<entity/>
+			<sqlResultSetMappings>
+				<standardMapping/>
+			</sqlResultSetMappings>
+		</annotations>
+		<enums>
+			<enum name="Status" type="Short" bitMask="true">
+				<comment type="Java" indent="1">
+				The different statuses a location may have.
+				</comment>
+				<constant name="BLOCKEDFROMPROPERTIES" value="0x1"/>
+				<constant name="BLOCKEDFROMPROFILES" value="0x2"/>
+			</enum>
+		</enums>
+	</class>
+
+	<attributes>
+		<includeAttributes>conf/generation/descriptors/standardAttributes.xml</includeAttributes>
+
+		<attribute>
+			<columnDescription name="name" type="VARCHAR(100)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="name" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>1</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+				<dto cacheLookup="true"/>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="cityIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="cityIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="City" key="name"/>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="status" type="INT2">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="status" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<allowNull>false</allowNull>
+						<validChoices useChoicesAs="bitMasks">
+							<static>(Object[]) Status.allValues</static>
+						</validChoices>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+	</attributes>
+
+	<populate>
+		<defaults>
+			<columnValues>
+			name 'string.Default'
+			cityIdk '1'
+			status '0'
+			</columnValues>
+		</defaults>
+		<insert>
+			<columnValues>
+			idk '1'
+			name 'string.Unset'
+			cityIdk '1'
+			</columnValues>
+		</insert>
+
+		<insert>
+			<columnValues>
+			idk '101'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '102'
+			name 'string.Unknown'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '103'
+			name 'string.Nonexistent'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '901'
+			name 'string.MatchAll'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '902'
+			name 'string.MatchReserved'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '903'
+			name 'string.MatchUser'
+			</columnValues>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Kabul'
+			cityIdk 'FKREF:cityKabul'
+			</columnValues>
+			<store>cityKabulDistrictKabul</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Tirane'
+			cityIdk 'FKREF:cityTirane'
+			</columnValues>
+			<store>cityTiraneDistrictTirane</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Algiers'
+			cityIdk 'FKREF:cityAlgiers'
+			</columnValues>
+			<store>cityAlgiersDistrictAlgiers</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.AndorraLaVella'
+			cityIdk 'FKREF:cityAndorraLaVella'
+			</columnValues>
+			<store>cityAndorraLaVellaDistrictAndorraLaVella</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Luanda'
+			cityIdk 'FKREF:cityLuanda'
+			</columnValues>
+			<store>cityLuandaDistrictLuanda</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.BuenosAires'
+			cityIdk 'FKREF:cityBuenosAires'
+			</columnValues>
+			<store>cityBuenosAiresDistrictBuenosAires</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Yerevan'
+			cityIdk 'FKREF:cityYerevan'
+			</columnValues>
+			<store>cityYerevanDistrictYerevan</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Canberra'
+			cityIdk 'FKREF:cityCanberra'
+			</columnValues>
+			<store>cityCanberraDistrictCanberra</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Vienna'
+			cityIdk 'FKREF:cityVienna'
+			</columnValues>
+			<store>cityViennaDistrictVienna</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Baku'
+			cityIdk 'FKREF:cityBaku'
+			</columnValues>
+			<store>cityBakuDistrictBaku</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Manama'
+			cityIdk 'FKREF:cityManama'
+			</columnValues>
+			<store>cityManamaDistrictManama</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Dhaka'
+			cityIdk 'FKREF:cityDhaka'
+			</columnValues>
+			<store>cityDhakaDistrictDhaka</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Bridgetown'
+			cityIdk 'FKREF:cityBridgetown'
+			</columnValues>
+			<store>cityBridgetownDistrictBridgetown</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Minsk'
+			cityIdk 'FKREF:cityMinsk'
+			</columnValues>
+			<store>cityMinskDistrictMinsk</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Brussels'
+			cityIdk 'FKREF:cityBrussels'
+			</columnValues>
+			<store>cityBrusselsDistrictBrussels</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Belmopan'
+			cityIdk 'FKREF:cityBelmopan'
+			</columnValues>
+			<store>cityBelmopanDistrictBelmopan</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.PortoNovo'
+			cityIdk 'FKREF:cityPortoNovo'
+			</columnValues>
+			<store>cityPortoNovoDistrictPortoNovo</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Thimphu'
+			cityIdk 'FKREF:cityThimphu'
+			</columnValues>
+			<store>cityThimphuDistrictThimphu</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Sarajevo'
+			cityIdk 'FKREF:citySarajevo'
+			</columnValues>
+			<store>citySarajevoDistrictSarajevo</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Gaborone'
+			cityIdk 'FKREF:cityGaborone'
+			</columnValues>
+			<store>cityGaboroneDistrictGaborone</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Brasilia'
+			cityIdk 'FKREF:cityBrasilia'
+			</columnValues>
+			<store>cityBrasiliaDistrictBrasilia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.BandarSeriBegawan'
+			cityIdk 'FKREF:cityBandarSeriBegawan'
+			</columnValues>
+			<store>cityBandarSeriBegawanDistrictBandarSeriBegawan</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Sofia'
+			cityIdk 'FKREF:citySofia'
+			</columnValues>
+			<store>citySofiaDistrictSofia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Ouagadougou'
+			cityIdk 'FKREF:cityOuagadougou'
+			</columnValues>
+			<store>cityOuagadougouDistrictOuagadougou</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Bujumbura'
+			cityIdk 'FKREF:cityBujumbura'
+			</columnValues>
+			<store>cityBujumburaDistrictBujumbura</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.PhnomPenh'
+			cityIdk 'FKREF:cityPhnomPenh'
+			</columnValues>
+			<store>cityPhnomPenhDistrictPhnomPenh</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Yaounde'
+			cityIdk 'FKREF:cityYaounde'
+			</columnValues>
+			<store>cityYaoundeDistrictYaounde</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Ottawa'
+			cityIdk 'FKREF:cityOttawa'
+			</columnValues>
+			<store>cityOttawaDistrictOttawa</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Praia'
+			cityIdk 'FKREF:cityPraia'
+			</columnValues>
+			<store>cityPraiaDistrictPraia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.NDjamena'
+			cityIdk 'FKREF:cityNDjamena'
+			</columnValues>
+			<store>cityNDjamenaDistrictNDjamena</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Santiago'
+			cityIdk 'FKREF:citySantiago'
+			</columnValues>
+			<store>citySantiagoDistrictSantiago</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Beijing'
+			cityIdk 'FKREF:cityBeijing'
+			</columnValues>
+			<store>cityBeijingDistrictBeijing</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Bogota'
+			cityIdk 'FKREF:cityBogota'
+			</columnValues>
+			<store>cityBogotaDistrictBogota</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Moroni'
+			cityIdk 'FKREF:cityMoroni'
+			</columnValues>
+			<store>cityMoroniDistrictMoroni</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.SanJose'
+			cityIdk 'FKREF:citySanJose'
+			</columnValues>
+			<store>citySanJoseDistrictSanJose</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Zagreb'
+			cityIdk 'FKREF:cityZagreb'
+			</columnValues>
+			<store>cityZagrebDistrictZagreb</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Havana'
+			cityIdk 'FKREF:cityHavana'
+			</columnValues>
+			<store>cityHavanaDistrictHavana</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Nicosia'
+			cityIdk 'FKREF:cityNicosia'
+			</columnValues>
+			<store>cityNicosiaDistrictNicosia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Prague'
+			cityIdk 'FKREF:cityPrague'
+			</columnValues>
+			<store>cityPragueDistrictPrague</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Copenhagen'
+			cityIdk 'FKREF:cityCopenhagen'
+			</columnValues>
+			<store>cityCopenhagenDistrictCopenhagen</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Djibouti'
+			cityIdk 'FKREF:cityDjibouti'
+			</columnValues>
+			<store>cityDjiboutiDistrictDjibouti</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Roseau'
+			cityIdk 'FKREF:cityRoseau'
+			</columnValues>
+			<store>cityRoseauDistrictRoseau</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.SantoDomingo'
+			cityIdk 'FKREF:citySantoDomingo'
+			</columnValues>
+			<store>citySantoDomingoDistrictSantoDomingo</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Quito'
+			cityIdk 'FKREF:cityQuito'
+			</columnValues>
+			<store>cityQuitoDistrictQuito</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Cairo'
+			cityIdk 'FKREF:cityCairo'
+			</columnValues>
+			<store>cityCairoDistrictCairo</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.SanSalvador'
+			cityIdk 'FKREF:citySanSalvador'
+			</columnValues>
+			<store>citySanSalvadorDistrictSanSalvador</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Malabo'
+			cityIdk 'FKREF:cityMalabo'
+			</columnValues>
+			<store>cityMalaboDistrictMalabo</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Asmara'
+			cityIdk 'FKREF:cityAsmara'
+			</columnValues>
+			<store>cityAsmaraDistrictAsmara</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Tallinn'
+			cityIdk 'FKREF:cityTallinn'
+			</columnValues>
+			<store>cityTallinnDistrictTallinn</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.AddisAbaba'
+			cityIdk 'FKREF:cityAddisAbaba'
+			</columnValues>
+			<store>cityAddisAbabaDistrictAddisAbaba</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Suva'
+			cityIdk 'FKREF:citySuva'
+			</columnValues>
+			<store>citySuvaDistrictSuva</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Helsinki'
+			cityIdk 'FKREF:cityHelsinki'
+			</columnValues>
+			<store>cityHelsinkiDistrictHelsinki</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Paris'
+			cityIdk 'FKREF:cityParis'
+			</columnValues>
+			<store>cityParisDistrictParis</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Libreville'
+			cityIdk 'FKREF:cityLibreville'
+			</columnValues>
+			<store>cityLibrevilleDistrictLibreville</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Banjul'
+			cityIdk 'FKREF:cityBanjul'
+			</columnValues>
+			<store>cityBanjulDistrictBanjul</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Tbilisi'
+			cityIdk 'FKREF:cityTbilisi'
+			</columnValues>
+			<store>cityTbilisiDistrictTbilisi</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Berlin'
+			cityIdk 'FKREF:cityBerlin'
+			</columnValues>
+			<store>cityBerlinDistrictBerlin</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Accra'
+			cityIdk 'FKREF:cityAccra'
+			</columnValues>
+			<store>cityAccraDistrictAccra</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Athens'
+			cityIdk 'FKREF:cityAthens'
+			</columnValues>
+			<store>cityAthensDistrictAthens</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.SaintGeorge'
+			cityIdk 'FKREF:citySaintGeorge'
+			</columnValues>
+			<store>citySaintGeorgeDistrictSaintGeorge</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.GuatemalaCity'
+			cityIdk 'FKREF:cityGuatemalaCity'
+			</columnValues>
+			<store>cityGuatemalaCityDistrictGuatemalaCity</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Conakry'
+			cityIdk 'FKREF:cityConakry'
+			</columnValues>
+			<store>cityConakryDistrictConakry</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Georgetown'
+			cityIdk 'FKREF:cityGeorgetown'
+			</columnValues>
+			<store>cityGeorgetownDistrictGeorgetown</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.PortauPrince'
+			cityIdk 'FKREF:cityPortauPrince'
+			</columnValues>
+			<store>cityPortauPrinceDistrictPortauPrince</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Tegucigalpa'
+			cityIdk 'FKREF:cityTegucigalpa'
+			</columnValues>
+			<store>cityTegucigalpaDistrictTegucigalpa</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Budapest'
+			cityIdk 'FKREF:cityBudapest'
+			</columnValues>
+			<store>cityBudapestDistrictBudapest</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Reykjavik'
+			cityIdk 'FKREF:cityReykjavik'
+			</columnValues>
+			<store>cityReykjavikDistrictReykjavik</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.NewDelhi'
+			cityIdk 'FKREF:cityNewDelhi'
+			</columnValues>
+			<store>cityNewDelhiDistrictNewDelhi</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Jakarta'
+			cityIdk 'FKREF:cityJakarta'
+			</columnValues>
+			<store>cityJakartaDistrictJakarta</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Tehran'
+			cityIdk 'FKREF:cityTehran'
+			</columnValues>
+			<store>cityTehranDistrictTehran</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Baghdad'
+			cityIdk 'FKREF:cityBaghdad'
+			</columnValues>
+			<store>cityBaghdadDistrictBaghdad</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Dublin'
+			cityIdk 'FKREF:cityDublin'
+			</columnValues>
+			<store>cityDublinDistrictDublin</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Jerusalem'
+			cityIdk 'FKREF:cityJerusalem'
+			</columnValues>
+			<store>cityJerusalemDistrictJerusalem</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Rome'
+			cityIdk 'FKREF:cityRome'
+			</columnValues>
+			<store>cityRomeDistrictRome</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Kingston'
+			cityIdk 'FKREF:cityKingston'
+			</columnValues>
+			<store>cityKingstonDistrictKingston</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Tokyo'
+			cityIdk 'FKREF:cityTokyo'
+			</columnValues>
+			<store>cityTokyoDistrictTokyo</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Amman'
+			cityIdk 'FKREF:cityAmman'
+			</columnValues>
+			<store>cityAmmanDistrictAmman</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Astana'
+			cityIdk 'FKREF:cityAstana'
+			</columnValues>
+			<store>cityAstanaDistrictAstana</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Nairobi'
+			cityIdk 'FKREF:cityNairobi'
+			</columnValues>
+			<store>cityNairobiDistrictNairobi</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Tarawa'
+			cityIdk 'FKREF:cityTarawa'
+			</columnValues>
+			<store>cityTarawaDistrictTarawa</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Seoul'
+			cityIdk 'FKREF:citySeoul'
+			</columnValues>
+			<store>citySeoulDistrictSeoul</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.KuwaitCity'
+			cityIdk 'FKREF:cityKuwaitCity'
+			</columnValues>
+			<store>cityKuwaitCityDistrictKuwaitCity</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Bishtek'
+			cityIdk 'FKREF:cityBishtek'
+			</columnValues>
+			<store>cityBishtekDistrictBishtek</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Vientiane'
+			cityIdk 'FKREF:cityVientiane'
+			</columnValues>
+			<store>cityVientianeDistrictVientiane</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Riga'
+			cityIdk 'FKREF:cityRiga'
+			</columnValues>
+			<store>cityRigaDistrictRiga</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Beirut'
+			cityIdk 'FKREF:cityBeirut'
+			</columnValues>
+			<store>cityBeirutDistrictBeirut</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Maseru'
+			cityIdk 'FKREF:cityMaseru'
+			</columnValues>
+			<store>cityMaseruDistrictMaseru</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Monrovia'
+			cityIdk 'FKREF:cityMonrovia'
+			</columnValues>
+			<store>cityMonroviaDistrictMonrovia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Tripoli'
+			cityIdk 'FKREF:cityTripoli'
+			</columnValues>
+			<store>cityTripoliDistrictTripoli</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Vaduz'
+			cityIdk 'FKREF:cityVaduz'
+			</columnValues>
+			<store>cityVaduzDistrictVaduz</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Vilnius'
+			cityIdk 'FKREF:cityVilnius'
+			</columnValues>
+			<store>cityVilniusDistrictVilnius</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Luxembourg'
+			cityIdk 'FKREF:cityLuxembourg'
+			</columnValues>
+			<store>cityLuxembourgDistrictLuxembourg</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Skopje'
+			cityIdk 'FKREF:citySkopje'
+			</columnValues>
+			<store>citySkopjeDistrictSkopje</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Antananarivo'
+			cityIdk 'FKREF:cityAntananarivo'
+			</columnValues>
+			<store>cityAntananarivoDistrictAntananarivo</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Lilongwe'
+			cityIdk 'FKREF:cityLilongwe'
+			</columnValues>
+			<store>cityLilongweDistrictLilongwe</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.KualaLumpur'
+			cityIdk 'FKREF:cityKualaLumpur'
+			</columnValues>
+			<store>cityKualaLumpurDistrictKualaLumpur</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Male'
+			cityIdk 'FKREF:cityMale'
+			</columnValues>
+			<store>cityMaleDistrictMale</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Bamko'
+			cityIdk 'FKREF:cityBamko'
+			</columnValues>
+			<store>cityBamkoDistrictBamko</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Valletta'
+			cityIdk 'FKREF:cityValletta'
+			</columnValues>
+			<store>cityVallettaDistrictValletta</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Nouakchott'
+			cityIdk 'FKREF:cityNouakchott'
+			</columnValues>
+			<store>cityNouakchottDistrictNouakchott</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.PortLouis'
+			cityIdk 'FKREF:cityPortLouis'
+			</columnValues>
+			<store>cityPortLouisDistrictPortLouis</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.MexicoCity'
+			cityIdk 'FKREF:cityMexicoCity'
+			</columnValues>
+			<store>cityMexicoCityDistrictMexicoCity</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Chisinau'
+			cityIdk 'FKREF:cityChisinau'
+			</columnValues>
+			<store>cityChisinauDistrictChisinau</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Monaco'
+			cityIdk 'FKREF:cityMonaco'
+			</columnValues>
+			<store>cityMonacoDistrictMonaco</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Ulaanbaatar'
+			cityIdk 'FKREF:cityUlaanbaatar'
+			</columnValues>
+			<store>cityUlaanbaatarDistrictUlaanbaatar</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Rabat'
+			cityIdk 'FKREF:cityRabat'
+			</columnValues>
+			<store>cityRabatDistrictRabat</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Maputo'
+			cityIdk 'FKREF:cityMaputo'
+			</columnValues>
+			<store>cityMaputoDistrictMaputo</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Rangoon'
+			cityIdk 'FKREF:cityRangoon'
+			</columnValues>
+			<store>cityRangoonDistrictRangoon</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Windhoek'
+			cityIdk 'FKREF:cityWindhoek'
+			</columnValues>
+			<store>cityWindhoekDistrictWindhoek</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.YarenDistrict'
+			cityIdk 'FKREF:cityYarenDistrict'
+			</columnValues>
+			<store>cityYarenDistrictDistrictYarenDistrict</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Kathmandu'
+			cityIdk 'FKREF:cityKathmandu'
+			</columnValues>
+			<store>cityKathmanduDistrictKathmandu</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Amsterdam'
+			cityIdk 'FKREF:cityAmsterdam'
+			</columnValues>
+			<store>cityAmsterdamDistrictAmsterdam</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Wellington'
+			cityIdk 'FKREF:cityWellington'
+			</columnValues>
+			<store>cityWellingtonDistrictWellington</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Managua'
+			cityIdk 'FKREF:cityManagua'
+			</columnValues>
+			<store>cityManaguaDistrictManagua</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Niamey'
+			cityIdk 'FKREF:cityNiamey'
+			</columnValues>
+			<store>cityNiameyDistrictNiamey</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Abuja'
+			cityIdk 'FKREF:cityAbuja'
+			</columnValues>
+			<store>cityAbujaDistrictAbuja</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Oslo'
+			cityIdk 'FKREF:cityOslo'
+			</columnValues>
+			<store>cityOsloDistrictOslo</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Muscat'
+			cityIdk 'FKREF:cityMuscat'
+			</columnValues>
+			<store>cityMuscatDistrictMuscat</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Islamabad'
+			cityIdk 'FKREF:cityIslamabad'
+			</columnValues>
+			<store>cityIslamabadDistrictIslamabad</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Koror'
+			cityIdk 'FKREF:cityKoror'
+			</columnValues>
+			<store>cityKororDistrictKoror</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.PanamaCity'
+			cityIdk 'FKREF:cityPanamaCity'
+			</columnValues>
+			<store>cityPanamaCityDistrictPanamaCity</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Asuncion'
+			cityIdk 'FKREF:cityAsuncion'
+			</columnValues>
+			<store>cityAsuncionDistrictAsuncion</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Lima'
+			cityIdk 'FKREF:cityLima'
+			</columnValues>
+			<store>cityLimaDistrictLima</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Manila'
+			cityIdk 'FKREF:cityManila'
+			</columnValues>
+			<store>cityManilaDistrictManila</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Warsaw'
+			cityIdk 'FKREF:cityWarsaw'
+			</columnValues>
+			<store>cityWarsawDistrictWarsaw</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Lisbon'
+			cityIdk 'FKREF:cityLisbon'
+			</columnValues>
+			<store>cityLisbonDistrictLisbon</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Doha'
+			cityIdk 'FKREF:cityDoha'
+			</columnValues>
+			<store>cityDohaDistrictDoha</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Bucharest'
+			cityIdk 'FKREF:cityBucharest'
+			</columnValues>
+			<store>cityBucharestDistrictBucharest</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Moscow'
+			cityIdk 'FKREF:cityMoscow'
+			</columnValues>
+			<store>cityMoscowDistrictMoscow</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Kigali'
+			cityIdk 'FKREF:cityKigali'
+			</columnValues>
+			<store>cityKigaliDistrictKigali</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Castries'
+			cityIdk 'FKREF:cityCastries'
+			</columnValues>
+			<store>cityCastriesDistrictCastries</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Apia'
+			cityIdk 'FKREF:cityApia'
+			</columnValues>
+			<store>cityApiaDistrictApia</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.SanMarino'
+			cityIdk 'FKREF:citySanMarino'
+			</columnValues>
+			<store>citySanMarinoDistrictSanMarino</store>
+		</insert>
+
+
+		<insert>
+			<columnValues>
+			name 'district.Unspecified'
+			cityIdk 'FKREF:cityAlBaaha'
+			</columnValues>
+			<store>cityAlBaahaDistrictUnspecified</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Unspecified'
+			cityIdk 'FKREF:cityArar'
+			</columnValues>
+			<store>cityArarDistrictUnspecified</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Unspecified'
+			cityIdk 'FKREF:citySakaka'
+			</columnValues>
+			<store>citySakakaDistrictUnspecified</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Unspecified'
+			cityIdk 'FKREF:cityAlMadeenah'
+			</columnValues>
+			<store>cityAlMadeenahDistrictUnspecified</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Unspecified'
+			cityIdk 'FKREF:cityBuraida'
+			</columnValues>
+			<store>cityBuraidaDistrictUnspecified</store>
+		</insert>
+
+		<insert> <!-- أحـد -->
+			<columnValues>
+			name 'district.Uhud'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictUhud</store>
+		</insert>
+
+		<insert> <!-- أشبيلية -->
+			<columnValues>
+			name 'district.Ishbeeleeyya'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictIshbeeleeyya</store>
+		</insert>
+
+		<insert> <!-- أم الحمام الشرقي  -->
+			<columnValues>
+			name 'district.UmmAlHamaamAlSharqee'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictUmmAlHamaamAlSharqee</store>
+		</insert>
+
+		<insert> <!-- أم الحمام الغربي -->
+			<columnValues>
+			name 'district.UmmAlHamaamAlGharbee'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictUmmAlHamaamAlGharbee</store>
+		</insert>
+
+		<insert> <!-- أم سليم -->
+			<columnValues>
+			name 'district.UmmSulaym'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictUmmSulaym</store>
+		</insert>
+
+		<insert> <!-- الإزدهار -->
+			<columnValues>
+			name 'district.AlIzdihaar'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlIzdihaar</store>
+		</insert>
+
+		<insert> <!-- الإسكان -->
+			<columnValues>
+			name 'district.AlIskaan'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlIskaan</store>
+		</insert>
+
+		<insert> <!-- الأميرعبدالله -->
+			<columnValues>
+			name 'district.AlAmeerAbdullah'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlAmeerAbdullah</store>
+		</insert>
+
+		<insert> <!-- الأندلس -->
+			<columnValues>
+			name 'district.AlAndalus'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlAndalus</store>
+		</insert>
+
+		<insert> <!-- البديعة -->
+			<columnValues>
+			name 'district.AlBadeea'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlBadeea</store>
+		</insert>
+
+		<insert> <!-- البطيحا -->
+			<columnValues>
+			name 'district.AlBateeha'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlBateeha</store>
+		</insert>
+
+		<insert> <!-- التعاون -->
+			<columnValues>
+			name 'district.AlTaawon'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlTaawon</store>
+		</insert>
+
+		<insert> <!-- الجرادية -->
+			<columnValues>
+			name 'district.AlJaraadiyya'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlJaraadiyya</store>
+		</insert>
+
+		<insert> <!-- الجزيرة -->
+			<columnValues>
+			name 'district.AlJazeera'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlJazeera</store>
+		</insert>
+
+		<insert> <!-- الجنادرية -->
+			<columnValues>
+			name 'district.AlJanaadiriyya'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlJanaadiriyya</store>
+		</insert>
+
+		<insert> <!-- الحائر -->
+			<columnValues>
+			name 'district.AlHaair'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlHaair</store>
+		</insert>
+
+		<insert> <!-- الحزم -->
+			<columnValues>
+			name 'district.AlHazm'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlHazm</store>
+		</insert>
+
+		<insert> <!-- الحمراء -->
+			<columnValues>
+			name 'district.AlHamraa'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlHamraa</store>
+		</insert>
+
+		<insert> <!-- الخالدية -->
+			<columnValues>
+			name 'district.AlKhaalidiyya'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlKhaalidiyya</store>
+		</insert>
+
+		<insert> <!-- الخزامى -->
+			<columnValues>
+			name 'district.AlKhuzaamaa'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlKhuzaamaa</store>
+		</insert>
+
+		<insert> <!-- الخليج -->
+			<columnValues>
+			name 'district.AlKhaleej'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlKhaleej</store>
+		</insert>
+
+		<insert> <!-- الدار البيضاء -->
+			<columnValues>
+			name 'district.AlDaarAlBaydaa'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlDaarAlBaydaa</store>
+		</insert>
+
+		<insert> <!-- الدرعية -->
+			<columnValues>
+			name 'district.AlDiriyya'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlDiriyya</store>
+		</insert>
+
+		<insert> <!-- الدريهمية -->
+			<columnValues>
+			name 'district.AlDurayhamiyya'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlDurayhamiyya</store>
+		</insert>
+
+		<insert> <!-- الدفاع -->
+			<columnValues>
+			name 'district.AlDifaa'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlDifaa</store>
+		</insert>
+
+		<insert> <!-- الدوبية -->
+			<columnValues>
+			name 'district.AlDoobiyya'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlDoobiyya</store>
+		</insert>
+
+		<insert> <!-- الديرة -->
+			<columnValues>
+			name 'district.AlDeera'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlDeera</store>
+		</insert>
+
+		<insert> <!-- الرائد -->
+			<columnValues>
+			name 'district.AlRaaid'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlRaaid</store>
+		</insert>
+
+		<insert> <!-- الربوة -->
+			<columnValues>
+			name 'district.AlRabwa'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlRabwa</store>
+		</insert>
+
+		<insert> <!-- الربيع -->
+			<columnValues>
+			name 'district.AlRabee'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlRabee</store>
+		</insert>
+
+		<insert> <!-- الرحمانية -->
+			<columnValues>
+			name 'district.AlRahmaaniyya'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlRahmaaniyya</store>
+		</insert>
+
+		<insert> <!-- الرفيعة -->
+			<columnValues>
+			name 'district.AlRafeea'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlRafeea</store>
+		</insert>
+
+		<insert> <!-- الرمال -->
+			<columnValues>
+			name 'district.AlRimaal'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlRimaal</store>
+		</insert>
+
+		<insert> <!-- الرماية -->
+			<columnValues>
+			name 'district.AlRimaaya'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlRimaaya</store>
+		</insert>
+
+		<insert> <!-- الروابي -->
+			<columnValues>
+			name 'district.AlRawaabee'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlRawaabee</store>
+		</insert>
+
+		<insert> <!-- الروضة -->
+			<columnValues>
+			name 'district.AlRawda'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlRawda</store>
+		</insert>
+
+		<insert> <!-- الريان -->
+			<columnValues>
+			name 'district.AlRayyaan'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlRayyaan</store>
+		</insert>
+
+		<insert> <!-- الزهراء -->
+			<columnValues>
+			name 'district.AlZahraa'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlZahraa</store>
+		</insert>
+
+		<insert> <!-- الزهرة -->
+			<columnValues>
+			name 'district.AlZahra'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlZahra</store>
+		</insert>
+
+		<insert> <!-- السعادة -->
+			<columnValues>
+			name 'district.AlSaada'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlSaada</store>
+		</insert>
+
+		<insert> <!-- السفارات -->
+			<columnValues>
+			name 'district.AlSafaraat'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlSafaraat</store>
+		</insert>
+
+		<insert> <!-- السلام -->
+			<columnValues>
+			name 'district.AlSalaam'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlSalaam</store>
+		</insert>
+
+		<insert> <!-- السلي -->
+			<columnValues>
+			name 'district.AlSulay'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlSulay</store>
+		</insert>
+
+		<insert> <!-- السليمانية -->
+			<columnValues>
+			name 'district.AlSulaimaaniyya'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlSulaimaaniyya</store>
+		</insert>
+
+		<insert> <!-- السويدي -->
+			<columnValues>
+			name 'district.AlSuwaydee'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlSuwaydee</store>
+		</insert>
+
+		<insert> <!-- السويدي الغربي -->
+			<columnValues>
+			name 'district.AlSuwaydeeAlGharbee'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlSuwaydeeAlGharbee</store>
+		</insert>
+
+		<insert> <!-- الـشـرفـيـة -->
+			<columnValues>
+			name 'district.AlSharafeyya'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlSharafeyya</store>
+		</insert>
+
+		<insert> <!-- الشفاء -->
+			<columnValues>
+			name 'district.AlShifaa'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlShifaa</store>
+		</insert>
+
+		<insert> <!-- الشميسي -->
+			<columnValues>
+			name 'district.AlShimaysi'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlShimaysi</store>
+		</insert>
+
+		<insert> <!-- الصالحية -->
+			<columnValues>
+			name 'district.AlSaalihiyya'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlSaalihiyya</store>
+		</insert>
+
+		<insert> <!-- الصحافة -->
+			<columnValues>
+			name 'district.AlSahaafa'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlSahaafa</store>
+		</insert>
+
+		<insert> <!-- الصفاء -->
+			<columnValues>
+			name 'district.AlSafaa'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlSafaa</store>
+		</insert>
+
+		<insert> <!-- الصناعية -->
+			<columnValues>
+			name 'district.AlSanaaiyya'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlSanaaiyya</store>
+		</insert>
+
+		<insert> <!-- الضباط -->
+			<columnValues>
+			name 'district.AlDubaat'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlDubaat</store>
+		</insert>
+
+		<insert> <!-- العارض -->
+			<columnValues>
+			name 'district.AlAarid'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlAarid</store>
+		</insert>
+
+		<insert> <!-- العريجاء -->
+			<columnValues>
+			name 'district.AlUraijaa'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlUraijaa</store>
+		</insert>
+
+		<insert> <!-- العريجاء الغربية -->
+			<columnValues>
+			name 'district.AlUraijaaAlGharbiyya'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlUraijaaAlGharbiyya</store>
+		</insert>
+
+		<insert> <!-- العريجاء الوسطى -->
+			<columnValues>
+			name 'district.AlUraijaaAlWustaa'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlUraijaaAlWustaa</store>
+		</insert>
+
+		<insert> <!-- العزيزية -->
+			<columnValues>
+			name 'district.AlAzeeziyya'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlAzeeziyya</store>
+		</insert>
+
+		<insert> <!-- العقيق -->
+			<columnValues>
+			name 'district.AlAqeeq'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlAqeeq</store>
+		</insert>
+
+		<insert> <!-- العليا -->
+			<columnValues>
+			name 'district.AlUlayyaa'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlUlayyaa</store>
+		</insert>
+
+		<insert> <!-- العمل -->
+			<columnValues>
+			name 'district.Alamal'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlamal</store>
+		</insert>
+
+		<insert> <!-- العود -->
+			<columnValues>
+			name 'district.AlOod'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlOod</store>
+		</insert>
+
+		<insert> <!-- العيينة والجبيلة -->
+			<columnValues>
+			name 'district.AlUyaynawalJubayla'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlUyaynawalJubayla</store>
+		</insert>
+
+		<insert> <!-- الغدير -->
+			<columnValues>
+			name 'district.AlGhadeer'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlGhadeer</store>
+		</insert>
+
+		<insert> <!-- الفاخرية -->
+			<columnValues>
+			name 'district.AlFaakhiriyya'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlFaakhiriyya</store>
+		</insert>
+
+		<insert> <!-- الفاروق -->
+			<columnValues>
+			name 'district.AlFaarooq'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlFaarooq</store>
+		</insert>
+
+		<insert> <!-- الفلاح -->
+			<columnValues>
+			name 'district.AlFalaah'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlFalaah</store>
+		</insert>
+
+		<insert> <!-- الفوطة -->
+			<columnValues>
+			name 'district.AlFoota'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlFoota</store>
+		</insert>
+
+		<insert> <!-- الفيحاء -->
+			<columnValues>
+			name 'district.AlFayhaa'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlFayhaa</store>
+		</insert>
+
+		<insert> <!-- الفيصلية -->
+			<columnValues>
+			name 'district.AlFaysaliyya'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlFaysaliyya</store>
+		</insert>
+
+		<insert> <!-- القادسية -->
+			<columnValues>
+			name 'district.AlQaadisiyya'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlQaadisiyya</store>
+		</insert>
+
+		<insert> <!-- القدس -->
+			<columnValues>
+			name 'district.AlQuds'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlQuds</store>
+		</insert>
+
+		<insert> <!-- القرى -->
+			<columnValues>
+			name 'district.AlQura'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlQura</store>
+		</insert>
+
+		<insert> <!-- القيروان -->
+			<columnValues>
+			name 'district.AlQayrawaan'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlQayrawaan</store>
+		</insert>
+
+		<insert> <!-- المؤتمرات -->
+			<columnValues>
+			name 'district.AlMutamaraat'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlMutamaraat</store>
+		</insert>
+
+		<insert> <!-- المحمدية -->
+			<columnValues>
+			name 'district.AlMuhammadiyya'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlMuhammadiyya</store>
+		</insert>
+
+		<insert> <!-- المدينة الصناعية الجديدة -->
+			<columnValues>
+			name 'district.AlMadeenaAlSinaaiyyaAlJadeeda'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlMadeenaAlSinaaiyyaAlJadeeda</store>
+		</insert>
+
+		<insert> <!-- المربع -->
+			<columnValues>
+			name 'district.AlMurabba'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlMurabba</store>
+		</insert>
+
+		<insert> <!-- المرسلات -->
+			<columnValues>
+			name 'district.AlMursalaat'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlMursalaat</store>
+		</insert>
+
+		<insert> <!-- المرقب -->
+			<columnValues>
+			name 'district.AlMarqab'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlMarqab</store>
+		</insert>
+
+		<insert> <!-- المروج -->
+			<columnValues>
+			name 'district.AlMorooj'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlMorooj</store>
+		</insert>
+
+		<insert> <!-- المروه -->
+			<columnValues>
+			name 'district.AlMarwa'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlMarwa</store>
+		</insert>
+
+		<insert> <!-- المصانع -->
+			<columnValues>
+			name 'district.AlMasaani'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlMasaani</store>
+		</insert>
+
+		<insert> <!-- المصفاة -->
+			<columnValues>
+			name 'district.AlMusaffaat'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlMusaffaat</store>
+		</insert>
+
+		<insert> <!-- المصيف -->
+			<columnValues>
+			name 'district.AlMaseef'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlMaseef</store>
+		</insert>
+
+		<insert> <!-- المعذر -->
+			<columnValues>
+			name 'district.AlMadhar'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlMadhar</store>
+		</insert>
+
+		<insert> <!-- المعذر الشمالي -->
+			<columnValues>
+			name 'district.AlMadharAlShamaalee'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlMadharAlShamaalee</store>
+		</insert>
+
+		<insert> <!-- المعزيلة -->
+			<columnValues>
+			name 'district.AlMazeela'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlMazeela</store>
+		</insert>
+
+		<insert> <!-- المغرزات -->
+			<columnValues>
+			name 'district.AlMugharrazaat'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlMugharrazaat</store>
+		</insert>
+
+		<insert> <!-- الملز -->
+			<columnValues>
+			name 'district.AlMalaz'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlMalaz</store>
+		</insert>
+
+		<insert> <!-- الملقا -->
+			<columnValues>
+			name 'district.AlMalqaa'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlMalqaa</store>
+		</insert>
+
+		<insert> <!-- الملك عبد العزيز -->
+			<columnValues>
+			name 'district.AlMalikAbdulaziz'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlMalikAbdulaziz</store>
+		</insert>
+
+		<insert> <!-- الملك فهد -->
+			<columnValues>
+			name 'district.AlMalikFahd'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlMalikFahd</store>
+		</insert>
+
+		<insert> <!-- الملك فيصل -->
+			<columnValues>
+			name 'district.AlMalikFaisal'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlMalikFaisal</store>
+		</insert>
+
+		<insert> <!-- المناخ -->
+			<columnValues>
+			name 'district.AlManaakh'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlManaakh</store>
+		</insert>
+
+		<insert> <!-- المنار -->
+			<columnValues>
+			name 'district.AlManaar'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlManaar</store>
+		</insert>
+
+		<insert> <!-- المنصورة -->
+			<columnValues>
+			name 'district.AlMansoora'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlMansoora</store>
+		</insert>
+
+		<insert> <!-- المنصورية -->
+			<columnValues>
+			name 'district.AlMansooriyya'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlMansooriyya</store>
+		</insert>
+
+		<insert> <!-- المهدية -->
+			<columnValues>
+			name 'district.AlMahdiyya'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlMahdiyya</store>
+		</insert>
+
+		<insert> <!-- المونسية -->
+			<columnValues>
+			name 'district.AlMoonisiyya'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlMoonisiyya</store>
+		</insert>
+
+		<insert> <!-- الناصرية -->
+			<columnValues>
+			name 'district.AlNaasiriyya'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlNaasiriyya</store>
+		</insert>
+
+		<insert> <!-- النخيل -->
+			<columnValues>
+			name 'district.AlNakheel'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlNakheel</store>
+		</insert>
+
+		<insert> <!-- الندي -->
+			<columnValues>
+			name 'district.AlNadee'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlNadee</store>
+		</insert>
+
+		<insert> <!-- النرجس -->
+			<columnValues>
+			name 'district.AlNarjis'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlNarjis</store>
+		</insert>
+
+		<insert> <!-- النزهه -->
+			<columnValues>
+			name 'district.AlNuzha'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlNuzha</store>
+		</insert>
+
+		<insert> <!-- النسيم الشرقي -->
+			<columnValues>
+			name 'district.AlNaseemAlSharqee'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlNaseemAlSharqee</store>
+		</insert>
+
+		<insert> <!-- النسيم الغربي -->
+			<columnValues>
+			name 'district.AlNaseemAlGharbee'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlNaseemAlGharbee</store>
+		</insert>
+
+		<insert> <!-- النظيم -->
+			<columnValues>
+			name 'district.AlNadheem'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlNadheem</store>
+		</insert>
+
+		<insert> <!-- النفل -->
+			<columnValues>
+			name 'district.AlNafl'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlNafl</store>
+		</insert>
+
+		<insert> <!-- النموذجية -->
+			<columnValues>
+			name 'district.AlNamoodhajiyya'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlNamoodhajiyya</store>
+		</insert>
+
+		<insert> <!-- النهضة -->
+			<columnValues>
+			name 'district.AlNahda'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlNahda</store>
+		</insert>
+
+		<insert> <!-- النور -->
+			<columnValues>
+			name 'district.AlNoor'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlNoor</store>
+		</insert>
+
+		<insert> <!-- الهدا  -->
+			<columnValues>
+			name 'district.AlHadaa'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlHadaa</store>
+		</insert>
+
+		<insert> <!-- الواحة -->
+			<columnValues>
+			name 'district.AlWaaha'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlWaaha</store>
+		</insert>
+
+		<insert> <!-- الوادي -->
+			<columnValues>
+			name 'district.AlWaadee'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlWaadee</store>
+		</insert>
+
+		<insert> <!-- الورود -->
+			<columnValues>
+			name 'district.AlWorood'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlWorood</store>
+		</insert>
+
+		<insert> <!-- الوزارات -->
+			<columnValues>
+			name 'district.AlWozaaraat'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlWozaaraat</store>
+		</insert>
+
+		<insert> <!-- الوسيطا -->
+			<columnValues>
+			name 'district.AlWaseetaa'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlWaseetaa</store>
+		</insert>
+
+		<insert> <!-- الوشام -->
+			<columnValues>
+			name 'district.AlWishaam'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlWishaam</store>
+		</insert>
+
+		<insert> <!-- الياسمين -->
+			<columnValues>
+			name 'district.AlYaasameen'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlYaasameen</store>
+		</insert>
+
+		<insert> <!-- اليرموك -->
+			<columnValues>
+			name 'district.AlYarmook'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlYarmook</store>
+		</insert>
+
+		<insert> <!-- اليمامة -->
+			<columnValues>
+			name 'district.AlYamaama'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAlYamaama</store>
+		</insert>
+
+		<insert> <!-- بدر -->
+			<columnValues>
+			name 'district.Badr'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictBadr</store>
+		</insert>
+
+		<insert> <!-- بنبان -->
+			<columnValues>
+			name 'district.Banbaan'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictBanbaan</store>
+		</insert>
+
+		<insert> <!-- ثليم -->
+			<columnValues>
+			name 'district.Thulaim'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictThulaim</store>
+		</insert>
+
+		<insert> <!-- جامعة الإمام محمد بن سعود -->
+			<columnValues>
+			name 'district.JaamiatAlImamMuhammadbinSaood'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictJaamiatAlImamMuhammadbinSaood</store>
+		</insert>
+
+		<insert> <!-- جامعة الملك سعود -->
+			<columnValues>
+			name 'district.JaamiatAlMalikSaood'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictJaamiatAlMalikSaood</store>
+		</insert>
+
+		<insert> <!-- جبرة -->
+			<columnValues>
+			name 'district.Jubra'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictJubra</store>
+		</insert>
+
+		<insert> <!-- جرير -->
+			<columnValues>
+			name 'district.Jareer'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictJareer</store>
+		</insert>
+
+		<insert> <!-- حطين -->
+			<columnValues>
+			name 'district.Hatteen'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictHatteen</store>
+		</insert>
+
+		<insert> <!-- خشم العان -->
+			<columnValues>
+			name 'district.KhashmAlaan'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictKhashmAlaan</store>
+		</insert>
+
+		<insert> <!-- ديراب -->
+			<columnValues>
+			name 'district.Deeraab'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictDeeraab</store>
+		</insert>
+
+		<insert> <!-- سلام -->
+			<columnValues>
+			name 'district.Salaam'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictSalaam</store>
+		</insert>
+
+		<insert> <!-- سلطانة - الديرة -->
+			<columnValues>
+			name 'district.Soltaana-AlDeera'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictSoltaanaAlDeera</store>
+		</insert>
+
+		<insert> <!-- سلطانة - العريجاء -->
+			<columnValues>
+			name 'district.Soltaana-AlUraijaa'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictSoltaanaAlUraijaa</store>
+		</insert>
+
+		<insert> <!-- شبرا -->
+			<columnValues>
+			name 'district.Shobraa'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictShobraa</store>
+		</insert>
+
+		<insert> <!-- صلاح الدين -->
+			<columnValues>
+			name 'district.SalaahAlDeen'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictSalaahAlDeen</store>
+		</insert>
+
+		<insert> <!-- صياح -->
+			<columnValues>
+			name 'district.Siyaah'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictSiyaah</store>
+		</insert>
+
+		<insert> <!-- طويق - عتيقة -->
+			<columnValues>
+			name 'district.Towaiq-Ateeqa'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictTowaiqAteeqa</store>
+		</insert>
+
+		<insert> <!-- طويق - عرقة -->
+			<columnValues>
+			name 'district.Towaiq-Arqa'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictTowaiqArqa</store>
+		</insert>
+
+		<insert> <!-- طيبة -->
+			<columnValues>
+			name 'district.Tayba'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictTayba</store>
+		</insert>
+
+		<insert> <!-- ظهرة البديعة -->
+			<columnValues>
+			name 'district.DhahratAlBadeea'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictDhahratAlBadeea</store>
+		</insert>
+
+		<insert> <!-- ظهرة لبن -->
+			<columnValues>
+			name 'district.DhahratLaban'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictDhahratLaban</store>
+		</insert>
+
+		<insert> <!-- ظهرة نمار -->
+			<columnValues>
+			name 'district.DhahratNamaar'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictDhahratNamaar</store>
+		</insert>
+
+		<insert> <!-- عتيقة -->
+			<columnValues>
+			name 'district.Ateeqa'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAteeqa</store>
+		</insert>
+
+		<insert> <!-- عرقة -->
+			<columnValues>
+			name 'district.Arqa'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictArqa</store>
+		</insert>
+
+		<insert> <!-- عريض -->
+			<columnValues>
+			name 'district.Areed'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAreed</store>
+		</insert>
+
+		<insert> <!-- عكاظ -->
+			<columnValues>
+			name 'district.Akaadh'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAkaadh</store>
+		</insert>
+
+		<insert> <!-- عليشة -->
+			<columnValues>
+			name 'district.Aleesha'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictAleesha</store>
+		</insert>
+
+		<insert> <!-- غبيراء -->
+			<columnValues>
+			name 'district.Ghubayraa'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictGhubayraa</store>
+		</insert>
+
+		<insert> <!-- غرناطة -->
+			<columnValues>
+			name 'district.Gharnaata'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictGharnaata</store>
+		</insert>
+
+		<insert> <!-- قرطبة -->
+			<columnValues>
+			name 'district.Qortoba'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictQortoba</store>
+		</insert>
+
+		<insert> <!-- كلية الملك عبد العزيز الحربيه -->
+			<columnValues>
+			name 'district.KulliyatAlMalikAbdulazizAlHarbiyya'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictKulliyatAlMalikAbdulazizAlHarbiyya</store>
+		</insert>
+
+		<insert> <!-- مطار الملك خالد الدولي -->
+			<columnValues>
+			name 'district.MataarAlMalikKhalidAlDowlee'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictMataarAlMalikKhalidAlDowlee</store>
+		</insert>
+
+		<insert> <!-- معكال -->
+			<columnValues>
+			name 'district.Mikaal'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictMikaal</store>
+		</insert>
+
+		<insert> <!-- منفوحة -->
+			<columnValues>
+			name 'district.Manfooha'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictManfooha</store>
+		</insert>
+
+		<insert> <!-- منفوحة الجديدة -->
+			<columnValues>
+			name 'district.ManfoohaAlJadeeda'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictManfoohaAlJadeeda</store>
+		</insert>
+
+		<insert> <!-- نمار -->
+			<columnValues>
+			name 'district.Nimaar'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictNimaar</store>
+		</insert>
+
+		<insert> <!-- هجرة وادي لبن -->
+			<columnValues>
+			name 'district.HijratWaadeeLaban'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictHijratWaadeeLaban</store>
+		</insert>
+
+		<insert> <!-- هيت -->
+			<columnValues>
+			name 'district.Hait'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityArRiyaadhDistrictHait</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Unspecified'
+			cityIdk 'FKREF:cityArRiyaadh'
+			</columnValues>
+			<store>cityAdRiyaadhDistrictUnspecified</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Unspecified'
+			cityIdk 'FKREF:cityAdDammaam'
+			</columnValues>
+			<store>cityAdDammaamDistrictUnspecified</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Unspecified'
+			cityIdk 'FKREF:cityAbha'
+			</columnValues>
+			<store>cityAbhaDistrictUnspecified</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Unspecified'
+			cityIdk 'FKREF:cityHaail'
+			</columnValues>
+			<store>cityHaailDistrictUnspecified</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Unspecified'
+			cityIdk 'FKREF:cityJeezan'
+			</columnValues>
+			<store>cityJeezanDistrictUnspecified</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Unspecified'
+			cityIdk 'FKREF:cityMakkah'
+			</columnValues>
+			<store>cityMakkahDistrictUnspecified</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Unspecified'
+			cityIdk 'FKREF:cityNajraan'
+			</columnValues>
+			<store>cityNajraanDistrictUnspecified</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Unspecified'
+			cityIdk 'FKREF:cityTabook'
+			</columnValues>
+			<store>cityTabookDistrictUnspecified</store>
+		</insert>
+
+
+		<insert>
+			<columnValues>
+			name 'district.Dakar'
+			cityIdk 'FKREF:cityDakar'
+			</columnValues>
+			<store>cityDakarDistrictDakar</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Victoria'
+			cityIdk 'FKREF:cityVictoria'
+			</columnValues>
+			<store>cityVictoriaDistrictVictoria</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Freetown'
+			cityIdk 'FKREF:cityFreetown'
+			</columnValues>
+			<store>cityFreetownDistrictFreetown</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Singapore'
+			cityIdk 'FKREF:citySingapore'
+			</columnValues>
+			<store>citySingaporeDistrictSingapore</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Bratislava'
+			cityIdk 'FKREF:cityBratislava'
+			</columnValues>
+			<store>cityBratislavaDistrictBratislava</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Ljubljana'
+			cityIdk 'FKREF:cityLjubljana'
+			</columnValues>
+			<store>cityLjubljanaDistrictLjubljana</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Honiara'
+			cityIdk 'FKREF:cityHoniara'
+			</columnValues>
+			<store>cityHoniaraDistrictHoniara</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Mogadishu'
+			cityIdk 'FKREF:cityMogadishu'
+			</columnValues>
+			<store>cityMogadishuDistrictMogadishu</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Pretoria'
+			cityIdk 'FKREF:cityPretoria'
+			</columnValues>
+			<store>cityPretoriaDistrictPretoria</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Madrid'
+			cityIdk 'FKREF:cityMadrid'
+			</columnValues>
+			<store>cityMadridDistrictMadrid</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Colombo'
+			cityIdk 'FKREF:cityColombo'
+			</columnValues>
+			<store>cityColomboDistrictColombo</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Khartoum'
+			cityIdk 'FKREF:cityKhartoum'
+			</columnValues>
+			<store>cityKhartoumDistrictKhartoum</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Paramaribo'
+			cityIdk 'FKREF:cityParamaribo'
+			</columnValues>
+			<store>cityParamariboDistrictParamaribo</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Mbabana'
+			cityIdk 'FKREF:cityMbabana'
+			</columnValues>
+			<store>cityMbabanaDistrictMbabana</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Stockholm'
+			cityIdk 'FKREF:cityStockholm'
+			</columnValues>
+			<store>cityStockholmDistrictStockholm</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Bern'
+			cityIdk 'FKREF:cityBern'
+			</columnValues>
+			<store>cityBernDistrictBern</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Damascus'
+			cityIdk 'FKREF:cityDamascus'
+			</columnValues>
+			<store>cityDamascusDistrictDamascus</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Dushanbe'
+			cityIdk 'FKREF:cityDushanbe'
+			</columnValues>
+			<store>cityDushanbeDistrictDushanbe</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.DaresSalaam'
+			cityIdk 'FKREF:cityDaresSalaam'
+			</columnValues>
+			<store>cityDaresSalaamDistrictDaresSalaam</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Bangkok'
+			cityIdk 'FKREF:cityBangkok'
+			</columnValues>
+			<store>cityBangkokDistrictBangkok</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Lome'
+			cityIdk 'FKREF:cityLome'
+			</columnValues>
+			<store>cityLomeDistrictLome</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Tunis'
+			cityIdk 'FKREF:cityTunis'
+			</columnValues>
+			<store>cityTunisDistrictTunis</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Ankara'
+			cityIdk 'FKREF:cityAnkara'
+			</columnValues>
+			<store>cityAnkaraDistrictAnkara</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Ashgabat'
+			cityIdk 'FKREF:cityAshgabat'
+			</columnValues>
+			<store>cityAshgabatDistrictAshgabat</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Funafuti'
+			cityIdk 'FKREF:cityFunafuti'
+			</columnValues>
+			<store>cityFunafutiDistrictFunafuti</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Kampala'
+			cityIdk 'FKREF:cityKampala'
+			</columnValues>
+			<store>cityKampalaDistrictKampala</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Kiev'
+			cityIdk 'FKREF:cityKiev'
+			</columnValues>
+			<store>cityKievDistrictKiev</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.AbuDhabi'
+			cityIdk 'FKREF:cityAbuDhabi'
+			</columnValues>
+			<store>cityAbuDhabiDistrictAbuDhabi</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.London'
+			cityIdk 'FKREF:cityLondon'
+			</columnValues>
+			<store>cityLondonDistrictLondon</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.WashingtonDC'
+			cityIdk 'FKREF:cityWashingtonDC'
+			</columnValues>
+			<store>cityWashingtonDCDistrictWashingtonDC</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Montevideo'
+			cityIdk 'FKREF:cityMontevideo'
+			</columnValues>
+			<store>cityMontevideoDistrictMontevideo</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Tashkent'
+			cityIdk 'FKREF:cityTashkent'
+			</columnValues>
+			<store>cityTashkentDistrictTashkent</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.PortVila'
+			cityIdk 'FKREF:cityPortVila'
+			</columnValues>
+			<store>cityPortVilaDistrictPortVila</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Caracas'
+			cityIdk 'FKREF:cityCaracas'
+			</columnValues>
+			<store>cityCaracasDistrictCaracas</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Hanoi'
+			cityIdk 'FKREF:cityHanoi'
+			</columnValues>
+			<store>cityHanoiDistrictHanoi</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Sanaa'
+			cityIdk 'FKREF:citySanaa'
+			</columnValues>
+			<store>citySanaaDistrictSanaa</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Lusaka'
+			cityIdk 'FKREF:cityLusaka'
+			</columnValues>
+			<store>cityLusakaDistrictLusaka</store>
+		</insert>
+
+		<insert>
+			<columnValues>
+			name 'district.Harare'
+			cityIdk 'FKREF:cityHarare'
+			</columnValues>
+			<store>cityHarareDistrictHarare</store>
+		</insert>
+	</populate>
+
+</coreServerEntity>

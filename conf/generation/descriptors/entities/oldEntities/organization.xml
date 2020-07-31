@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<coreServerEntity xmlns="aaacs.coreserver/generation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="aaacs.coreserver/generation ../../schemas/csDocEntity.xsd">
+	
+	<table>
+		<name>tOrganizations</name>
+		<constraints>
+			<unique>branch name cityIDK</unique>
+			<foreignKey>
+				<referringColumns>organizationTypeIDK</referringColumns>
+				<referredTable>tOccupations</referredTable>
+				<referredColumns>IDK</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>districtIDK</referringColumns>
+				<referredTable>tDistricts</referredTable>
+				<referredColumns>IDK</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>cityIDK</referringColumns>
+				<referredTable>tCities</referredTable>
+				<referredColumns>IDK</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>countryIDK</referringColumns>
+				<referredTable>tCountries</referredTable>
+				<referredColumns>IDK</referredColumns>
+			</foreignKey>
+		</constraints>
+	</table>
+
+	<class>
+		<name>Organization</name>
+		<annotations>
+			<entity/>
+			<sqlResultSetMappings>
+				<standardMapping/>
+			</sqlResultSetMappings>
+		</annotations>
+	</class>
+
+	<attributes>
+		<includeAttributes>conf/generation/descriptors/standardAttributes.xml</includeAttributes>
+
+		<attribute>
+			<columnDescription name="name" type="VARCHAR(100)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="name" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>1</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="branch" type="VARCHAR(100)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="branch" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>0</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="organizationTypeIDK" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="organizationTypeIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="employees" type="INT2">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="employees" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<allowNull>false</allowNull>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="suiteNumber" type="VARCHAR(50)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="suiteNumber" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>0</minLength>
+						<maxLength>50</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="streetNumber" type="VARCHAR(50)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="streetNumber" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>0</minLength>
+						<maxLength>50</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="streetName" type="VARCHAR(100)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="streetName" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>0</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="districtIDK" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="districtIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute> <!-- some orgs may not have district info -->
+			<columnDescription name="cityIDK" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="cityIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_HIGHEST_RESERVED + 1</min>
+					</Long>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="countryIDK" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="countryIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_HIGHEST_RESERVED + 1</min>
+					</Long>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="postalCode" type="VARCHAR(50)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="postalCode" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>0</minLength>
+						<maxLength>50</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="postOfficeBox" type="VARCHAR(50)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="postOfficeBox" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>0</minLength>
+						<maxLength>50</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="mainContactIDK" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="mainContactIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="telephone1" type="VARCHAR(50)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="telephone1" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>7</minLength>
+						<maxLength>50</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="telephone2" type="VARCHAR(50)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="telephone2" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>0</minLength>
+						<maxLength>50</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="mobile1" type="VARCHAR(50)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="mobile1" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>0</minLength>
+						<maxLength>50</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="mobile2" type="VARCHAR(50)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="mobile2" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>0</minLength>
+						<maxLength>50</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="fax" type="VARCHAR(50)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="fax" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>0</minLength>
+						<maxLength>50</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="email1" type="VARCHAR(100)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="email1" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>7</minLength>
+						<maxLength>100</maxLength>
+						<regex>"^[\\w\\.]+@[\\w\\.]+\\.(com|net|org|info)(\\.[a-z][a-z])*$"</regex>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="email2" type="VARCHAR(100)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="email2" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>0</minLength>
+						<maxLength>100</maxLength>
+						<regex>"^\\s*$|^[\\w\\.]+@[\\w\\.]+\\.(com|net|org|info)(\\.[a-z][a-z])*$"</regex>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute> <!-- in particular: verified? -->
+			<columnDescription name="status" type="INT2">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="status" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<allowNull>false</allowNull>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="notes" type="VARCHAR(200)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="notes" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>0</minLength>
+						<maxLength>200</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+	</attributes>
+
+	<populate>
+		<defaults>
+			<columnValues>
+			name 'string.Default'
+			branch 'string.Default'
+			organizationTypeIDK '1'
+			employees '0'
+			suiteNumber 'string.Default'
+			streetNumber 'string.Default'
+			streetName 'string.Default'
+			districtIDK '1'
+			cityIDK '1'
+			countryIDK '1'
+			postalCode 'string.Default'
+			postOfficeBox 'string.Default'
+			mainContactIDK '1'
+			telephone1 'string.Default'
+			telephone2 'string.Default'
+			mobile1 'string.Default'
+			mobile2 'string.Default'
+			fax 'string.Default'
+			email1 'string.Default'
+			email2 'string.Default'
+			status '0'
+			notes 'string.Default'
+			</columnValues>
+		</defaults>
+		<insert>
+			<columnValues>
+			IDK '1'
+			name 'string.Unset'
+			branch 'string.Unset'
+			suiteNumber 'string.Unset'
+			streetNumber 'string.Unset'
+			streetName 'string.Unset'
+			postalCode 'string.Unset'
+			postOfficeBox 'string.Unset'
+			telephone1 'string.Unset'
+			telephone2 'string.Unset'
+			mobile1 'string.Unset'
+			mobile2 'string.Unset'
+			fax 'string.Unset'
+			email1 'string.Unset'
+			email2 'string.Unset'
+			notes 'string.Unset'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			IDK '101'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			IDK '102'
+			name 'string.Unknown'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			IDK '103'
+			name 'string.Nonexistent'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			IDK '901'
+			name 'string.MatchAll'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			IDK '902'
+			name 'string.MatchReserved'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			IDK '903'
+			name 'string.MatchUser'
+			</columnValues>
+		</insert>
+	</populate>
+
+</coreServerEntity>

@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<coreServerEntity xmlns="aaacs.coreserver/generation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="aaacs.coreserver/generation ../../schemas/csDocEntity.xsd">
+	
+	<table>
+		<name>tUserProfiles</name>
+		<constraints>
+			<foreignKey>
+				<referringColumns>userIdk</referringColumns>
+				<referredTable>tUsers</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>titleIdk</referringColumns>
+				<referredTable>tTitles</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>occupationIdk</referringColumns>
+				<referredTable>tOccupations</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>districtIdk</referringColumns>
+				<referredTable>tDistricts</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>cityIdk</referringColumns>
+				<referredTable>tCities</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>regionIdk</referringColumns>
+				<referredTable>tRegions</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>countryIdk</referringColumns>
+				<referredTable>tCountries</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+		</constraints>
+	</table>
+
+	<class>
+		<name>UserProfile</name>
+		<import>java.sql.Date</import>
+		<import>aaacs.coreserver.ejb.entities.support.CacheManager</import>
+		<annotations>
+			<entity/>
+			<sqlResultSetMappings>
+				<standardMapping/>
+			</sqlResultSetMappings>
+		</annotations>
+	</class>
+
+	<attributes>
+		<includeAttributes>conf/generation/descriptors/standardAttributes.xml</includeAttributes>
+
+		<attribute>
+			<columnDescription name="userIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="userIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<minmax type="Long"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="titleIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="titleIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<!-- <min>KEY_LOWEST_RESERVED</min> -->
+						<validChoices>
+							<cache>
+								<table>tTitles</table>
+								<class>Title</class>
+								<attribute>idk</attribute>
+							</cache>
+						</validChoices>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="Title" key="name"/>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="firstName" type="VARCHAR(100)">
+			</columnDescription>
+			<javaFieldDescription name="firstName" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>1</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<substring/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="secondName" type="VARCHAR(100)">
+			</columnDescription>
+			<javaFieldDescription name="secondName" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>1</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<substring/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="thirdName" type="VARCHAR(100)">
+			</columnDescription>
+			<javaFieldDescription name="thirdName" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<substring/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="fourthName" type="VARCHAR(100)">
+			</columnDescription>
+			<javaFieldDescription name="fourthName" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<substring/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="dateOfBirth" type="DATE">
+			</columnDescription>
+			<javaFieldDescription name="dateOfBirth" type="Date">
+				<annotations><basic/></annotations>
+				<validation>
+					<Date>
+					</Date>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="streetAddress1" type="VARCHAR(100)">
+			</columnDescription>
+			<javaFieldDescription name="streetAddress1" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>0</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="streetAddress2" type="VARCHAR(100)">
+			</columnDescription>
+			<javaFieldDescription name="streetAddress2" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="districtIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="districtIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="District" key="name"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<options type="Long"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="cityIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="cityIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_HIGHEST_RESERVED + 1</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="City" key="name"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<options type="Long"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="regionIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="regionIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_HIGHEST_RESERVED + 1</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="Region" key="name"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<options type="Long"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="countryIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="countryIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_HIGHEST_RESERVED + 1</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="Country" key="name"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<options type="Long"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="postalCode" type="VARCHAR(50)">
+			</columnDescription>
+			<javaFieldDescription name="postalCode" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>0</minLength>
+						<maxLength>50</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="postOfficeBox" type="VARCHAR(50)">
+			</columnDescription>
+			<javaFieldDescription name="postOfficeBox" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>50</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="telephone" type="VARCHAR(50)">
+			</columnDescription>
+			<javaFieldDescription name="telephone" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>50</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<substring/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="mobile" type="VARCHAR(50)">
+			</columnDescription>
+			<javaFieldDescription name="mobile" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>0</minLength>
+						<maxLength>50</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<substring/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="fax" type="VARCHAR(50)">
+			</columnDescription>
+			<javaFieldDescription name="fax" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>50</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="email" type="VARCHAR(100)">
+			</columnDescription>
+			<javaFieldDescription name="email" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>7</minLength>
+						<maxLength>100</maxLength>
+						<regex>"^[\\w\\.%+-]+@[\\w\\.]+\\.(com|COM|gov|GOV|net|NET|org|ORG|info|INFO|biz|BIZ)(\\.[a-zA-Z][a-zA-Z])?$"</regex>
+					</String>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<substring/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="occupationIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="occupationIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="Occupation" key="name"/>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="organization" type="VARCHAR(150)">
+			</columnDescription>
+			<javaFieldDescription name="organization" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>0</minLength>
+						<maxLength>150</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<substring/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="organizationPosition" type="VARCHAR(100)">
+			</columnDescription>
+			<javaFieldDescription name="organizationPosition" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<minLength>0</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="displayCustomLogo" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="displayCustomLogo" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="displayCustomOrganization" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="displayCustomOrganization" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+	</attributes>
+
+	<populate>
+		<defaults>
+			<columnValues>
+			userIdk '1'
+			titleIdk '1'
+			districtIdk '1'
+			cityIdk '1'
+			regionIdk '1'
+			countryIdk '1'
+			occupationIdk '1'
+			</columnValues>
+		</defaults>
+		<insert>
+			<columnValues>
+			idk '1'
+			userIdk '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '101'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '102'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '103'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '901'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '902'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '903'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			userIdk 'FKREF:userAdministrator'
+			titleIdk 'FKREF:titleMr'
+			firstName 'System'
+			secondName ''
+			thirdName ''
+			fourthName 'Administrator'
+			dateOfBirth '1968-06-02'
+			streetAddress1 ''
+			streetAddress2 ''
+			districtIdk 'FKREF:cityArRiyaadhDistrictAlNuzha'
+			cityIdk 'FKREF:cityArRiyaadh'
+			regionIdk 'FKREF:regionArRiyaadh'
+			countryIdk 'FKREF:countrySaudiArabia'
+			postalCode '00000'
+			postOfficeBox ''
+			telephone ''
+			mobile '0543249965'
+			fax ''
+			email 'rcnet123@gmail.com'
+			occupationIdk 'FKREF:occupationInformationTechnology'
+			organization 'RCN Administrator'
+			organizationPosition 'System Administrator'
+			displayCustomLogo 'false'
+			displayCustomOrganization 'true'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			userIdk 'FKREF:userAaabdallah_gmail.com'
+			titleIdk 'FKREF:titleDr'
+			firstName 'Ahmed'
+			secondName 'Abd-el-Shafy'
+			thirdName ''
+			fourthName 'Abd-Allah'
+			dateOfBirth '1968-06-02'
+			streetAddress1 '9 Al Mashaaf Road'
+			streetAddress2 ''
+			districtIdk 'FKREF:cityArRiyaadhDistrictAlNuzha'
+			cityIdk 'FKREF:cityArRiyaadh'
+			regionIdk 'FKREF:regionArRiyaadh'
+			countryIdk 'FKREF:countrySaudiArabia'
+			postalCode '12345'
+			postOfficeBox ''
+			telephone ''
+			mobile '0502473019'
+			fax ''
+			email 'aaabdallah@gmail.com'
+			occupationIdk 'FKREF:occupationInformationTechnology'
+			organization 'Realtor''s Cooperative Association'
+			organizationPosition 'CEO'
+			displayCustomLogo 'true'
+			displayCustomOrganization 'false'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			userIdk 'FKREF:userDemo_demo.com'
+			titleIdk 'FKREF:titleDr'
+			firstName 'Guest'
+			secondName ''
+			thirdName ''
+			fourthName ''
+			dateOfBirth '2000-01-01'
+			streetAddress1 '10 Guest Road'
+			streetAddress2 ''
+			districtIdk 'FKREF:cityArRiyaadhDistrictAlNuzha'
+			cityIdk 'FKREF:cityArRiyaadh'
+			regionIdk 'FKREF:regionArRiyaadh'
+			countryIdk 'FKREF:countrySaudiArabia'
+			postalCode '12345'
+			postOfficeBox ''
+			telephone ''
+			mobile '0502473019'
+			fax ''
+			email 'aaabdallah@gmail.com'
+			occupationIdk 'FKREF:occupationInformationTechnology'
+			organization 'The Realtor''s Cooperative Association (Demo Mode)'
+			organizationPosition 'Demo Account'
+			displayCustomLogo 'false'
+			displayCustomOrganization 'true'
+			</columnValues>
+		</insert>
+	</populate>
+
+</coreServerEntity>

@@ -1,0 +1,950 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<coreServerEntity xmlns="aaacs.coreserver/generation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="aaacs.coreserver/generation ../../schemas/csDocEntity.xsd">
+	
+	<table>
+		<name>tResidentialFeatures</name>
+		<constraints>
+			<unique>referenceHandle createdByIdk</unique>
+			<foreignKey>
+				<referringColumns>createdByIdk</referringColumns>
+				<referredTable>tUsers</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>coolingTypeIdk</referringColumns>
+				<referredTable>tPropertyOptions</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>finishingTypeIdk</referringColumns>
+				<referredTable>tPropertyOptions</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>heatingTypeIdk</referringColumns>
+				<referredTable>tPropertyOptions</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>internetAccessTypeIdk</referringColumns>
+				<referredTable>tPropertyOptions</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>sewageDisposalTypeIdk</referringColumns>
+				<referredTable>tPropertyOptions</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>roofTypeIdk</referringColumns>
+				<referredTable>tPropertyOptions</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>waterSupplyTypeIdk</referringColumns>
+				<referredTable>tPropertyOptions</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+		</constraints>
+	</table>
+
+	<class>
+		<name>ResidentialFeatures</name>
+		<annotations>
+			<entity/>
+			<sqlResultSetMappings>
+				<standardMapping/>
+			</sqlResultSetMappings>
+		</annotations>
+	</class>
+
+	<attributes>
+		<includeAttributes>conf/generation/descriptors/standardAttributes.xml</includeAttributes>
+
+		<attribute>
+			<columnDescription name="createdByIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="createdByIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_HIGHEST_RESERVED + 1</min>
+					</Long>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="referenceHandle" type="VARCHAR(100)">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="referenceHandle" type="String">
+				<annotations><basic/></annotations>
+				<validation>
+					<String>
+						<allowNull>false</allowNull>
+						<minLength>1</minLength>
+						<maxLength>100</maxLength>
+					</String>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="finishingTypeIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="finishingTypeIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="PropertyOption" key="name"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<options type="Long"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="privateEntrance" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="privateEntrance" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="bedrooms" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="bedrooms" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<minmax type="Short"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="bathrooms" type="REAL">
+			</columnDescription>
+			<javaFieldDescription name="bathrooms" type="Float">
+				<annotations><basic/></annotations>
+				<validation>
+					<Float>
+						<min>0</min>
+						<regex>"[0-9]([0-9])?(\\.[05])?"</regex>
+					</Float>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<min type="Float"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="kitchens" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="kitchens" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<min type="Short"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="livingRooms" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="livingRooms" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<min type="Short"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="diningRooms" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="diningRooms" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<min type="Short"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="familyRooms" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="familyRooms" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<min type="Short"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="lofts" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="lofts" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="internalServantRooms" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="internalServantRooms" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="externalServantRooms" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="externalServantRooms" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="highCeilings" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="highCeilings" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="roofTypeIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="roofTypeIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="PropertyOption" key="name"/>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="liveableRoof" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="liveableRoof" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="basement" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="basement" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="frontYardSizeSquareMeters" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="frontYardSizeSquareMeters" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="frontYardGrass" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="frontYardGrass" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="backYardSizeSquareMeters" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="backYardSizeSquareMeters" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="backYardGrass" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="backYardGrass" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="balconies" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="balconies" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="pools" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="pools" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="porches" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="porches" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="patios" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="patios" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="refrigerators" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="refrigerators" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="stoves" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="stoves" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="ovens" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="ovens" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="carpetted" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="carpetted" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="tiled" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="tiled" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="curtains" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="curtains" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="walkinClosets" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="walkinClosets" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="furnished" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="furnished" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="fireplaces" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="fireplaces" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="builtInGas" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="builtInGas" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="phoneConnection" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="phoneConnection" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="installedPhones" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="installedPhones" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="internetAccessTypeIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="internetAccessTypeIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="PropertyOption" key="name"/>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="laundryHookup" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="laundryHookup" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="coolingTypeIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="coolingTypeIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="PropertyOption" key="name"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<options type="Long"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="splitACUnitsInstalled" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="splitACUnitsInstalled" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="wallACUnitsInstalled" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="wallACUnitsInstalled" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="ceilingFansInstalled" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="ceilingFansInstalled" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="heatingTypeIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="heatingTypeIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="PropertyOption" key="name"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<options type="Long"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="waterSupplyTypeIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="waterSupplyTypeIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="PropertyOption" key="name"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<options type="Long"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="roofWaterTanks" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="roofWaterTanks" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="waterPumpOnPremises" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="waterPumpOnPremises" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="totalUnitsSharingWaterTanks" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="totalUnitsSharingWaterTanks" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="totalUnitsSharingWaterPump" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="totalUnitsSharingWaterPump" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="sewageDisposalTypeIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="sewageDisposalTypeIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="PropertyOption" key="name"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<options type="Long"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="septicTankOnPremises" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="septicTankOnPremises" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="totalUnitsSharingSepticTank" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="totalUnitsSharingSepticTank" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="septicTankLinkedToCity" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="septicTankLinkedToCity" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="garageCarCapacity" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="garageCarCapacity" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore" trueMeaning="> 0"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="detachedGarage" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="detachedGarage" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="secureParking" type="BOOLEAN">
+			</columnDescription>
+			<javaFieldDescription name="secureParking" type="Boolean">
+				<annotations><basic/></annotations>
+				<validation>
+					<Boolean>
+					</Boolean>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<boolean falseMeaning="ignore"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="reservedParkingSpaces" type="INT2">
+			</columnDescription>
+			<javaFieldDescription name="reservedParkingSpaces" type="Short">
+				<annotations><basic/></annotations>
+				<validation>
+					<Short>
+						<min>0</min>
+					</Short>
+				</validation>
+			</javaFieldDescription>
+		</attribute>
+
+	</attributes>
+
+	<populate>
+		<defaults>
+			<columnValues>
+			createdByIdk '1'
+			referenceHandle 'string.Default'
+			finishingTypeIdk '1'
+			roofTypeIdk '1'
+			internetAccessTypeIdk '1'
+			coolingTypeIdk '1'
+			heatingTypeIdk '1'
+			waterSupplyTypeIdk '1'
+			sewageDisposalTypeIdk '1'
+			</columnValues>
+		</defaults>
+		<insert>
+			<columnValues>
+			idk '1'
+			referenceHandle 'string.Unset'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '101'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '102'
+			referenceHandle 'string.Unknown'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '103'
+			referenceHandle 'string.Nonexistent'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '901'
+			referenceHandle 'string.MatchAll'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '902'
+			referenceHandle 'string.MatchReserved'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '903'
+			referenceHandle 'string.MatchUser'
+			</columnValues>
+		</insert>
+	</populate>
+
+</coreServerEntity>

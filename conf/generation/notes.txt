@@ -1,0 +1,69 @@
+add toXML capability to entities (will be added to business delegates really)
+
+- creates Bean and its interface(s)
+- updates action.xml insertions per new action
+- updates action.properties with the new action names and parameters
+- updates DispatcherBean.dispatch and DispatcherBean.actionRequiresLoggedInUser
+
+
+<coreServerBean>
+
+	<class>
+		<comment></comment>
+		<outputDirectory></outputDirectory>
+		<package></package>
+		<imports>
+			<import></import>
+		</imports>
+		<name></name>
+		<annotations>
+			<beanType></beanType>
+			<interfaces>
+				<interface name type(local/remote)/>
+			</interfaces>
+			<transactionManagement type ctrTxAttr/>
+			<ejbs>
+				<name>
+				<beanName>
+				<beanInterface>
+			</ejbs>
+		</annotations>
+	</class>
+	
+	<methods>
+		<method>
+			<authorization>
+				<loggedInRequired/>
+				<table></table>
+			</authorization>
+			<tasks>
+				<task>
+					<inputParameters>
+						<parameter name type varName(optional)>
+							<validation>
+								<code returnType></code>
+							</validation>
+						</parameter>
+					</inputParameters>
+					<execute>
+						<standardCreate>
+						<standardRead>
+						</standardRead>
+						<standardUpdate>
+						<standardDelete>
+						<customCode>
+					</execute>
+					<outputParameters>
+					</outputParameters>
+				</task>
+			</tasks>
+			<codeFragments>
+				<codeFragment name type></codeFragment>
+			</codeFragments>
+		</method>
+	</methods>
+
+	<codeFragments>
+		<codeFragment name type></codeFragment>
+	</codeFragments>
+</coreServerBean>

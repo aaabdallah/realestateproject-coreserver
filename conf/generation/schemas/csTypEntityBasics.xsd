@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:coreServer="aaacs.coreserver/generation"
+	targetNamespace="aaacs.coreserver/generation"
+	elementFormDefault="qualified" 
+	attributeFormDefault="unqualified">
+
+	<!-- Includes -->
+	<xs:include schemaLocation="csTypSQLBasics.xsd"/>
+	
+	<!-- Global Types, Elements, and Groups -->
+	<xs:complexType name="attributeAnnotations" mixed="false">
+		<xs:all>
+			<xs:element name="version" type="coreServer:emptyType" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="basic" type="coreServer:emptyType" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="id" minOccurs="0" maxOccurs="1">
+				<xs:complexType>
+					<xs:all minOccurs="0" maxOccurs="1">
+						<xs:element name="generatedValue" type="coreServer:generatedValueType"/>
+					</xs:all>
+				</xs:complexType>
+			</xs:element>
+		</xs:all>
+	</xs:complexType>
+
+	<xs:complexType name="attributeType">
+		<xs:sequence>
+			<xs:element name="columnDescription">
+				<xs:complexType>
+					<xs:all>
+						<xs:element ref="coreServer:comment" minOccurs="0" maxOccurs="1"/>
+						<xs:element name="primaryKey" type="coreServer:emptyType" minOccurs="0" maxOccurs="1"/>
+						<xs:element name="notNull" type="coreServer:emptyType" minOccurs="0" maxOccurs="1"/>
+						<xs:element name="unique" type="coreServer:emptyType" minOccurs="0" maxOccurs="1"/>
+						<xs:element name="default" type="xs:string" minOccurs="0" maxOccurs="1"/>
+					</xs:all>
+					<xs:attribute name="name" type="xs:Name" use="required"/>
+					<xs:attribute name="type" use="required">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:pattern value="INT1|INT2|INT4|INT8|REAL|DOUBLE|BOOLEAN|DATE|TIMESTAMP|VARCHAR[\(][0-9]+[\)]"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="javaFieldDescription">
+				<xs:complexType>
+					<xs:all>
+						<xs:element ref="coreServer:comment" minOccurs="0" maxOccurs="1"/>
+						<xs:element name="annotations" type="coreServer:attributeAnnotations" minOccurs="0" maxOccurs="1"/>
+						<xs:element name="validation" type="coreServer:javaValidationType" minOccurs="0" maxOccurs="1"/>
+						<xs:element name="messageResource" minOccurs="0" maxOccurs="1">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="coreServer:emptyType">
+										<xs:attribute name="lookupMechanism" type="xs:string" use="required"/>
+										<xs:attribute name="source" type="xs:string" use="required"/>
+										<xs:attribute name="key" type="xs:string" use="required"/>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="dto" minOccurs="0" maxOccurs="1">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="coreServer:emptyType">
+										<xs:attribute name="cacheLookup" type="coreServer:boolean" default="false"/>
+										<xs:attribute name="defaultValue" type="xs:string" use="optional"/>
+										<!-- <xs:attribute name="defaultSearchValue" type="xs:string" use="optional"/> -->
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:all>
+					<xs:attribute name="name" type="xs:Name" use="required"/>
+					<xs:attribute name="type" use="required">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="Byte"/>
+								<xs:enumeration value="Short"/>
+								<xs:enumeration value="Integer"/>
+								<xs:enumeration value="Long"/>
+								<xs:enumeration value="Float"/>
+								<xs:enumeration value="Double"/>
+								<xs:enumeration value="Boolean"/>
+								<xs:enumeration value="Date"/>
+								<xs:enumeration value="Timestamp"/>
+								<xs:enumeration value="String"/>
+								<xs:enumeration value="Groups"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+					<xs:attribute name="defaultValue" type="xs:string" use="optional"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="searchCriteria" minOccurs="0">
+				<xs:complexType>
+					<xs:choice>
+						<xs:element name="options">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="coreServer:emptyType">
+										<xs:attribute name="type" type="xs:Name" use="required"/>
+										<xs:attribute name="customSearchConstraint" type="xs:string" use="optional"/>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="equals">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="coreServer:emptyType">
+										<xs:attribute name="type" type="xs:Name" use="required"/>
+										<xs:attribute name="customSearchConstraint" type="xs:string" use="optional"/>
+										<xs:attribute name="defaultValue" type="xs:string" use="optional"/>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="min">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="coreServer:emptyType">
+										<xs:attribute name="type" type="xs:Name" use="required"/>
+										<xs:attribute name="includeMin" type="coreServer:boolean" default="true"/>
+										<xs:attribute name="customSearchConstraint" type="xs:string" use="optional"/>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="max">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="coreServer:emptyType">
+										<xs:attribute name="type" type="xs:Name" use="required"/>
+										<xs:attribute name="includeMax" type="coreServer:boolean" default="true"/>
+										<xs:attribute name="customSearchConstraint" type="xs:string" use="optional"/>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="minmax">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="coreServer:emptyType">
+										<xs:attribute name="type" type="xs:Name" use="required"/>
+										<xs:attribute name="includeMin" type="coreServer:boolean" default="true"/>
+										<xs:attribute name="includeMax" type="coreServer:boolean" default="true"/>
+										<xs:attribute name="customSearchConstraint" type="xs:string" use="optional"/>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="boolean">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="coreServer:emptyType">
+										<xs:attribute name="defaultValue" type="xs:string" use="optional"/>
+										<xs:attribute name="trueMeaning" type="xs:string" default="= true"/>
+										<xs:attribute name="falseMeaning" type="xs:string" default="= false"/>
+										<xs:attribute name="customSearchConstraint" type="xs:string" use="optional"/>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="substring">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="coreServer:emptyType">
+										<xs:attribute name="customSearchConstraint" type="xs:string" use="optional"/>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="sqlResultSetMappingType">
+		<xs:sequence>
+			<xs:sequence minOccurs="0">
+				<xs:element name="entities">
+					<xs:complexType>
+						<xs:sequence maxOccurs="unbounded">
+							<xs:element name="entity">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="fields">
+											<xs:complexType>
+												<xs:sequence maxOccurs="unbounded">
+													<xs:element name="field">
+														<xs:complexType>
+															<xs:simpleContent>
+																<xs:extension base="xs:string">
+																	<xs:attribute name="name" type="xs:Name" use="required"/>
+																	<xs:attribute name="column" type="xs:Name" use="required"/>
+																</xs:extension>
+															</xs:simpleContent>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="class" type="xs:Name" use="required"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:sequence minOccurs="0">
+				<xs:element name="columns">
+					<xs:complexType>
+						<xs:sequence maxOccurs="unbounded">
+							<xs:element name="column">
+								<xs:complexType>
+									<xs:simpleContent>
+										<xs:extension base="xs:string">
+											<xs:attribute name="name" type="xs:Name" use="required"/>
+										</xs:extension>
+									</xs:simpleContent>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+	</xs:complexType>
+
+	<xs:complexType name="sqlResultSetMappingsType">
+		<xs:sequence>
+			<xs:element name="standardMapping" type="coreServer:emptyType" minOccurs="0"/>
+			<xs:sequence minOccurs="0">
+				<xs:element name="sqlResultSetMapping" type="coreServer:sqlResultSetMappingType" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="entityAnnotations" mixed="false">
+		<xs:sequence minOccurs="0">
+			<xs:element name="entity" type="coreServer:emptyType" minOccurs="0"/>
+			<xs:element name="sqlResultSetMappings" type="coreServer:sqlResultSetMappingsType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="dynamicChoiceSource">
+		<xs:sequence>
+			<xs:element name="table" type="xs:Name"/>
+			<xs:element name="class" type="xs:Name"/>
+			<xs:element name="attribute" type="xs:Name"/>
+			<xs:element name="constraints" minOccurs="0">
+				<xs:complexType>
+					<xs:choice minOccurs="1" maxOccurs="unbounded">
+						<xs:element name="constrainedAttribute">
+							<xs:complexType>
+								<xs:sequence maxOccurs="unbounded">
+									<xs:element name="name" type="xs:Name"/>
+									<xs:element name="value" type="xs:string"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="condition" type="xs:string"/>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="validationChoiceDescription">
+
+		<xs:choice>
+			<xs:element name="static" type="xs:string"/>
+			<xs:element name="cache" type="coreServer:dynamicChoiceSource"/>
+			<xs:element name="database" type="coreServer:dynamicChoiceSource"/>
+		</xs:choice>
+
+		<xs:attribute name="caseSensitive" type="coreServer:boolean" default="true"/>
+		<xs:attribute name="useChoicesAs" default="containingSet">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="containingSet"/>
+					<xs:enumeration value="bitMasks"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+
+	</xs:complexType>
+	
+	<xs:complexType name="integerValidation">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="allowNull" type="coreServer:boolean" minOccurs="0"/>
+			<xs:element name="unacceptableValues" minOccurs="0">
+				<xs:complexType>
+					<xs:choice>
+						<xs:sequence>
+							<xs:element name="min" type="xs:string" minOccurs="0"/>
+							<xs:element name="max" type="xs:string" minOccurs="0"/>
+							<xs:element name="regex" type="xs:string" minOccurs="0"/>
+						</xs:sequence>
+						<xs:element name="invalidChoices" type="coreServer:validationChoiceDescription"/>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+			<xs:choice minOccurs="0">
+				<xs:sequence>
+					<xs:element name="min" type="xs:string" minOccurs="0"/>
+					<xs:element name="max" type="xs:string" minOccurs="0"/>
+					<xs:element name="regex" type="xs:string" minOccurs="0"/>
+				</xs:sequence>
+				<xs:element name="validChoices" type="coreServer:validationChoiceDescription"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="floatValidation">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="allowNull" type="coreServer:boolean" minOccurs="0"/>
+			<xs:element name="unacceptableValues" minOccurs="0">
+				<xs:complexType>
+					<xs:choice>
+						<xs:sequence>
+							<xs:element name="min" type="xs:string" minOccurs="0"/>
+							<xs:element name="max" type="xs:string" minOccurs="0"/>
+							<xs:element name="regex" type="xs:string" minOccurs="0"/>
+						</xs:sequence>
+						<xs:element name="invalidChoices" type="coreServer:validationChoiceDescription"/>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+			<xs:choice minOccurs="0">
+				<xs:sequence>
+					<xs:element name="min" type="xs:string" minOccurs="0"/>
+					<xs:element name="max" type="xs:string" minOccurs="0"/>
+					<xs:element name="maxFracLength" type="xs:string" minOccurs="0"/>
+					<xs:element name="regex" type="xs:string" minOccurs="0"/>
+				</xs:sequence>
+				<xs:element name="validChoices" type="coreServer:validationChoiceDescription"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="booleanValidation">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="allowNull" type="coreServer:boolean" minOccurs="0"/>
+			<xs:element name="unacceptableValues" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="invalidChoices" type="coreServer:validationChoiceDescription"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="validChoices" type="coreServer:validationChoiceDescription"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="stringValidation">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="allowNull" type="coreServer:boolean" minOccurs="0"/>
+			<xs:element name="unacceptableValues" minOccurs="0">
+				<xs:complexType>
+					<xs:choice>
+						<xs:sequence>
+							<xs:element name="minLength" type="xs:string" minOccurs="0"/>
+							<xs:element name="maxLength" type="xs:string" minOccurs="0"/>
+							<xs:element name="regex" type="xs:string" minOccurs="0"/>
+						</xs:sequence>
+						<xs:element name="invalidChoices" type="coreServer:validationChoiceDescription"/>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+			<xs:choice minOccurs="0">
+				<xs:sequence>
+					<xs:element name="minLength" type="xs:string" minOccurs="0"/>
+					<xs:element name="maxLength" type="xs:string" minOccurs="0"/>
+					<xs:element name="regex" type="xs:string" minOccurs="0"/>
+				</xs:sequence>
+				<xs:element name="validChoices" type="coreServer:validationChoiceDescription"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="dateTimestampValidation">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="allowNull" type="coreServer:boolean" minOccurs="0"/>
+			<xs:element name="unacceptableValues" minOccurs="0">
+				<xs:complexType>
+					<xs:choice>
+						<xs:sequence>
+							<xs:element name="earliest" type="xs:string" minOccurs="0"/>
+							<xs:element name="latest" type="xs:string" minOccurs="0"/>
+							<xs:element name="regex" type="xs:string" minOccurs="0"/>
+						</xs:sequence>
+						<xs:element name="invalidChoices" type="coreServer:validationChoiceDescription"/>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+			<xs:choice minOccurs="0">
+				<xs:sequence>
+					<xs:element name="earliest" type="xs:string" minOccurs="0"/>
+					<xs:element name="latest" type="xs:string" minOccurs="0"/>
+					<xs:element name="regex" type="xs:string" minOccurs="0"/>
+				</xs:sequence>
+				<xs:element name="validChoices" type="coreServer:validationChoiceDescription"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="groupsValidation">
+		<xs:sequence minOccurs="1" maxOccurs="1">
+			<xs:element name="allowNull" type="coreServer:boolean" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="javaValidationType">
+		<xs:choice>
+			<xs:element name="Byte" type="coreServer:integerValidation"/>
+			<xs:element name="Short" type="coreServer:integerValidation"/>
+			<xs:element name="Integer" type="coreServer:integerValidation"/>
+			<xs:element name="Long" type="coreServer:integerValidation"/>
+			<xs:element name="Float" type="coreServer:floatValidation"/>
+			<xs:element name="Double" type="coreServer:floatValidation"/>
+			<xs:element name="Boolean" type="coreServer:floatValidation"/>
+			<xs:element name="Date" type="coreServer:dateTimestampValidation"/>
+			<xs:element name="Timestamp" type="coreServer:dateTimestampValidation"/>
+			<xs:element name="String" type="coreServer:stringValidation"/>
+			<xs:element name="Groups" type="coreServer:groupsValidation"/>
+		</xs:choice>
+	</xs:complexType>
+	
+	<xs:complexType name="enumType">
+		<xs:sequence>
+			<xs:element ref="coreServer:comment" minOccurs="0"/>
+			<xs:sequence minOccurs="1" maxOccurs="unbounded">
+				<xs:element name="constant">
+					<xs:complexType>
+						<xs:simpleContent>
+							<xs:extension base="xs:string">
+								<xs:attribute name="name" type="xs:Name" use="required"/>
+								<xs:attribute name="value" type="xs:string" use="required"/>
+							</xs:extension>
+						</xs:simpleContent>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:sequence>
+
+		<xs:attribute name="name" type="xs:Name" use="required"/>
+		<xs:attribute name="type" type="xs:Name" use="required"/>
+		<xs:attribute name="bitMask" type="xs:Name" default="false"/>
+	</xs:complexType>
+
+</xs:schema>

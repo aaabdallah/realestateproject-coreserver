@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<coreServerEntity xmlns="aaacs.coreserver/generation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="aaacs.coreserver/generation ../../schemas/csDocEntity.xsd">
+	
+	<table>
+		<name>tUsersRoles</name>
+		<constraints>
+			<unique>userIdk roleIdk</unique>
+			<foreignKey>
+				<referringColumns>userIdk</referringColumns>
+				<referredTable>tUsers</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+			<foreignKey>
+				<referringColumns>roleIdk</referringColumns>
+				<referredTable>tRoles</referredTable>
+				<referredColumns>idk</referredColumns>
+			</foreignKey>
+		</constraints>
+	</table>
+
+	<class>
+		<comment type="JavaDoc">Core Server component for managing user-role mappings</comment>
+		<outputDirectory>src/aaacs/coreserver/ejb/entities</outputDirectory>
+		<resourcesFile>src/aaacs/coreserver/resources/entityNames.properties</resourcesFile>
+		<name>UserRole</name>
+		<package>aaacs.coreserver.ejb.entities</package>
+		<annotations>
+			<entity/>
+			<sqlResultSetMappings>
+				<standardMapping/>
+			</sqlResultSetMappings>
+		</annotations>
+	</class>
+
+	<attributes>
+		<includeAttributes>conf/generation/descriptors/standardAttributes.xml</includeAttributes>
+
+		<attribute>
+			<columnDescription name="userIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="userIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+			</javaFieldDescription>
+			<searchCriteria>
+				<options type="Long"/>
+			</searchCriteria>
+		</attribute>
+
+		<attribute>
+			<columnDescription name="roleIdk" type="INT8">
+				<notNull/>
+			</columnDescription>
+			<javaFieldDescription name="roleIdk" type="Long">
+				<annotations><basic/></annotations>
+				<validation>
+					<Long>
+						<allowNull>false</allowNull>
+						<min>KEY_LOWEST_RESERVED</min>
+					</Long>
+				</validation>
+				<messageResource lookupMechanism="cacheLookup" source="Role" key="name"/>
+			</javaFieldDescription>
+			<searchCriteria>
+				<options type="Long"/>
+			</searchCriteria>
+		</attribute>
+
+	</attributes>
+
+	<populate>
+		<defaults>
+			<columnValues>
+			userIdk '1'
+			roleIdk 'FKREF:roleGuest'
+			</columnValues>
+		</defaults>
+		<insert>
+			<columnValues>
+			idk '1'
+			userIdk '1'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '101'
+			userIdk '101'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '102'
+			userIdk '102'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '103'
+			userIdk '103'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '901'
+			userIdk '901'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '902'
+			userIdk '902'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			idk '903'
+			userIdk '903'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			userIdk 'FKREF:userAdministrator'
+			roleIdk 'FKREF:roleAdministrator'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			userIdk 'FKREF:userAaabdallah_gmail.com'
+			roleIdk 'FKREF:roleRegisteredUser'
+			</columnValues>
+		</insert>
+		<insert>
+			<columnValues>
+			userIdk 'FKREF:userDemo_demo.com'
+			roleIdk 'FKREF:roleRegisteredUser'
+			</columnValues>
+		</insert>
+	</populate>
+
+</coreServerEntity>
